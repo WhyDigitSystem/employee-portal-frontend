@@ -130,27 +130,29 @@ const routes = [
     ],
   },
 
+  // Our Changes
+  {
+    path: "", //no url needed as this has submenu
+    icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
+    name: "Transactions", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/permissionrequest", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Permission Request", // name that appear in Sidebar
+      },
+      {
+        path: "/app/leaverequest", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Leave Request", // name that appear in Sidebar
+      },
+    ],
+  },
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
     name: "Masters", // name that appear in Sidebar
     submenu: [
-      {
-        path: "/app/getting-started", // url
-        icon: <DocumentTextIcon className={submenuIconClasses} />, // icon component
-        name: "Getting Started", // name that appear in Sidebar
-      },
-      {
-        path: "/app/features",
-        icon: <TableCellsIcon className={submenuIconClasses} />,
-        name: "Features",
-      },
-      {
-        path: "/app/components",
-        icon: <CodeBracketSquareIcon className={submenuIconClasses} />,
-        name: "Components",
-      },
-
       {
         path: "/app/employeeDetails", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
@@ -160,6 +162,11 @@ const routes = [
         path: "/app/leavetype", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Type", // name that appear in Sidebar
+      },
+      {
+        path: "/app/holidays", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Holidays", // name that appear in Sidebar
       },
     ],
   },

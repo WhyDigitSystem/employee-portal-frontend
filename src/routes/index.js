@@ -1,6 +1,7 @@
 // All components mapping with path for internal routes
 
 import { lazy } from "react";
+//import { LeaveRequest } from "../features/flowScreens/LeaveRequest";
 
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
@@ -23,6 +24,11 @@ const EmployeeDetails = lazy(() =>
   import("../pages/protected/EmployeeDetails")
 );
 const LeaveType = lazy(() => import("../pages/protected/LeaveType"));
+const LeaveRequest = lazy(() => import("../pages/protected/LeaveRequest"));
+const PermissionRequest = lazy(() =>
+  import("../pages/protected/PermissionRequest")
+);
+const Holidays = lazy(() => import("../pages/protected/Holidays"));
 
 const routes = [
   {
@@ -94,6 +100,18 @@ const routes = [
   {
     path: "/leavetype",
     component: LeaveType,
+  },
+  {
+    path: "/permissionrequest",
+    component: PermissionRequest,
+  },
+  {
+    path: "/leaverequest",
+    component: LeaveRequest,
+  },
+  {
+    path: "/holidays",
+    component: Holidays,
   },
 ];
 
