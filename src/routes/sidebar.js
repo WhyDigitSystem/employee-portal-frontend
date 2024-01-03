@@ -135,6 +135,30 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
     name: "Transactions", // name that appear in Sidebar
+    // submenu: [
+    //   {
+    //     path: "", // url
+    //     icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    //     name: "Me", // name that appear in Sidebar
+    //     innerSubmenu: [
+    //       {
+    //         path: "/app/permissionrequest", // url
+    //         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    //         name: "Permission Request", // name that appear in Sidebar
+    //       },
+    //       {
+    //         path: "/app/leaverequest", // url
+    //         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    //         name: "Leave Request", // name that appear in Sidebar
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     path: "", // url
+    //     icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    //     name: "Team", // name that appear in Sidebar
+    //   },
+    // ],
     submenu: [
       {
         path: "/app/permissionrequest", // url
@@ -148,6 +172,7 @@ const routes = [
       },
     ],
   },
+
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component

@@ -1,6 +1,9 @@
+import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import React from "react";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
 
@@ -48,6 +51,14 @@ export const LeaveTypes = () => {
                   inputProps={{ maxLength: 30 }}
                 />
               </FormControl>
+            </div>
+            <div className="col-md-4 mb-3">
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox defaultChecked />}
+                  label="Active"
+                />
+              </FormGroup>
             </div>
           </div>
           <div className="d-flex flex-row mt-4">
