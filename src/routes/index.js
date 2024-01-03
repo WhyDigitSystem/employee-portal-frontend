@@ -22,7 +22,7 @@ const DocComponents = lazy(() => import("../pages/DocComponents"));
 const EmployeeDetails = lazy(() =>
   import("../pages/protected/EmployeeDetails")
 );
-const LeaveRequest = lazy(() => import("../pages/protected/LeaveRequest"));
+const LeaveType = lazy(() => import("../pages/protected/LeaveType"));
 
 const routes = [
   {
@@ -92,8 +92,8 @@ const routes = [
     component: EmployeeDetails,
   },
   {
-    path: "/leaverequest",
-    component: LeaveRequest,
+    path: "/leavetype",
+    component: LeaveType,
   },
 ];
 

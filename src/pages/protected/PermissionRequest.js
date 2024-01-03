@@ -1,17 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-//import { LeaveRequest } from "../../features/LeaveRequest";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { LeaveRequest } from "../../features/flowScreens/LeaveRequest";
+import { PermissionRequest } from "../../components/permission/PermissionRequest";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Leave Request" }));
+    dispatch(setPageTitle({ title: "Permission Request" }));
   }, []);
 
-  return <LeaveRequest />;
+  return <PermissionRequest />;
 }
 
 export default InternalPage;

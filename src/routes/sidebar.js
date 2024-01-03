@@ -157,9 +157,9 @@ const routes = [
         name: "Employee Details", // name that appear in Sidebar
       },
       {
-        path: "/app/leaverequest", // url
+        path: "/app/leavetype", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
-        name: "Leave Request", // name that appear in Sidebar
+        name: "Leave Type", // name that appear in Sidebar
       },
     ],
   },
