@@ -190,6 +190,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Permission Approval", // name that appear in Sidebar
       },
+      {
+        path: "/app/attendancereport", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Attendance Report", // name that appear in Sidebar
+      },
     ],
   },
 
