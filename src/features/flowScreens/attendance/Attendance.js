@@ -11,20 +11,22 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import moment from "moment";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CSVLink } from "react-csv";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
-import NewPermissionRequest from "./NewPermissionRequest";
 import { data } from "./makeData";
 
-export const PermissionRequest = () => {
+export const Attendance = () => {
   const buttonStyle = {
     fontSize: "20px",
   };
-
   const [searchValue, setSearchValue] = useState("");
   const [options, setOptions] = useState([
     "Karupu",
@@ -34,11 +36,23 @@ export const PermissionRequest = () => {
     "Vasanth",
   ]);
 
-  const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
+  const [value, setValue] = React.useState();
   const [add, setAdd] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [formattedDate, setFormattedDate] = useState("");
+
+  useEffect(() => {
+    // Run the code when the component mounts
+    const intervalId = setInterval(() => {
+      const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
+      setFormattedDate(currentDate);
+    }, 1000); // Update every second
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -81,22 +95,18 @@ export const PermissionRequest = () => {
     const csvData = tableData.map((row) => ({
       "S No": row.SNo,
       Date: row.date,
-      FromTime: row.ftime,
-      ToTime: row.ttime,
+      InTime: row.intime,
+      OutTime: row.outtime,
       TotalHrs: row.tothrs,
-      Notes: row.notes,
-      Notify: row.notify,
     }));
 
     // Define CSV headers
     const headers = [
       { label: "S No", key: "SNo" },
       { label: "Date", key: "Date" },
-      { label: "FromTime", key: "FromTime" },
-      { label: "ToTime", key: "ToTime" },
+      { label: "InTime", key: "InTime" },
+      { label: "OutTime", key: "OutTime" },
       { label: "TotalHrs", key: "TotalHrs" },
-      { label: "Notes", key: "Notes" },
-      { label: "Notify", key: "Notify" },
     ];
 
     return (
@@ -176,16 +186,16 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "ftime",
-        header: "From Time",
+        accessorKey: "intime",
+        header: "IN Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "ttime",
-        header: "To Time",
+        accessorKey: "outtime",
+        header: "OUT Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -199,129 +209,127 @@ export const PermissionRequest = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-
-      {
-        accessorKey: "notes",
-        header: "Notes",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "notify",
-        header: "Notify",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
     ],
     [getCommonEditTextFieldProps]
   );
 
   return (
     <>
-      {add ? (
-        <NewPermissionRequest newPermissionRequest={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          {/* <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Group / Ledger</h1>
-        </div> */}
+      <div className="card w-full p-6 bg-base-100 shadow-xl">
+        {/* <div className="d-flex justify-content-between">
+        <h1 className="text-xl font-semibold mb-3">Group / Ledger</h1>
+      </div> */}
 
-          <div className="d-flex flex-wrap justify-content-start mb-2">
-            <button
-              className="btn btn-ghost btn-sm normal-case col-xs-2"
-              onClick={handleAddOpen}
-            >
-              <AiOutlineWallet style={buttonStyle} />
-              <span className="ml-1">New</span>
-            </button>
-            <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-              <AiOutlineSearch style={buttonStyle} />
-              <span className="ml-1">Search</span>
-            </button>
-            {/* <button
-          className="btn btn-ghost btn-sm normal-case col-xs-2"
-          onClick={handleSave}
-        >
-          <AiFillSave style={buttonStyle} />
-          <span className="ml-1">Save</span>
-        </button> */}
-            <button
-              className="btn btn-ghost btn-sm normal-case col-xs-2"
-              //onClick={getAllCompanyFields}
-            >
-              <BsListTask style={buttonStyle} />
-              <span className="ml-1">List View</span>
-            </button>
+        {/* <div className="d-flex flex-wrap justify-content-start mb-2">
+          <button
+            className="btn btn-ghost btn-sm normal-case col-xs-2"
+            onClick={handleAddOpen}
+          >
+            <AiOutlineWallet style={buttonStyle} />
+            <span className="ml-1">New</span>
+          </button>
+          <button className="btn btn-ghost btn-sm normal-case col-xs-2">
+            <AiOutlineSearch style={buttonStyle} />
+            <span className="ml-1">Search</span>
+          </button>
+
+          <button
+            className="btn btn-ghost btn-sm normal-case col-xs-2"
+            //onClick={getAllCompanyFields}
+          >
+            <BsListTask style={buttonStyle} />
+            <span className="ml-1">List View</span>
+          </button>
+        </div> */}
+        <div className="d-flex flex-row mt-3">
+          <div className="col-md-8 mb-3 ">
+            <p className="font-semibold text-xl w-48 ml-10">{formattedDate}</p>
+          </div>
+          <button
+            type="button"
+            //onClick={handleCustomer}
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            CheckIN
+          </button>
+          <button
+            type="button"
+            //onClick={handleCloseNewLeave}
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            CheckOut
+          </button>
+        </div>
+      </div>
+
+      <>
+        <div className="card w-full p-6 bg-base-100 shadow-xl mt-5">
+          <div className="d-flex justify-content-between">
+            <h1 className="text-xl font-semibold mb-4">Attendance Report</h1>
           </div>
 
-          <>
-            <MaterialReactTable
-              displayColumnDefOptions={{
-                "mrt-row-actions": {
-                  muiTableHeadCellProps: {
-                    align: "center",
-                  },
-                  size: 120,
+          <MaterialReactTable
+            displayColumnDefOptions={{
+              "mrt-row-actions": {
+                muiTableHeadCellProps: {
+                  align: "center",
                 },
-              }}
-              columns={columns}
-              data={tableData}
-              editingMode="modal"
-              enableColumnOrdering
-              enableEditing
-              onEditingRowSave={handleSaveRowEdits}
-              onEditingRowCancel={handleCancelRowEdits}
-              renderRowActions={({ row, table }) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "1rem",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {/* <Tooltip arrow placement="left" title="Delete">
-              <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                <Delete />
-              </IconButton>
-            </Tooltip> */}
-                  <Tooltip arrow placement="right" title="Edit">
-                    <IconButton onClick={() => table.setEditingRow(row)}>
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              renderTopToolbarCustomActions={() => (
-                <Stack direction="row" spacing={2} className="ml-5 ">
-                  {/* <Tooltip title="Add">
-                    <div>
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => setCreateModalOpen(true)}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </Tooltip> */}
-                  <Tooltip title="Export Data as CSV">
-                    <span>{exportDataAsCSV()}</span>
-                  </Tooltip>
-                </Stack>
-              )}
-            />
-            <CreateNewAccountModal
-              columns={columns}
-              open={createModalOpen}
-              onClose={() => setCreateModalOpen(false)}
-              onSubmit={handleCreateNewRow}
-            />
-          </>
+                size: 120,
+              },
+            }}
+            columns={columns}
+            data={tableData}
+            editingMode="modal"
+            enableColumnOrdering
+            enableEditing
+            onEditingRowSave={handleSaveRowEdits}
+            onEditingRowCancel={handleCancelRowEdits}
+            renderRowActions={({ row, table }) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {/* <Tooltip arrow placement="left" title="Delete">
+            <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+              <Delete />
+            </IconButton>
+          </Tooltip> */}
+                <Tooltip arrow placement="right" title="Edit">
+                  <IconButton onClick={() => table.setEditingRow(row)}>
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+            renderTopToolbarCustomActions={() => (
+              <Stack direction="row" spacing={2} className="ml-5 ">
+                {/* <Tooltip title="Add">
+                  <div>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => setCreateModalOpen(true)}
+                    >
+                      Add
+                    </button>
+                  </div>
+                </Tooltip> */}
+                <Tooltip title="Export Data as CSV">
+                  <span>{exportDataAsCSV()}</span>
+                </Tooltip>
+              </Stack>
+            )}
+          />
+          <CreateNewAccountModal
+            columns={columns}
+            open={createModalOpen}
+            onClose={() => setCreateModalOpen(false)}
+            onSubmit={handleCreateNewRow}
+          />
         </div>
-      )}
+      </>
     </>
   );
 };
@@ -385,4 +393,4 @@ const validateEmail = (email) =>
     );
 const validateAge = (age) => age >= 18 && age <= 50;
 
-export default PermissionRequest;
+export default Attendance;

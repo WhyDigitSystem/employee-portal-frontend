@@ -58,7 +58,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
           </FormControl>
         </div>
 
-        <div className="col-md-8">
+        <div className="col-md-8 mb-3">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={["TimePicker", "TimePicker"]}>
               <TimePicker

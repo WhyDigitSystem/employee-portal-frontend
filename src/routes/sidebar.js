@@ -170,6 +170,26 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Request", // name that appear in Sidebar
       },
+      {
+        path: "/app/attendance", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Attendance", // name that appear in Sidebar
+      },
+      {
+        path: "/app/holidayreport", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Holiday Report", // name that appear in Sidebar
+      },
+      {
+        path: "/app/leaveapproval", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Leave Approval", // name that appear in Sidebar
+      },
+      {
+        path: "/app/permissionapproval", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Permission Approval", // name that appear in Sidebar
+      },
     ],
   },
 

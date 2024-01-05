@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { Holidays } from "../../features/masters/Holidays";
+import PermissionApproval from "../../features/flowScreens/permissionApproval/PermissionApproval";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Holidays" }));
+    dispatch(setPageTitle({ title: "Permission Approval" }));
   }, []);
 
-  return <Holidays />;
+  return <PermissionApproval />;
 }
 
 export default InternalPage;

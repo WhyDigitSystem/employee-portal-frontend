@@ -1,8 +1,8 @@
 // All components mapping with path for internal routes
 
 import { lazy } from "react";
-//import { LeaveRequest } from "../features/flowScreens/LeaveRequest";
-
+// import HolidayReport from "../features/flowScreens/holidayReport/HolidayReport";
+// import LeaveApproval from "../features/flowScreens/leaveApproval/LeaveApproval";
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const Page404 = lazy(() => import("../pages/protected/404"));
@@ -29,6 +29,12 @@ const PermissionRequest = lazy(() =>
   import("../pages/protected/PermissionRequest")
 );
 const Holidays = lazy(() => import("../pages/protected/Holidays"));
+const Attendance = lazy(() => import("../pages/protected/Attendance"));
+const HolidayReport = lazy(() => import("../pages/protected/HolidayReport"));
+const LeaveApproval = lazy(() => import("../pages/protected/LeaveApproval"));
+const PermissionApproval = lazy(() =>
+  import("../pages/protected/PermissionApproval")
+);
 
 const routes = [
   {
@@ -112,6 +118,22 @@ const routes = [
   {
     path: "/holidays",
     component: Holidays,
+  },
+  {
+    path: "/attendance",
+    component: Attendance,
+  },
+  {
+    path: "/holidayreport",
+    component: HolidayReport,
+  },
+  {
+    path: "/leaveapproval",
+    component: LeaveApproval,
+  },
+  {
+    path: "/permissionapproval",
+    component: PermissionApproval,
   },
 ];
 
