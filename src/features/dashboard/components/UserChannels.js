@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
 
 const userSourceData = [
-  { source: "New Year", Date: "01/01/2024", Day: 10.2 },
-  { source: "Pongal", Date: "15/01/2024", Day: 11.7 },
-  { source: "Mattu Pongal", Date: "16/01/2024", Day: 12.4 },
-  { source: "Republic Day", Date: "26/01/2024", Day: 20.9 },
-  { source: "Labour Day", Date: "01/05/2024", Day: 10.3 },
+  { source: "New Year", Date: "01/01/2024", Day: "Monday" },
+  { source: "Pongal", Date: "15/01/2024", Day: "Mnday" },
+  //{ source: "Mattu Pongal", Date: "16/01/2024", Day: 12.4 },
+  { source: "Republic Day", Date: "26/01/2024", Day: "Wednesday" },
+  { source: "Labour Day", Date: "01/05/2024", Day: "Saturday" },
+  { source: "Indepandance", Date: "15/08/2024", Day: "Saturday" },
 ];
 
 function UserChannels() {
@@ -30,7 +31,7 @@ function UserChannels() {
                   <th>{k + 1}</th>
                   <td>{u.source}</td>
                   <td>{u.Date}</td>
-                  <td>{`${u.Day}%`}</td>
+                  <td>{`${u.Day}`}</td>
                 </tr>
               );
             })}
