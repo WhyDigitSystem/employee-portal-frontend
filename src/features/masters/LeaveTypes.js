@@ -11,6 +11,7 @@ export const LeaveTypes = () => {
   const buttonStyle = {
     fontSize: "20px", // Adjust the font size as needed
   };
+
   return (
     <div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
