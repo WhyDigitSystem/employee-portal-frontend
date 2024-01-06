@@ -19,13 +19,13 @@ export const EmployeeDetails = () => {
   const [empCode, setEmpCode] = React.useState("");
   const [empName, setEmpName] = React.useState("");
   const [gender, setGender] = React.useState("");
-  const [dob, setDob] = React.useState("");
+  const [dob, setDob] = React.useState(null);
   const [bloodGroup, setBloodGroup] = React.useState("");
   const [dept, setDept] = React.useState("");
   const [designation, setDesignation] = React.useState("");
   const [role, setRole] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [joinDate, setJoinDate] = React.useState("");
+  const [joinDate, setJoinDate] = React.useState(null);
   const [userType, setUserType] = React.useState("");
   const [mobNo, setMobNo] = React.useState("");
   const [altMobNo, setAltMobNo] = React.useState("");
@@ -342,7 +342,7 @@ export const EmployeeDetails = () => {
                       }}
                       value={dob}
                       onChange={handleDob}
-                      error={Boolean(errors.dob)}
+                      // error={Boolean(errors.dob)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -447,10 +447,9 @@ export const EmployeeDetails = () => {
                         textField: { size: "small", clearable: true },
                       }}
                       value={joinDate}
-                      onChange={(joinDate, event) =>
-                        handleJoinDate(joinDate, event)
-                      }
-                      error={Boolean(errors.joinDate)}
+                      onChange={handleJoinDate}
+
+                      // error={Boolean(errors.joinDate)}
                     />
                   </LocalizationProvider>
                 </FormControl>
