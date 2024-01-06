@@ -1,39 +1,130 @@
-import {useState, useRef} from 'react'
-import {Link} from 'react-router-dom'
-import LandingIntro from './LandingIntro'
-import ErrorText from  '../../components/Typography/ErrorText'
+import Axios from "axios"
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import InputText from '../../components/Input/InputText'
+import ErrorText from '../../components/Typography/ErrorText'
+import LandingIntro from './LandingIntro'
+import { encryptPassword } from "./components/utils"
 
 function Login(){
 
     const INITIAL_LOGIN_OBJ = {
-        password : "",
-        emailId : ""
-    }
-
-    const [loading, setLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("")
-    const [loginObj, setLoginObj] = useState(INITIAL_LOGIN_OBJ)
-
-    const submitForm = (e) =>{
-        e.preventDefault()
-        setErrorMessage("")
-
-        if(loginObj.emailId.trim() === "")return setErrorMessage("Email Id is required! (use any value)")
-        if(loginObj.password.trim() === "")return setErrorMessage("Password is required! (use any value)")
-        else{
-            setLoading(true)
-            // Call API to check user credentials and save token in localstorage
-            localStorage.setItem("token", "DumyTokenHere")
-            setLoading(false)
-            window.location.href = '/app/welcome'
+        password: "",
+        emailId: "",
+      };
+    
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loginObj, setLoginObj] = useState(INITIAL_LOGIN_OBJ);
+    const [isReCAPTCHACompleted, setIsReCAPTCHACompleted] = useState(false);
+    const [alertTnfo, setAlertInfo] = useState(true);
+  
+    const history = useNavigate();
+    const SESSION_TIMEOUT = 20 * 60 * 1000; // 20 minutes in milliseconds
+  
+    useEffect(() => {
+      let sessionTimer;
+      const resetSessionTimer = () => {
+        clearTimeout(sessionTimer);
+        sessionTimer = setTimeout(() => {
+          // Show session expiry warning here (e.g., a pop-up or notification)
+          alert("Your session will expire soon. Please log in again.");
+          // Redirect to the login page or perform logout action
+          // history.push("/login"); // Redirect to login page
+        }, SESSION_TIMEOUT);
+      };
+  
+      // Reset the session timer whenever there is user activity (e.g., form input)
+      const activityEvents = ["keydown", "mousedown", "click", "touchstart"];
+      const resetTimerOnActivity = () => {
+        resetSessionTimer();
+      };
+      activityEvents.forEach((event) => {
+        document.addEventListener(event, resetTimerOnActivity);
+      });
+  
+      // Initialize the session timer on component mount
+      resetSessionTimer();
+  
+      // Clear the timer and remove event listeners on component unmount
+      return () => {
+        clearTimeout(sessionTimer);
+        activityEvents.forEach((event) => {
+          document.removeEventListener(event, resetTimerOnActivity);
+        });
+      };
+    }, [SESSION_TIMEOUT, history]);
+  
+    const handleReCAPTCHAChange = (value) => {
+      // When reCAPTCHA is completed, this function will be called with the value.
+      // You can set a flag to indicate that reCAPTCHA is completed.
+      setIsReCAPTCHACompleted(true);
+    };
+  
+  
+    const submitForm = async (e) => {
+      e.preventDefault();
+      setErrorMessage("");
+    
+      const trimmedEmail = loginObj.emailId.trim();
+      const trimmedPassword = loginObj.password.trim();
+    
+      if (trimmedEmail === "") {
+        setErrorMessage("Email Id is required!");
+      } else if (!isValidEmail(trimmedEmail)) {
+        setErrorMessage("Please enter a valid email address.");
+      } else if (trimmedPassword === "") {
+        setErrorMessage("Password is required!");
+      } else {
+        setLoading(true);
+    
+        // Create a request body
+        const requestBody = {
+          userName: trimmedEmail,
+          password: encryptPassword(trimmedPassword),
+        };
+    
+        try {
+          const response = await Axios.post(`${process.env.REACT_APP_API_URL}/api/user/login`, requestBody, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+    
+          if (!response.data.status) {
+            // Handle authentication failure, display an error message, etc.
+            setErrorMessage(response.data.paramObjectsMap.errorMessage);
+          } else {
+            // Successful login, perform actions like storing tokens and redirecting
+            localStorage.setItem("token", response.data.paramObjectsMap.user.token);
+            localStorage.setItem("userName", trimmedEmail);
+            localStorage.setItem("userDetails",response.data.paramObjectsMap.user.role);
+            localStorage.setItem("userId",response.data.paramObjectsMap.user.userId);
+            // Redirect the user to the welcome page
+            console.log('token',response.data)
+            window.location.href = "/app/welcome";
+          }
+    
+          setLoading(false);
+        } catch (error) {
+          console.error("Login error:", error);
+          setErrorMessage("Login failed. Please try again."); // Handle login error here
+          setLoading(false);
         }
-    }
-
-    const updateFormValue = ({updateType, value}) => {
-        setErrorMessage("")
-        setLoginObj({...loginObj, [updateType] : value})
-    }
+      }
+    };
+  
+    // Helper function to validate email format
+    const isValidEmail = (email) => {
+      // Use a regular expression or any other method to validate the email format
+      const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+      return emailPattern.test(email);
+    };
+  
+    const updateFormValue = ({ updateType, value }) => {
+      setErrorMessage("");
+      setLoginObj({ ...loginObj, [updateType]: value });
+    };
 
     return(
         <div className="min-h-screen bg-base-200 flex items-center">
