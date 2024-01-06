@@ -1,3 +1,12 @@
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useDispatch } from "react-redux";
+
 import { Edit } from "@mui/icons-material";
 import {
   Box,
@@ -13,15 +22,10 @@ import {
 } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
-import {
-  default as React,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import Axios from "axios";
 import { CSVLink } from "react-csv";
 import { data } from "./makeData";
+import { showNotification } from "../../common/headerSlice";
 
 export const Attendance = () => {
   const buttonStyle = {
@@ -35,13 +39,15 @@ export const Attendance = () => {
     "Guhan",
     "Vasanth",
   ]);
-
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState();
-  const [add, setAdd] = React.useState(false);
+  const [userid, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [checkedStatus, setCheckedStatus] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
   const [formattedDate, setFormattedDate] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Run the code when the component mounts
@@ -58,12 +64,28 @@ export const Attendance = () => {
     setSearchValue(newValue);
   };
 
-  const handleAddOpen = () => {
-    setAdd(true);
-  };
+  const handleCheck = () => {
+    const apiUrl = checkedStatus
+      ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout/${userid}`
+      : `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`;
 
-  const handleBack = () => {
-    setAdd(false);
+    const requestBody = checkedStatus ? {} : { userid };
+
+    Axios.post(apiUrl, requestBody)
+      .then((response) => {
+        console.log("Response:", response.data);
+        setCheckedStatus(!checkedStatus);
+        dispatch(
+          showNotification(
+            checkedStatus
+              ? { message: "You have Checked Out successfully", status: 1 }
+              : { message: "You have Checked In successfully", status: 1 }
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   const handleCreateNewRow = (values) => {
@@ -216,48 +238,18 @@ export const Attendance = () => {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <div className="d-flex justify-content-between">
-        <h1 className="text-xl font-semibold mb-3">Group / Ledger</h1>
-      </div> */}
-
-        {/* <div className="d-flex flex-wrap justify-content-start mb-2">
-          <button
-            className="btn btn-ghost btn-sm normal-case col-xs-2"
-            onClick={handleAddOpen}
-          >
-            <AiOutlineWallet style={buttonStyle} />
-            <span className="ml-1">New</span>
-          </button>
-          <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-            <AiOutlineSearch style={buttonStyle} />
-            <span className="ml-1">Search</span>
-          </button>
-
-          <button
-            className="btn btn-ghost btn-sm normal-case col-xs-2"
-            //onClick={getAllCompanyFields}
-          >
-            <BsListTask style={buttonStyle} />
-            <span className="ml-1">List View</span>
-          </button>
-        </div> */}
-        <div className="d-flex flex-row mt-3">
-          <div className="col-md-8 mb-3 ">
-            <p className="font-semibold text-xl w-48 ml-10">{formattedDate}</p>
-          </div>
+        <div className="d-flex justify-content-between mt-3">
+          <p className="font-semibold text-xl">{formattedDate}</p>
           <button
             type="button"
-            //onClick={handleCustomer}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleCheck}
+            className={
+              checkedStatus
+                ? "bg-blue inline-block rounded bg-red-500 h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                : "bg-blue inline-block rounded bg-green-500 h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            }
           >
-            CheckIN
-          </button>
-          <button
-            type="button"
-            //onClick={handleCloseNewLeave}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            CheckOut
+            {checkedStatus ? "CheckOut" : "CheckIN"}
           </button>
         </div>
       </div>

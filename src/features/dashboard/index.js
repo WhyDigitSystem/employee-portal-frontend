@@ -12,6 +12,7 @@ import UserChannels from "./components/UserChannels";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
 import CheckinCheckout from "./components/CheckinCheckout";
+import Attendance from "../flowScreens/attendance/Attendance";
 // import DoughnutChart from './components/DoughnutChart'
 // import { useState } from 'react'
 
@@ -80,7 +81,7 @@ function Dashboard() {
       {/** ---------------------- Different stats content 2 ------------------------- */}
 
       <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
-        <CheckinCheckout />
+        <Attendance />
         {/* <AmountStats /> */}
         {/* <PageStats /> */}
       </div>
