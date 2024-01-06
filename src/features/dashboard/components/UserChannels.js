@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
 
 const userSourceData = [
@@ -35,7 +36,14 @@ function UserChannels() {
             })}
           </tbody>
         </table>
-        <p className="text-end"> More...</p>
+        <p
+          className="text-end"
+          sx={{
+            color: "green",
+          }}
+        >
+          <Link to="/app/holidayreport">More...</Link>
+        </p>
       </div>
     </TitleCard>
   );

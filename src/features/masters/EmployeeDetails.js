@@ -1,19 +1,16 @@
 import FormControl from "@mui/material/FormControl";
-import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import React, { useState } from "react";
+import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
+import { BsListTask } from "react-icons/bs";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import FormGroup from "@mui/material/FormGroup";
 export const EmployeeDetails = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -136,7 +133,7 @@ export const EmployeeDetails = () => {
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              {/* <div className="col-md-4">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="role"
@@ -145,6 +142,23 @@ export const EmployeeDetails = () => {
                     //placeholder="accountcode"
                     inputProps={{ maxLength: 30 }}
                   />
+                </FormControl>
+              </div> */}
+              <div className="col-md-4">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value={age}
+                    label="Role"
+                    // onChange={handleChange}
+                  >
+                    <MenuItem value={"User"}>User</MenuItem>
+                    <MenuItem value={"Team Lead"}>Team Lead</MenuItem>
+                    <MenuItem value={"Management"}>Management</MenuItem>
+                    <MenuItem value={"HR"}>HR</MenuItem>
+                  </Select>
                 </FormControl>
               </div>
               <div className="col-md-4">
@@ -314,6 +328,7 @@ export const EmployeeDetails = () => {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
+                        //multiple
                         // value={age}
                         label="Reporting Person"
                         // onChange={handleChange}
