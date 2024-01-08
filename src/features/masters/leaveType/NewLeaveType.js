@@ -3,34 +3,49 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
-import React from "react";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
+import React, { useState } from "react";
+import { IoMdClose } from "react-icons/io";
+import "react-tabs/style/react-tabs.css";
 
-export const LeaveTypes = () => {
+function NewLeaveType({ newLeaveType }) {
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleTabSelect = (index) => {
+    setTabIndex(index);
+  };
+
   const buttonStyle = {
-    fontSize: "20px", // Adjust the font size as needed
+    fontSize: "20px", // Adjust the font size as needed save
+  };
+
+  const handleCloseNewLeaveType = () => {
+    newLeaveType(false);
   };
 
   return (
-    <div>
+    <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row d-flex justify-content-center align-items-center">
-          <div className="d-flex flex-wrap justify-content-start">
-            <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-              <AiOutlineWallet style={buttonStyle} />
-              <span className="ml-1">New</span>
-            </button>
-            <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-              <AiOutlineSearch style={buttonStyle} />
-              <span className="ml-1">Search</span>
-            </button>
-            <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-              <BsListTask style={buttonStyle} />
-              <span className="ml-1">List View</span>
-            </button>
+          <div className="d-flex justify-content-between">
+            <h1 className="text-xl font-semibold mb-3">New Leave Request</h1>
+            <IoMdClose
+              onClick={handleCloseNewLeaveType}
+              type="button"
+              className="cursor-pointer w-8 h-8 mb-3"
+            />
           </div>
           <div className="row d-flex mt-3">
+            <div className="col-md-4">
+              <FormControl fullWidth variant="filled">
+                <TextField
+                  id="leavecode"
+                  label="Leave Code"
+                  size="small"
+                  //placeholder="accountcode"
+                  inputProps={{ maxLength: 30 }}
+                />
+              </FormControl>
+            </div>
             <div className="col-md-4">
               <FormControl fullWidth variant="filled">
                 <TextField
@@ -62,7 +77,8 @@ export const LeaveTypes = () => {
               </FormGroup>
             </div>
           </div>
-          <div className="d-flex flex-row mt-4">
+
+          <div className="d-flex flex-row mt-3">
             <button
               type="button"
               //onClick={handleCustomer}
@@ -72,7 +88,7 @@ export const LeaveTypes = () => {
             </button>
             <button
               type="button"
-              //onClick={handleCustomerClose}
+              onClick={handleCloseNewLeaveType}
               className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Cancel
@@ -80,6 +96,8 @@ export const LeaveTypes = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-};
+}
+
+export default NewLeaveType;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { LeaveTypes } from "../../features/masters/LeaveTypes";
+import LeaveType from "../../features/masters/leaveType/LeaveType";
 
 function InternalPage() {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ function InternalPage() {
     dispatch(setPageTitle({ title: "Leave Type" }));
   }, []);
 
-  return <LeaveTypes />;
+  return <LeaveType />;
 }
 
 export default InternalPage;
