@@ -1,8 +1,5 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -21,8 +18,24 @@ function NewLeaveRequest({ newLeaveRequest }) {
     "Vasanth",
   ]);
 
-  const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
-  const [add, setAdd] = React.useState(false);
+  const [from, setFrom] = React.useState(null);
+  const [to, setTo] = React.useState(null);
+  const [tot, setTot] = React.useState("");
+
+  // const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
+  // const [add, setAdd] = React.useState(false);
+
+  const handleFrom = (selectedDate) => {
+    setFrom(selectedDate);
+  };
+  const handleTo = (selectedDate) => {
+    setTo(selectedDate);
+
+    // Calculate the difference between 'from' and 'to' dates
+
+    const daysDifference = dayjs(selectedDate).diff(dayjs(from), "day") + 1;
+    setTot(daysDifference);
+  };
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -45,33 +58,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
           />
         </div>
 
-        {/* <div className="d-flex flex-wrap justify-content-start mb-2">
-          <button
-            className="btn btn-ghost btn-sm normal-case col-xs-2"
-            //onClick={handleNew}
-          >
-            <AiOutlineWallet style={buttonStyle} />
-            <span className="ml-1">New</span>
-          </button>
-          <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-            <AiOutlineSearch style={buttonStyle} />
-            <span className="ml-1">Search</span>
-          </button>
-          <button
-          className="btn btn-ghost btn-sm normal-case col-xs-2"
-          onClick={handleSave}
-        >
-          <AiFillSave style={buttonStyle} />
-          <span className="ml-1">Save</span>
-        </button> 
-          <button
-            className="btn btn-ghost btn-sm normal-case col-xs-2"
-            //onClick={getAllCompanyFields}
-          >
-            <BsListTask style={buttonStyle} />
-            <span className="ml-1">List View</span>
-          </button>
-        </div> */}
         <div className="row d-flex mt-3">
           <div className="col-md-4 mb-3">
             <FormControl fullWidth>
@@ -81,8 +67,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  //value={boDate}
-                  //onChange={(newValue) => setBoDate(newValue)}
+                  value={from}
+                  onChange={handleFrom}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -95,8 +81,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  //value={boDate}
-                  //onChange={(newValue) => setBoDate(newValue)}
+                  value={to}
+                  onChange={handleTo}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -127,10 +113,11 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 disabled
                 //placeholder="40003600104"
                 //inputProps={{ maxLength: 30 }}
+                value={tot}
               />
             </FormControl>
           </div>
-          <div className="col-md-4 mb-3">
+          {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
               <Select
@@ -143,7 +130,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 <MenuItem value={"PL"}>PL</MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </div> */}
 
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">

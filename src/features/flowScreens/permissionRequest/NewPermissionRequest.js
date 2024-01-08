@@ -20,9 +20,26 @@ function NewPermissionRequest({ newPermissionRequest }) {
     "Guhan",
     "Vasanth",
   ]);
+  const currentDate = dayjs().format("YYYY-MM-DD");
 
-  const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
-  const [add, setAdd] = React.useState(false);
+  const [from, setFrom] = React.useState(null);
+  const [to, setTo] = React.useState(null);
+  const [tot, setTot] = React.useState("");
+
+  const handleFrom = (selectedDate) => {
+    setFrom(selectedDate);
+  };
+  const handleTo = (selectedDate) => {
+    setTo(selectedDate);
+
+    // Calculate the difference between 'from' and 'to' dates
+
+    const diffDuration = dayjs(selectedDate).diff(dayjs(from), "minute");
+    const hours = Math.floor(diffDuration / 60);
+    const minutes = diffDuration % 60;
+
+    setTot(`${hours}h ${minutes}m`);
+  };
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -51,8 +68,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 slotProps={{
                   textField: { size: "small", clearable: true },
                 }}
-                //value={boDate}
-                //onChange={(newValue) => setBoDate(newValue)}
+                disabled
+                defaultValue={dayjs("2022-04-17T15:30")}
               />
             </LocalizationProvider>
           </FormControl>
@@ -63,13 +80,15 @@ function NewPermissionRequest({ newPermissionRequest }) {
             <DemoContainer components={["TimePicker", "TimePicker"]}>
               <TimePicker
                 label="From"
-                defaultValue={dayjs("2022-04-17T15:30")}
+                value={from}
+                onChange={handleFrom}
+                //defaultValue={dayjs("2022-04-17T15:30")}
                 slotProps={{ textField: { size: "small" } }}
               />
               <TimePicker
                 label="To"
-                value={value}
-                onChange={(newValue) => setValue(newValue)}
+                value={to}
+                onChange={handleTo}
                 slotProps={{ textField: { size: "small" } }}
               />
             </DemoContainer>
@@ -83,6 +102,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
               label="Total Hours"
               size="small"
               disabled
+              value={tot}
               //placeholder="40003600104"
               inputProps={{ maxLength: 30 }}
             />
@@ -112,7 +132,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Notify"
+                label="Search"
                 variant="outlined"
                 size="small"
                 InputProps={{

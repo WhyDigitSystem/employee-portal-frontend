@@ -1,25 +1,29 @@
+import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import React, { useState } from "react";
+import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
+import { BsListTask } from "react-icons/bs";
 import "react-tabs/style/react-tabs.css";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import FormGroup from "@mui/material/FormGroup";
+
 export const Holidays = () => {
   const [tabIndex, setTabIndex] = useState(0);
+  //const [hDate, setHdate] = useState(dayjs().format("YYYY-MM-DD"));
+  //const [day, setDay] = useState(dayjs().format("dddd"));
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
   };
+  // const handleHdate = (newValue) => {
+  //   setHdate(newValue);
+  //   // Update the "Day" field based on the selected date
+  //   setDay(dayjs(newValue).format("dddd"));
+  // };
   const buttonStyle = {
     fontSize: "20px", // Adjust the font size as needed save
   };
@@ -44,7 +48,7 @@ export const Holidays = () => {
               </button>
             </div>
             <div className="row d-flex mt-3">
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -52,13 +56,26 @@ export const Holidays = () => {
                       slotProps={{
                         textField: { size: "small", clearable: true },
                       }}
-                      //value={boDate}
-                      //onChange={(newValue) => setBoDate(newValue)}
+                      //value={hDate}
+                      // onChange={handleHdate}
                     />
                   </LocalizationProvider>
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth variant="filled">
+                  <TextField
+                    id="day"
+                    label="Day"
+                    size="small"
+                    disabled
+                    //value={day}
+                    //placeholder="accountcode"
+                    inputProps={{ maxLength: 30 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="festival"
@@ -69,7 +86,7 @@ export const Holidays = () => {
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="remarks"
