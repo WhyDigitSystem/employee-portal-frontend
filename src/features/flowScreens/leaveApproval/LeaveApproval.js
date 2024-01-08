@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TableComponent from "./TableComponent";
 import ModalComponent from "./ModalComponent";
-import { FiInfo } from "react-icons/fi";
+import axios from "axios";
 import { GrStatusInfo } from "react-icons/gr";
 
 export const LeaveApproval = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState({});
+  const [leaveRequest, setLeaveRequest] = useState([]);
 
   const openModal = (rowData) => {
     setSelectedRowData(rowData);
@@ -18,12 +19,31 @@ export const LeaveApproval = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    getAllLeaveRequest();
+  }, []);
+
+  const getAllLeaveRequest = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest`
+      );
+
+      if (response.status === 200) {
+        setLeaveRequest(response.data.paramObjectsMap.leaveRequestVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const columns = [
-    { Header: "SNo", accessor: "sno" },
-    { Header: "Date", accessor: "date" },
-    { Header: "From Date", accessor: "fromDate" },
-    { Header: "To Date", accessor: "toDate" },
-    { Header: "Total Days", accessor: "totalDays" },
+    { Header: "RequestId", accessor: "id" },
+    { Header: "EmpCode", accessor: "empcode" },
+    { Header: "EmpName", accessor: "empname" },
+    { Header: "From Date", accessor: "fromdate" },
+    { Header: "To Date", accessor: "todate" },
+    { Header: "Total Days", accessor: "totaldays" },
     { Header: "Notes", accessor: "notes" },
     {
       Header: "Actions",
@@ -53,29 +73,9 @@ export const LeaveApproval = () => {
     // Add more columns as needed
   ];
 
-  const data = [
-    {
-      sno: "1",
-      date: "25/11/2022",
-      fromDate: "30/12/2022",
-      toDate: "02/01/2023",
-      totalDays: "3days",
-      notes: "For Emergency Purpose",
-    },
-    {
-      sno: "2",
-      date: "07/02/2023",
-      fromDate: "11/05/2023",
-      toDate: "13/05/2023",
-      totalDays: "2Days",
-      notes: "For Emergency Purpose",
-    },
-    // Add more data rows as needed
-  ];
-
   return (
     <div>
-      <TableComponent columns={columns} data={data} />
+      <TableComponent columns={columns} data={leaveRequest} />
       <ModalComponent
         isOpen={isModalOpen}
         closeModal={closeModal}
