@@ -6,11 +6,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import Axios from "axios";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
-import Axios from "axios";
 
 function NewPermissionRequest({ newPermissionRequest }) {
   // const [searchValue, setSearchValue] = useState("");
@@ -28,8 +28,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [savedData, setSavedData] = React.useState();
 
   const [selectedDate, setSelectedDate] = useState(null);
-  const [fromTime, setFromTime] = useState(dayjs(""));
-  const [toTime, setToTime] = useState("");
+  const [fromTime, setFromTime] = useState(null);
+  const [toTime, setToTime] = useState(null);
   const [totalHours, setTotalHours] = useState("");
   const [notes, setNotes] = useState("");
   const [searchValue, setSearchValue] = useState(null);
@@ -46,29 +46,18 @@ function NewPermissionRequest({ newPermissionRequest }) {
     setSelectedDate(newDate);
   };
 
-  // const handleSelectedDate = (event) => {
-  //   setSelectedDate(event.target.value);
-  // };
+  const handleFromTime = (selectedDate) => {
+    setFromTime(selectedDate);
+  };
+  const handleToTime = (selectedDate) => {
+    setToTime(selectedDate);
 
-  // const handleFromTime = (event) => {
-  //   setFromTime(event.target.value);
-  // };
+    const diffDuration = dayjs(selectedDate).diff(dayjs(fromTime), "minute");
+    const hours = Math.floor(diffDuration / 60);
+    const minutes = diffDuration % 60;
 
-  // const handleToTime = (event) => {
-  //   setToTime(event.target.value);
-  // };
-
-  // const handleTotalHours = (event) => {
-  //   setTotalHours(event.target.value);
-  // };
-
-  // const handleNotes = (event) => {
-  //   setNotes(event.target.value);
-  // };
-
-  // const handleSearchValue = (event) => {
-  //   setSearchValue(event.target.value);
-  // };
+    setTotalHours(`${hours}h ${minutes}m`);
+  };
 
   const handleNew = () => {
     setSelectedDate("");
@@ -150,7 +139,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 label="From"
                 defaultValue={fromTime}
                 slotProps={{ textField: { size: "small" } }}
-                onChange={(newValue) => setFromTime(newValue)}
+                onChange={handleFromTime}
               />
             </DemoContainer>
           </LocalizationProvider>
@@ -163,7 +152,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
               <TimePicker
                 label="To"
                 value={toTime}
-                onChange={(newValue) => setToTime(newValue)}
+                onChange={handleToTime}
                 slotProps={{ textField: { size: "small" } }}
               />
             </DemoContainer>
@@ -178,7 +167,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
               label="Total Hours"
               size="small"
               value={totalHours}
-              onChange={(e) => setTotalHours(e.target.value)}
             />
           </FormControl>
         </div>
