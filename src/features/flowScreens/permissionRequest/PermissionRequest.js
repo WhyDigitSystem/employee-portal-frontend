@@ -13,12 +13,19 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
 import NewPermissionRequest from "./NewPermissionRequest";
 import { data } from "./makeData";
+import Axios from "axios";
 
 export const PermissionRequest = () => {
   const buttonStyle = {
@@ -37,8 +44,9 @@ export const PermissionRequest = () => {
   const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
   const [add, setAdd] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState(() => data);
+  const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
+  const [getState, setGetState] = React.useState();
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -79,24 +87,24 @@ export const PermissionRequest = () => {
     // You might need to modify the data structure to fit CSVLink requirements
 
     const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
-      Date: row.date,
-      FromTime: row.ftime,
-      ToTime: row.ttime,
-      TotalHrs: row.tothrs,
+      "S No": row.id,
+      Date: row.permissiondate,
+      FromTime: row.fromhour,
+      ToTime: row.tohour,
+      TotalHrs: row.totalhours,
       Notes: row.notes,
-      Notify: row.notify,
+      Notify: row.remarks,
     }));
 
     // Define CSV headers
     const headers = [
-      { label: "S No", key: "SNo" },
-      { label: "Date", key: "Date" },
-      { label: "FromTime", key: "FromTime" },
-      { label: "ToTime", key: "ToTime" },
-      { label: "TotalHrs", key: "TotalHrs" },
-      { label: "Notes", key: "Notes" },
-      { label: "Notify", key: "Notify" },
+      { label: "S No", key: "id" },
+      { label: "Date", key: "permissiondate" },
+      { label: "FromTime", key: "fromhour" },
+      { label: "ToTime", key: "tohour" },
+      { label: "TotalHrs", key: "totalhours" },
+      { label: "Notes", key: "notes" },
+      { label: "Notify", key: "remarks" },
     ];
 
     return (
@@ -110,6 +118,11 @@ export const PermissionRequest = () => {
       </CSVLink>
     );
   };
+
+  useEffect(() => {
+    // 👆 daisy UI themes initialization
+    getAllState();
+  }, []);
 
   const handleDeleteRow = useCallback(
     (row) => {
@@ -160,7 +173,7 @@ export const PermissionRequest = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -168,7 +181,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "date",
+        accessorKey: "permissiondate",
         header: "Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -176,7 +189,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "ftime",
+        accessorKey: "fromhour",
         header: "From Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -184,7 +197,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "ttime",
+        accessorKey: "tohour",
         header: "To Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -192,7 +205,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "tothrs",
+        accessorKey: "totalhours",
         header: "Total Hrs",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -209,7 +222,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "notify",
+        accessorKey: "remarks",
         header: "Notify",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -219,6 +232,31 @@ export const PermissionRequest = () => {
     ],
     [getCommonEditTextFieldProps]
   );
+
+  const getAllState = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
+        {
+          headers,
+        }
+      )
+        .then((response) => {
+          console.log("Data saved successfully:", response.data);
+          setTableData(response.data.paramObjectsMap.PermissionRequestVO);
+          // handleView();
+        })
+        .catch((error) => {
+          // Handle errors here
+          console.error("Error saving data:", error);
+        });
+    }
+  };
 
   return (
     <>
