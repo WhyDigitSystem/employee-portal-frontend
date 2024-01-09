@@ -88,7 +88,7 @@ export const Holiday = () => {
     if (!Object.keys(validationErrors).length) {
       try {
         // Make a PUT request to update the user role data
-        values.id = parseInt(values.id);
+        // values.id = parseInt(values.id);
         const token = localStorage.getItem("token");
 
         if (token) {
@@ -120,39 +120,6 @@ export const Holiday = () => {
     }
   };
 
-  // const handleEditHoliday = (id, newData) => {
-  //   // Get the token from local storage
-  //   const token = localStorage.getItem("token");
-  //   console.log("edit", newData);
-  //   if (token) {
-  //     // Include the token in the request headers
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     axios
-  //       .put(
-  //         `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`,
-  //         newData
-  //       )
-  //       .then((response) => {
-  //         console.log("Data Edited successfully:", response.data);
-  //         const updatedData = newData.map((item) =>
-  //           item.id === id ? newData : item
-  //         );
-  //         setSavedData(updatedData);
-  //         getAllHolidays();
-  //       })
-  //       .catch((error) => {
-  //         // Handle errors here
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   } else {
-  //     // Handle the case where the token is not available (user not authenticated)
-  //     console.error("User is not authenticated. Please log in.");
-  //   }
-  // };
-
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -161,17 +128,17 @@ export const Holiday = () => {
     // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
     // You might need to modify the data structure to fit CSVLink requirements
 
-    const csvData =
-      tableData &&
-      tableData.map((row) => ({
-        "S No": row.id,
-        Date: row.holiday_date,
-        Festival: row.festival,
-      }));
+    const csvData = tableData.map((row) => ({
+      "S No": row.id,
+      Date: row.holiday_date,
+      Day: row.day,
+      Festival: row.festival,
+    }));
 
     // Define CSV headers
     const headers = [
       { label: "S No", key: "id" },
+      { label: "Day", key: "day" },
       { label: "Date", key: "holiday_date" },
       { label: "Festival", key: "festival" },
     ];
@@ -247,6 +214,14 @@ export const Holiday = () => {
       {
         accessorKey: "holiday_date",
         header: "Date",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "day",
+        header: "Day",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
