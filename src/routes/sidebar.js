@@ -21,6 +21,8 @@ import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
 
+const userRole = localStorage.getItem('userDetails');
+
 const routes = [
   {
     path: "/app/dashboard",
@@ -197,5 +199,24 @@ const routes = [
     ],
   },
 ];
+
+if (userRole !== 'HR')  {
+  // Find the index of the Masters section in the routes array
+  const mastersIndex = routes.findIndex(route => route.name === 'Masters');
+
+  // Remove the Masters section if found
+  if (mastersIndex !== -1) {
+    routes.splice(mastersIndex, 1);
+  }
+}
+
+if (userRole === 'User') {
+  const transactionsIndex = routes.findIndex(route => route.name === 'Transactions');
+
+  if (transactionsIndex !== -1) {
+    routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(0, 4);
+  }
+}
+
 
 export default routes;
