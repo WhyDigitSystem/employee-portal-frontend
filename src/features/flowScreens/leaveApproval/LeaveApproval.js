@@ -33,7 +33,6 @@ export const LeaveApproval = () => {
 
       if (response.status === 200) {
         setLeaveRequest(response.data.paramObjectsMap.leaveRequestVO);
-        // setLeaveRequestId(response.data.paramObjectsMap.leaveRequestVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

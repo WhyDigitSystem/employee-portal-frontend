@@ -21,17 +21,21 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
 
   const updateLeave = async () => {
     try {
-      const response = await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequestapp/${reqId}`,
-        {
-          status: status,
-          remarks: remarks,
-        }
-      );
+      if (reqId) {
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequestapp/${reqId}?id=${reqId}`,
+          {
+            approvedat: new Date().toISOString(),
+            approvedby: localStorage.getItem("empcode"),
+            requestid: reqId,
+            status: status,
+            remarks: remarks,
+          }
+        );
 
-      if (response.status === 200) {
-        // Handle success, maybe update UI or perform other actions
-        closeModal();
+        if (response.status === 200) {
+          closeModal();
+        }
       }
     } catch (error) {
       console.error("Error updating leave request:", error);
@@ -64,17 +68,6 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
           maxWidth: "400px",
         }}
       >
-        {/* <div style={{ marginBottom: "20px" }}>
-          <TextField
-            label="Input 1"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={input1}
-            onChange={(e) => setInput1(e.target.value)}
-            style={{ marginBottom: "8px" }}
-          />
-        </div> */}
         <h2 style={{ marginBottom: "20px", fontSize: "20px" }}>
           Leave Approval
           <span
@@ -95,17 +88,16 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
             fullWidth
             style={{ marginBottom: "8px" }}
           >
-            <InputLabel id="input2-label">Status</InputLabel>
+            <InputLabel id="status-label">Status</InputLabel>
             <Select
-              labelId="input2-label"
-              id="input2"
-              //   value={input1}
-              //   onChange={(e) => setInput1(e.target.value)}
+              labelId="status-label"
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
               label="Status"
             >
-              <MenuItem value="approved">Approved</MenuItem>
-              <MenuItem value="rejected">Rejected</MenuItem>
-              {/* Add more MenuItem components for additional options */}
+              <MenuItem value="Approved">Approved</MenuItem>
+              <MenuItem value="Rejected">Rejected</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -117,8 +109,8 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
             fullWidth
             multiline
             maxRows={4}
-            // value={input2}
-            // onChange={(e) => setInput2(e.target.value)}
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
             style={{ marginBottom: "8px" }}
           />
         </div>
