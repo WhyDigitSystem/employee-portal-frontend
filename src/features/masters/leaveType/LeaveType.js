@@ -83,6 +83,41 @@ export const LeaveType = () => {
       console.error("Error fetching data:", error);
     }
   };
+  const handleEditLeaveType = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        // values.id = parseInt(values.id);
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+          const response = await axios.put(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/leavetype`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+
+            exitEditingMode(); // Exit editing mode and close the modal
+          }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          // Handle authentication failure
+        }
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
+    }
+  };
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -258,7 +293,7 @@ export const LeaveType = () => {
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              onEditingRowSave={handleSaveRowEdits}
+              onEditingRowSave={handleEditLeaveType}
               onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
