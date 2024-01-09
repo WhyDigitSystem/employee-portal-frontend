@@ -16,6 +16,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import { IoMdClose } from "react-icons/io";
+import dayjs from "dayjs";
 
 export const NewEmployeeDetails = ({ newEmployee }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -61,7 +62,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //     setDob(event.target.value);
   //   };
   const handleDob = (newDate) => {
-    setDob(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setDob(formattedDate);
   };
   const handleBloodGroup = (event) => {
     setBloodGroup(event.target.value);
@@ -79,7 +82,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setEmail(event.target.value);
   };
   const handleJoinDate = (newDate) => {
-    setJoinDate(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setJoinDate(formattedDate);
   };
   const handlePan = (event) => {
     setPan(event.target.value);
@@ -91,7 +96,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //     setUserType(event.target.value);
   //   };
   const handleResigningDate = (newDate) => {
-    setResigningDate(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setResigningDate(formattedDate);
   };
   const handleMobNo = (event) => {
     setMobNo(event.target.value);
