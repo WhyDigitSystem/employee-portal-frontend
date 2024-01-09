@@ -11,14 +11,21 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
 import NewHoliday from "./NewHoliday";
-import { data } from "./makeData";
+//import { data } from "./makeData";
 
 export const Holiday = () => {
   const buttonStyle = {
@@ -28,8 +35,10 @@ export const Holiday = () => {
   const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
   const [add, setAdd] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState(() => data);
+  const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
+  const [holidayList, setHolidayList] = useState([]);
+  const [savedData, setSavedData] = useState([]);
 
   const handleAddOpen = () => {
     setAdd(true);
@@ -57,6 +66,93 @@ export const Holiday = () => {
     setValidationErrors({});
   };
 
+  useEffect(() => {
+    getAllHolidays();
+  }, []);
+
+  const getAllHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
+      );
+
+      if (response.status === 200) {
+        setHolidayList(response.data.paramObjectsMap.holidayVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleEditHoliday = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        values.id = parseInt(values.id);
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+          const response = await axios.put(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+
+            exitEditingMode(); // Exit editing mode and close the modal
+          }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          // Handle authentication failure
+        }
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
+    }
+  };
+
+  // const handleEditHoliday = (id, newData) => {
+  //   // Get the token from local storage
+  //   const token = localStorage.getItem("token");
+  //   console.log("edit", newData);
+  //   if (token) {
+  //     // Include the token in the request headers
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     axios
+  //       .put(
+  //         `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`,
+  //         newData
+  //       )
+  //       .then((response) => {
+  //         console.log("Data Edited successfully:", response.data);
+  //         const updatedData = newData.map((item) =>
+  //           item.id === id ? newData : item
+  //         );
+  //         setSavedData(updatedData);
+  //         getAllHolidays();
+  //       })
+  //       .catch((error) => {
+  //         // Handle errors here
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   } else {
+  //     // Handle the case where the token is not available (user not authenticated)
+  //     console.error("User is not authenticated. Please log in.");
+  //   }
+  // };
+
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -65,19 +161,19 @@ export const Holiday = () => {
     // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
     // You might need to modify the data structure to fit CSVLink requirements
 
-    const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
-      Date: row.date,
-      Festival: row.festName,
-      Active: row.active,
-    }));
+    const csvData =
+      tableData &&
+      tableData.map((row) => ({
+        "S No": row.id,
+        Date: row.holiday_date,
+        Festival: row.festival,
+      }));
 
     // Define CSV headers
     const headers = [
-      { label: "S No", key: "SNo" },
-      { label: "Date", key: "Date" },
-      { label: "Festival", key: "Festival" },
-      { label: "Active", key: "Active" },
+      { label: "S No", key: "id" },
+      { label: "Date", key: "holiday_date" },
+      { label: "Festival", key: "festival" },
     ];
 
     return (
@@ -141,7 +237,7 @@ export const Holiday = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -149,7 +245,7 @@ export const Holiday = () => {
         }),
       },
       {
-        accessorKey: "date",
+        accessorKey: "holiday_date",
         header: "Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -157,16 +253,8 @@ export const Holiday = () => {
         }),
       },
       {
-        accessorKey: "festName",
+        accessorKey: "festival",
         header: "Festival",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "active",
-        header: "Active",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -218,11 +306,11 @@ export const Holiday = () => {
                 },
               }}
               columns={columns}
-              data={tableData}
+              data={holidayList}
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              onEditingRowSave={handleSaveRowEdits}
+              onEditingRowSave={handleEditHoliday}
               onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
