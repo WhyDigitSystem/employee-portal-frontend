@@ -111,9 +111,17 @@ function Login() {
             "userId",
             response.data.paramObjectsMap.user.userId
           );
+          localStorage.setItem(
+            "empname",
+            response.data.paramObjectsMap.user.empname
+          );
+          localStorage.setItem(
+            "empcode",
+            response.data.paramObjectsMap.user.empcode
+          );
           // Redirect the user to the welcome page
           console.log("token", response.data);
-          window.location.href = "/app/welcome";
+          // window.location.href = "/app/welcome";
         }
 
         setLoading(false);

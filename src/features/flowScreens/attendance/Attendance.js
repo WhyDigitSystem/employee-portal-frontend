@@ -66,10 +66,10 @@ export const Attendance = () => {
 
   const handleCheck = () => {
     const apiUrl = checkedStatus
-      ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout/${userid}`
+      ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`
       : `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`;
 
-    const requestBody = checkedStatus ? {} : { userid };
+    const requestBody = checkedStatus ? { userid } : { userid };
 
     Axios.post(apiUrl, requestBody)
       .then((response) => {
