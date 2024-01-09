@@ -8,9 +8,11 @@ export const LeaveApproval = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState({});
   const [leaveRequest, setLeaveRequest] = useState([]);
+  const [leaveRequestId, setLeaveRequestId] = useState({});
 
   const openModal = (rowData) => {
     setSelectedRowData(rowData);
+    setLeaveRequestId(rowData.id);
     setIsModalOpen(true);
   };
 
@@ -31,6 +33,7 @@ export const LeaveApproval = () => {
 
       if (response.status === 200) {
         setLeaveRequest(response.data.paramObjectsMap.leaveRequestVO);
+        // setLeaveRequestId(response.data.paramObjectsMap.leaveRequestVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -49,25 +52,10 @@ export const LeaveApproval = () => {
       Header: "Actions",
       accessor: "actions",
       Cell: ({ row }) => (
-        // <button
-        //   onClick={() => openModal(row.original)}
-        //   style={{
-        //     backgroundColor: "#4CAF50",
-        //     color: "white",
-        //     border: "none",
-        //     padding: "10px 15px",
-        //     textAlign: "center",
-        //     textDecoration: "none",
-        //     display: "inline-block",
-        //     fontSize: "14px",
-        //     cursor: "pointer",
-        //   }}
-        // >
         <GrStatusInfo
           onClick={() => openModal(row.original)}
           style={{ cursor: "pointer", marginRight: "5px" }}
         />
-        // </button>
       ),
     },
     // Add more columns as needed
@@ -80,6 +68,7 @@ export const LeaveApproval = () => {
         isOpen={isModalOpen}
         closeModal={closeModal}
         rowData={selectedRowData}
+        reqId={leaveRequestId}
       />
     </div>
   );

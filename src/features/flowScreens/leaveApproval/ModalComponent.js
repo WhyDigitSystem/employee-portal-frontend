@@ -1,7 +1,8 @@
 // ModalComponent.jsx
-import React from "react";
 // import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import axios from "axios";
+import { default as React, useEffect, useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -10,15 +11,31 @@ import {
   TextField,
 } from "@mui/material";
 
-const ModalComponent = ({ isOpen, closeModal, updateData }) => {
-  const [input1, setInput1] = React.useState("");
-  const [input2, setInput2] = React.useState("");
+const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
+  const [status, setStatus] = useState("");
+  const [remarks, setRemarks] = useState("");
 
   const handleSave = () => {
-    // You can perform any action with the input data here
-    // For example, update the data or trigger an API call
-    updateData({ input1, input2 });
-    closeModal();
+    updateLeave();
+  };
+
+  const updateLeave = async () => {
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequestapp/${reqId}`,
+        {
+          status: status,
+          remarks: remarks,
+        }
+      );
+
+      if (response.status === 200) {
+        // Handle success, maybe update UI or perform other actions
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error updating leave request:", error);
+    }
   };
 
   return (
