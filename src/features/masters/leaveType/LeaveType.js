@@ -11,9 +11,16 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
@@ -30,6 +37,8 @@ export const LeaveType = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [savedDate, setSavedData] = useState({});
+  const [leaveTypeList, setLeaveTypeList] = useState({});
 
   const handleAddOpen = () => {
     setAdd(true);
@@ -57,6 +66,58 @@ export const LeaveType = () => {
     setValidationErrors({});
   };
 
+  useEffect(() => {
+    getAllLeaveType();
+  }, []);
+
+  const getAllLeaveType = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leavetype`
+      );
+
+      if (response.status === 200) {
+        setLeaveTypeList(response.data.paramObjectsMap.leaveTypeVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const handleEditLeaveType = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        // values.id = parseInt(values.id);
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+          const response = await axios.put(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/leavetype`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+
+            exitEditingMode(); // Exit editing mode and close the modal
+          }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          // Handle authentication failure
+        }
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
+    }
+  };
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -66,20 +127,20 @@ export const LeaveType = () => {
     // You might need to modify the data structure to fit CSVLink requirements
 
     const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
-      LeaveCode: row.leaveCode,
-      LeaveType: row.leaveType,
-      TotalLeave: row.totLeave,
-      Active: row.active,
+      "S No": row.id,
+      //LeaveCode: row.leaveCode,
+      LeaveType: row.leave_type,
+      TotalLeave: row.total_leave,
+      //Active: row.active,
     }));
 
     // Define CSV headers
     const headers = [
-      { label: "S No", key: "SNo" },
-      { label: "LeaveCode", key: "LeaveCode" },
-      { label: "LeaveType", key: "LeaveType" },
-      { label: "TotalLeave", key: "TotalLeave" },
-      { label: "Active", key: "Active" },
+      { label: "S No", key: "id" },
+      // { label: "LeaveCode", key: "LeaveCode" },
+      { label: "LeaveType", key: "teave_type" },
+      { label: "TotalLeave", key: "total_leave" },
+      // { label: "Active", key: "Active" },
     ];
 
     return (
@@ -143,23 +204,23 @@ export const LeaveType = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
+      // {
+      //   accessorKey: "leaveCode",
+      //   header: "Leave Code",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
       {
-        accessorKey: "leaveCode",
-        header: "Leave Code",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "leaveType",
+        accessorKey: "leave_type",
         header: "Leave Type",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -167,21 +228,21 @@ export const LeaveType = () => {
         }),
       },
       {
-        accessorKey: "totLeave",
+        accessorKey: "total_leave",
         header: "Total Leave",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      {
-        accessorKey: "active",
-        header: "Active",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
     ],
     [getCommonEditTextFieldProps]
   );
@@ -228,11 +289,11 @@ export const LeaveType = () => {
                 },
               }}
               columns={columns}
-              data={tableData}
+              data={leaveTypeList}
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              onEditingRowSave={handleSaveRowEdits}
+              onEditingRowSave={handleEditLeaveType}
               onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box

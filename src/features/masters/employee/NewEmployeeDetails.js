@@ -1,4 +1,7 @@
+import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -7,15 +10,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
+import dayjs from "dayjs";
 import React, { useState } from "react";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
+import { IoMdClose } from "react-icons/io";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import { IoMdClose } from "react-icons/io";
 
 export const NewEmployeeDetails = ({ newEmployee }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -61,7 +60,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //     setDob(event.target.value);
   //   };
   const handleDob = (newDate) => {
-    setDob(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setDob(formattedDate);
   };
   const handleBloodGroup = (event) => {
     setBloodGroup(event.target.value);
@@ -79,7 +80,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setEmail(event.target.value);
   };
   const handleJoinDate = (newDate) => {
-    setJoinDate(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setJoinDate(formattedDate);
   };
   const handlePan = (event) => {
     setPan(event.target.value);
@@ -91,7 +94,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //     setUserType(event.target.value);
   //   };
   const handleResigningDate = (newDate) => {
-    setResigningDate(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setResigningDate(formattedDate);
   };
   const handleMobNo = (event) => {
     setMobNo(event.target.value);
@@ -349,9 +354,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               </button>
             </div> */}
             <div className="d-flex justify-content-between">
-              <h1 className="text-xl font-semibold mb-3">
-                New Permission Request
-              </h1>
+              <h1 className="text-xl font-semibold mb-3">New Employee</h1>
               <IoMdClose
                 type="button"
                 className="cursor-pointer w-8 h-8 mb-3"

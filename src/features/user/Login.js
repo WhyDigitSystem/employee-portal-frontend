@@ -121,7 +121,7 @@ function Login() {
           );
           // Redirect the user to the welcome page
           console.log("token", response.data);
-          // window.location.href = "/app/welcome";
+          window.location.href = "/app/welcome";
         }
 
         setLoading(false);

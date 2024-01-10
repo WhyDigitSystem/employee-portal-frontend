@@ -9,9 +9,16 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CSVLink } from "react-csv";
 import { data } from "./makeData";
 
@@ -21,6 +28,7 @@ export const HolidayReport = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [holidayList, setHolidayList] = useState([]);
 
   const buttonStyle = {
     fontSize: "20px",
@@ -52,6 +60,24 @@ export const HolidayReport = () => {
     setValidationErrors({});
   };
 
+  useEffect(() => {
+    getAllHolidays();
+  }, []);
+
+  const getAllHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
+      );
+
+      if (response.status === 200) {
+        setHolidayList(response.data.paramObjectsMap.holidayVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -61,18 +87,18 @@ export const HolidayReport = () => {
     // You might need to modify the data structure to fit CSVLink requirements
 
     const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
+      "S No": row.id,
       Date: row.date,
       FestName: row.festName,
-      Remarks: row.remarks,
+      Day: row.Day,
     }));
 
     // Define CSV headers
     const headers = [
       { label: "S No", key: "SNo" },
       { label: "Date", key: "Date" },
-      { label: "FerstName", key: "FestName" },
-      { label: "Remarks", key: "Remarks" },
+      { label: "Festival", key: "Festival" },
+      { label: "Day", key: "day" },
     ];
 
     return (
@@ -136,7 +162,7 @@ export const HolidayReport = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -144,7 +170,7 @@ export const HolidayReport = () => {
         }),
       },
       {
-        accessorKey: "date",
+        accessorKey: "holiday_date",
         header: "Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -152,16 +178,16 @@ export const HolidayReport = () => {
         }),
       },
       {
-        accessorKey: "festName",
-        header: "Festival Name",
+        accessorKey: "day",
+        header: "Day",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "remarks",
-        header: "Remarks",
+        accessorKey: "festival",
+        header: "Festival",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -185,7 +211,7 @@ export const HolidayReport = () => {
               },
             }}
             columns={columns}
-            data={tableData}
+            data={holidayList}
             editingMode="modal"
             enableColumnOrdering
             //enableEditing

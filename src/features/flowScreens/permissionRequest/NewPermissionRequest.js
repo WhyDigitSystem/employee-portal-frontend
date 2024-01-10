@@ -43,20 +43,40 @@ function NewPermissionRequest({ newPermissionRequest }) {
   };
 
   const handleDateChange = (newDate) => {
-    setSelectedDate(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setSelectedDate(formattedDate);
   };
 
   const handleFromTime = (selectedDate) => {
+    const originalDateString = selectedDate;
+    const originalDate = new Date(originalDateString);
+
+    // Get hours, minutes, and seconds
+    const hours = originalDate.getUTCHours().toString().padStart(2, "0");
+    const minutes = originalDate.getUTCMinutes().toString().padStart(2, "0");
+    const seconds = originalDate.getUTCSeconds().toString().padStart(2, "0");
+
+    // Formatted time string
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+    console.log(formattedTime); // Output: "18:45:00"
     setFromTime(selectedDate);
   };
   const handleToTime = (selectedDate) => {
+    const originalDateString = selectedDate;
+    const originalDate = new Date(originalDateString);
+
+    // Get hours, minutes, and seconds
+    const hours = originalDate.getUTCHours().toString().padStart(2, "0");
+    const minutes = originalDate.getUTCMinutes().toString().padStart(2, "0");
+    const seconds = originalDate.getUTCSeconds().toString().padStart(2, "0");
+
+    // Formatted time string
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+    console.log(formattedTime); // Output: "18:45:00"
     setToTime(selectedDate);
-
-    const diffDuration = dayjs(selectedDate).diff(dayjs(fromTime), "minute");
-    const hours = Math.floor(diffDuration / 60);
-    const minutes = diffDuration % 60;
-
-    setTotalHours(`${hours}h ${minutes}m`);
   };
 
   const handleNew = () => {

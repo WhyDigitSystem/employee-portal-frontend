@@ -3,15 +3,30 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
+import Axios from "axios";
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
 
 function NewLeaveType({ newLeaveType }) {
-  const [tabIndex, setTabIndex] = useState(0);
+  //const [tabIndex, setTabIndex] = useState(0);
+  const [leaveCode, setLeaveCode] = useState();
+  const [leaveType, setLeaveType] = useState();
+  const [totLeave, setTotLeave] = useState();
+  const [errors, setErrors] = React.useState({});
+  const [savedData, setSavedData] = React.useState("");
 
-  const handleTabSelect = (index) => {
-    setTabIndex(index);
+  // const handleTabSelect = (index) => {
+  //   setTabIndex(index);
+  //};
+  const handleLeaveCode = (event) => {
+    setLeaveCode(event.target.value);
+  };
+  const handleLeaveType = (event) => {
+    setLeaveType(event.target.value);
+  };
+  const handleTotLeave = (event) => {
+    setTotLeave(event.target.value);
   };
 
   const buttonStyle = {
@@ -20,6 +35,70 @@ function NewLeaveType({ newLeaveType }) {
 
   const handleCloseNewLeaveType = () => {
     newLeaveType(false);
+  };
+
+  const handleNew = () => {
+    setLeaveCode("");
+    setLeaveType("");
+    setTotLeave("");
+  };
+
+  const handleValidation = () => {
+    const newErrors = {};
+
+    if (leaveCode === "") {
+      newErrors.leaveCode = "Date is required";
+    }
+
+    if (leaveType === "") {
+      newErrors.leaveType = "Day is required";
+    }
+
+    if (totLeave === "") {
+      newErrors.totLeave = "Festival is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (handleValidation()) {
+      console.log("test");
+      const dataToSave = {
+        //holiday_date: leaveCode,
+        leave_type: leaveType,
+        total_leave: totLeave,
+      };
+
+      console.log("test", dataToSave);
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        Axios.post(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/leavetype`,
+          dataToSave,
+          { headers }
+        )
+          .then((response) => {
+            console.log("Data saved successfully:", response.data);
+            setSavedData(response.data);
+            handleNew();
+          })
+          .catch((error) => {
+            console.error("Error saving data:", error);
+          });
+      } else {
+        console.error("User is not authenticated. Please log in.");
+      }
+    }
   };
 
   return (
@@ -41,7 +120,9 @@ function NewLeaveType({ newLeaveType }) {
                   id="leavecode"
                   label="Leave Code"
                   size="small"
-                  //placeholder="accountcode"
+                  value={leaveCode}
+                  onChange={handleLeaveCode}
+                  error={Boolean(errors.leaveCode)}
                   inputProps={{ maxLength: 30 }}
                 />
               </FormControl>
@@ -52,7 +133,9 @@ function NewLeaveType({ newLeaveType }) {
                   id="leaveType"
                   label="Leave Type"
                   size="small"
-                  //placeholder="accountcode"
+                  value={leaveType}
+                  onChange={handleLeaveType}
+                  error={Boolean(errors.leaveType)}
                   inputProps={{ maxLength: 30 }}
                 />
               </FormControl>
@@ -63,7 +146,9 @@ function NewLeaveType({ newLeaveType }) {
                   id="totalLeave"
                   label="Total Leave"
                   size="small"
-                  //placeholder="accountcode"
+                  value={totLeave}
+                  onChange={handleTotLeave}
+                  error={Boolean(errors.totLeave)}
                   inputProps={{ maxLength: 30 }}
                 />
               </FormControl>
@@ -81,7 +166,7 @@ function NewLeaveType({ newLeaveType }) {
           <div className="d-flex flex-row mt-3">
             <button
               type="button"
-              //onClick={handleCustomer}
+              onClick={handleSave}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Save

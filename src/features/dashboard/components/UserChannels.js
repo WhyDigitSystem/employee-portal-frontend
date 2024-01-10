@@ -1,22 +1,7 @@
 import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  default as React,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { default as React, useEffect, useState } from "react";
 import TitleCard from "../../../components/Cards/TitleCard";
-
-const userSourceData = [
-  { source: "New Year", Date: "01/01/2024", Day: "Monday" },
-  { source: "Pongal", Date: "15/01/2024", Day: "Mnday" },
-  //{ source: "Mattu Pongal", Date: "16/01/2024", Day: 12.4 },
-  { source: "Republic Day", Date: "26/01/2024", Day: "Wednesday" },
-  { source: "Labour Day", Date: "01/05/2024", Day: "Saturday" },
-  { source: "Indepandance", Date: "15/08/2024", Day: "Saturday" },
-];
 
 function UserChannels() {
   const [holidayList, setHolidayList] = useState([]);

@@ -110,25 +110,26 @@ export const EmployeeDetails = () => {
 
     // Define CSV headers
     const headers = [
-      { label: "Employee Code", key: "employeeCode" },
-      { label: "Name", key: "name" },
+      { label: "S No", key: "id" },
+      { label: "Employee Code", key: "empcode" },
+      { label: "Name", key: "empname" },
       { label: "Gender", key: "gender" },
-      { label: "Date of Birth", key: "dateofBirth" },
-      { label: "Blood Group", key: "bloodGroup" },
+      { label: "Date of Birth", key: "date_of_birth" },
+      { label: "Blood Group", key: "blood" },
       { label: "Department", key: "department" },
       { label: "Designation", key: "designation" },
       { label: "Role", key: "role" },
-      { label: "Email Id", key: "emailId" },
-      { label: "Joining Date", key: "joiningDate" },
+      { label: "Email Id", key: "email" },
+      { label: "Joining Date", key: "joining_date" },
       { label: "PAN", key: "pan" },
       { label: "Aadhar", key: "aadhar" },
-      { label: "Mobile", key: "mobile" },
-      { label: "Alternate Mobile", key: "alternateMobile" },
-      { label: "Resigning Date", key: "resigningDate" },
-      { label: "Bank Name", key: "bankName" },
-      { label: "Account Number", key: "accountNumber" },
-      { label: "IFSC Code", key: "ifscCode" },
-      { label: "Reporting Person", key: "reportingPerson" },
+      { label: "Mobile", key: "mobile_no" },
+      { label: "Alternate Mobile", key: "alternate_mobile_no" },
+      { label: "Resigning Date", key: "resigning_date" },
+      { label: "Bank Name", key: "bank_name" },
+      { label: "Account Number", key: "account_no" },
+      { label: "IFSC Code", key: "ifsc_code" },
+      { label: "Reporting Person", key: "reporting_person" },
     ];
 
     return (
@@ -197,7 +198,15 @@ export const EmployeeDetails = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "employeeCode",
+        accessorKey: "id",
+        header: "S No",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "empcode",
         header: "Employee Code",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -205,7 +214,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "name",
+        accessorKey: "empname",
         header: "Name",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -221,7 +230,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "dateofBirth",
+        accessorKey: "date_of_birth",
         header: "Date of Birth",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -229,7 +238,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "bloodGroup",
+        accessorKey: "blood",
         header: "Blood Group",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -262,7 +271,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "emailId",
+        accessorKey: "email",
         header: "Email Id",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -270,7 +279,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "joiningDate",
+        accessorKey: "joining_date",
         header: "Joining Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -294,7 +303,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "mobile",
+        accessorKey: "mobile_no",
         header: "Mobile",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -302,7 +311,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "alternateMobile",
+        accessorKey: "alternate_mobile_no",
         header: "Alternate Mobile",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -310,7 +319,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "resigningDate",
+        accessorKey: "resigning_date",
         header: "Resigning Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -318,7 +327,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "bankName",
+        accessorKey: "bank_name",
         header: "Bank Name",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -326,7 +335,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "accountNumber",
+        accessorKey: "account_no",
         header: "Account Number",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -334,7 +343,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "ifscCode",
+        accessorKey: "ifsc_code",
         header: "IFSC Code",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -342,7 +351,7 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "reportingPerson",
+        accessorKey: "reporting_person",
         header: "Reporting Person",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -372,6 +381,42 @@ export const EmployeeDetails = () => {
           // Handle errors here
           console.error("Error saving data:", error);
         });
+    }
+  };
+
+  const handleEditEmployee = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        values.id = parseInt(values.id);
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+          const response = await Axios.put(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+
+            exitEditingMode(); // Exit editing mode and close the modal
+          }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          // Handle authentication failure
+        }
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
     }
   };
 
@@ -428,7 +473,7 @@ export const EmployeeDetails = () => {
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              onEditingRowSave={handleSaveRowEdits}
+              onEditingRowSave={handleEditEmployee}
               onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
