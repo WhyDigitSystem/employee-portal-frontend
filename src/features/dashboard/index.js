@@ -83,7 +83,7 @@ function Dashboard() {
 
       {/** ---------------------- Different stats content 2 ------------------------- */}
 
-      <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
+      <div className="grid lg:grid-cols-1 grid-cols-1 gap-6">
         <Attendance />
         {/* <TodayAttendance /> */}
         {/* <PageStats /> */}
@@ -91,7 +91,7 @@ function Dashboard() {
 
       {/** ---------------------- User source channels table  ------------------------- */}
 
-      <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+      <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
         <UserChannels />
         {userRoleCheck === "HR" && <TodayAttendance />}
 

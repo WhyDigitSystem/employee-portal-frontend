@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import TableComponent from "./TableComponent";
 import ModalComponent from "./ModalComponent";
 import axios from "axios";
-import { GrStatusInfo } from "react-icons/gr";
+import { SlOptionsVertical } from "react-icons/sl";
+import { LiaCommentSolid } from "react-icons/lia";
 
 export const LeaveApproval = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +19,7 @@ export const LeaveApproval = () => {
 
   const closeModal = () => {
     setSelectedRowData({});
+    getAllLeaveRequest();
     setIsModalOpen(false);
   };
 
@@ -47,13 +49,14 @@ export const LeaveApproval = () => {
     { Header: "To Date", accessor: "todate" },
     { Header: "Total Days", accessor: "totaldays" },
     { Header: "Notes", accessor: "notes" },
+    { Header: "Status", accessor: "status" },
     {
-      Header: "Actions",
+      Header: <LiaCommentSolid className="w-6 h-6" />,
       accessor: "actions",
       Cell: ({ row }) => (
-        <GrStatusInfo
+        <SlOptionsVertical
           onClick={() => openModal(row.original)}
-          style={{ cursor: "pointer", marginRight: "5px" }}
+          style={{ cursor: "pointer", margin: "auto" }}
         />
       ),
     },
@@ -61,7 +64,7 @@ export const LeaveApproval = () => {
   ];
 
   return (
-    <div>
+    <div className="card w-full p-4 bg-base-100 shadow-xl">
       <TableComponent columns={columns} data={leaveRequest} />
       <ModalComponent
         isOpen={isModalOpen}

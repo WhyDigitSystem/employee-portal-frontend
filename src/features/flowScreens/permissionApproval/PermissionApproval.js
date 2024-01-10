@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import TableComponent from "./TableComponent";
 import ModalComponent from "./ModalComponent";
-import { FiInfo } from "react-icons/fi";
 import { GrStatusInfo } from "react-icons/gr";
 import Axios from "axios";
+import { SlOptionsVertical } from "react-icons/sl";
+import { LiaCommentSolid } from "react-icons/lia";
 
 export const PermissionApproval = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState({});
-  const [data, setData] = useState([]);
+  const [permissionRequest, setPermissionRequest] = useState([]);
+  const [permissionRequestId, setPermissionRequestId] = useState([]);
 
   const openModal = (rowData) => {
     setSelectedRowData(rowData);
+    setPermissionRequestId(rowData.id);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setSelectedRowData({});
+    getPermissionApproval();
     setIsModalOpen(false);
   };
 
@@ -27,63 +31,25 @@ export const PermissionApproval = () => {
     { Header: "To Time", accessor: "tohour" },
     { Header: "Total Hrs", accessor: "totalhours" },
     { Header: "Notes", accessor: "notes" },
-    { Header: "Notify", accessor: "remarks" },
+    { Header: "Notify", accessor: "" },
+    { Header: "Status", accessor: "status" },
     {
-      Header: "Actions",
+      Header: <LiaCommentSolid className="w-6 h-6" />,
       accessor: "actions",
       Cell: ({ row }) => (
-        // <button
-        //   onClick={() => openModal(row.original)}
-        //   style={{
-        //     backgroundColor: "#4CAF50",
-        //     color: "white",
-        //     border: "none",
-        //     padding: "10px 15px",
-        //     textAlign: "center",
-        //     textDecoration: "none",
-        //     display: "inline-block",
-        //     fontSize: "14px",
-        //     cursor: "pointer",
-        //   }}
-        // >
-        <GrStatusInfo
+        <SlOptionsVertical
           onClick={() => openModal(row.original)}
-          style={{ cursor: "pointer", marginRight: "5px" }}
+          style={{ cursor: "pointer", margin: "auto" }}
         />
-        // </button>
       ),
     },
-    // Add more columns as needed
   ];
 
-  // const data = [
-  //   {
-  //     sno: "1",
-  //     date: "25/11/2022",
-  //     fromTime: "12:30PM",
-  //     toTime: "2:30PM",
-  //     totalHrs: "2Hrs",
-  //     notes: "For Emergency Purpose",
-  //     notify: "Karupu",
-  //   },
-  //   {
-  //     sno: "1",
-  //     date: "02/08/2023",
-  //     fromTime: "03:30PM",
-  //     toTime: "5:30PM",
-  //     totalHrs: "2Hrs",
-  //     notes: "For Emergency Purpose",
-  //     notify: "Cesil",
-  //   },
-  //   // Add more data rows as needed
-  // ];
-
   useEffect(() => {
-    // 👆 daisy UI themes initialization
-    getAllState();
+    getPermissionApproval();
   }, []);
 
-  const getAllState = () => {
+  const getPermissionApproval = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -98,23 +64,24 @@ export const PermissionApproval = () => {
       )
         .then((response) => {
           console.log("Data saved successfully:", response.data);
-          setData(response.data.paramObjectsMap.PermissionRequestVO);
-          // handleView();
+          setPermissionRequest(
+            response.data.paramObjectsMap.PermissionRequestVO
+          );
         })
         .catch((error) => {
-          // Handle errors here
           console.error("Error saving data:", error);
         });
     }
   };
 
   return (
-    <div>
-      <TableComponent columns={columns} data={data} />
+    <div className="card w-full p-4 bg-base-100 shadow-xl">
+      <TableComponent columns={columns} data={permissionRequest} />
       <ModalComponent
         isOpen={isModalOpen}
         closeModal={closeModal}
         rowData={selectedRowData}
+        reqId={permissionRequestId}
       />
     </div>
   );

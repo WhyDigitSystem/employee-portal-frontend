@@ -111,7 +111,7 @@ const TableComponent = ({ columns, data }) => {
           borderCollapse: "collapse",
           width: "100%",
           margin: "20px 0",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          // boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
           borderRadius: "8px",
           overflow: "hidden",
         }}

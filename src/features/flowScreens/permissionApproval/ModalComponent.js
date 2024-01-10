@@ -1,7 +1,6 @@
-// ModalComponent.jsx
-import React from "react";
-// import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { default as React, useEffect, useState } from "react";
+import axios from "axios";
 import {
   FormControl,
   InputLabel,
@@ -10,15 +9,38 @@ import {
   TextField,
 } from "@mui/material";
 
-const ModalComponent = ({ isOpen, closeModal, updateData }) => {
-  const [input1, setInput1] = React.useState("");
-  const [input2, setInput2] = React.useState("");
+const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
+  const [status, setStatus] = useState("");
+  const [remarks, setRemarks] = useState("");
 
   const handleSave = () => {
-    // You can perform any action with the input data here
-    // For example, update the data or trigger an API call
-    updateData({ input1, input2 });
+    updatePermission();
     closeModal();
+  };
+
+  const updatePermission = async () => {
+    try {
+      if (reqId) {
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequestapp/${reqId}?id=${reqId}`,
+          {
+            approvedat: new Date().toISOString(),
+            approvedby: localStorage.getItem("empcode"),
+            requestid: reqId,
+            status: status,
+            remarks: remarks,
+          }
+        );
+
+        if (response.status === 200) {
+          closeModal();
+          setStatus("");
+          setRemarks("");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating leave request:", error);
+    }
   };
 
   return (
@@ -47,17 +69,6 @@ const ModalComponent = ({ isOpen, closeModal, updateData }) => {
           maxWidth: "400px",
         }}
       >
-        {/* <div style={{ marginBottom: "20px" }}>
-          <TextField
-            label="Input 1"
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={input1}
-            onChange={(e) => setInput1(e.target.value)}
-            style={{ marginBottom: "8px" }}
-          />
-        </div> */}
         <h2 style={{ marginBottom: "20px", fontSize: "20px" }}>
           Permission Approval
           <span
@@ -78,17 +89,16 @@ const ModalComponent = ({ isOpen, closeModal, updateData }) => {
             fullWidth
             style={{ marginBottom: "8px" }}
           >
-            <InputLabel id="input2-label">Status</InputLabel>
+            <InputLabel id="status-label">Status</InputLabel>
             <Select
-              labelId="input2-label"
-              id="input2"
-              //   value={input1}
-              //   onChange={(e) => setInput1(e.target.value)}
+              labelId="status-label"
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
               label="Status"
             >
-              <MenuItem value="approved">Approved</MenuItem>
-              <MenuItem value="rejected">Rejected</MenuItem>
-              {/* Add more MenuItem components for additional options */}
+              <MenuItem value="Approved">Approved</MenuItem>
+              <MenuItem value="Rejected">Rejected</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -100,8 +110,8 @@ const ModalComponent = ({ isOpen, closeModal, updateData }) => {
             fullWidth
             multiline
             maxRows={4}
-            // value={input2}
-            // onChange={(e) => setInput2(e.target.value)}
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
             style={{ marginBottom: "8px" }}
           />
         </div>

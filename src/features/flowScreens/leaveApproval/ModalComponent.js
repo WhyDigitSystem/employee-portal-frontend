@@ -35,6 +35,8 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
 
         if (response.status === 200) {
           closeModal();
+          setStatus("");
+          setRemarks("");
         }
       }
     } catch (error) {
