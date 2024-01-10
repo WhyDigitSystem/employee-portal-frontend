@@ -31,7 +31,6 @@ export const PermissionApproval = () => {
     { Header: "To Time", accessor: "tohour" },
     { Header: "Total Hrs", accessor: "totalhours" },
     { Header: "Notes", accessor: "notes" },
-    { Header: "Notify", accessor: "" },
     { Header: "Status", accessor: "status" },
     {
       Header: <LiaCommentSolid className="w-6 h-6" />,
