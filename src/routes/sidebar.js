@@ -210,7 +210,7 @@ if (userRole !== 'HR')  {
   }
 }
 
-if (userRole === 'User') {
+if (userRole === 'USER') {
   const transactionsIndex = routes.findIndex(route => route.name === 'Transactions');
 
   if (transactionsIndex !== -1) {
