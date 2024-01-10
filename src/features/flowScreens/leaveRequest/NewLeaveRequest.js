@@ -5,6 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
+import dayjs from "dayjs";
 import React, { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
@@ -26,19 +27,26 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [errors, setErrors] = React.useState({});
   const [from, setFrom] = React.useState(null);
   const [to, setTo] = React.useState(null);
-  const [tot, setTot] = React.useState("2");
+  const [tot, setTot] = React.useState("");
 
   const [notes, setNotes] = React.useState("");
 
   const handleFrom = (newDate) => {
-    setFrom(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setFrom(formattedDate);
   };
   const handleNotes = (event) => {
     setNotes(event.target.value);
   };
 
   const handleTo = (newDate) => {
-    setTo(newDate);
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setTo(formattedDate);
+
+    const daysDifference = dayjs(formattedDate).diff(dayjs(from), "day") + 1;
+    setTot(String(daysDifference));
   };
 
   const handleSearchChange = (event, newValue) => {
@@ -147,7 +155,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  disablePast
+                  //disablePast
                   value={from}
                   onChange={handleFrom}
                   error={Boolean(errors.from)}
