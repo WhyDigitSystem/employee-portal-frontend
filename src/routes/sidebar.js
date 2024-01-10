@@ -223,7 +223,7 @@ if (userRole === "USER") {
   if (transactionsIndex !== -1) {
     routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(
       0,
-      4
+      3
     );
   }
 }
