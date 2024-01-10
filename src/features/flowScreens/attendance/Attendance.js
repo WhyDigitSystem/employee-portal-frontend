@@ -20,12 +20,12 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import Axios from "axios";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
-import Axios from "axios";
 import { CSVLink } from "react-csv";
-import { data } from "./makeData";
 import { showNotification } from "../../common/headerSlice";
+import { data } from "./makeData";
 
 export const Attendance = () => {
   const buttonStyle = {
@@ -41,15 +41,18 @@ export const Attendance = () => {
   ]);
   const dispatch = useDispatch();
   const [value, setValue] = React.useState();
-  const [userid, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [userid, setUserId] = React.useState(localStorage.getItem("empcode"));
+  const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [checkedStatus, setCheckedStatus] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
   const [formattedDate, setFormattedDate] = useState("");
   const [errors, setErrors] = useState({});
+  const [attendanceList, setAttendanceList] = useState([]);
 
   useEffect(() => {
+    getAllAttendanceById();
     // Run the code when the component mounts
     const intervalId = setInterval(() => {
       const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
@@ -106,6 +109,20 @@ export const Attendance = () => {
     setValidationErrors({});
   };
 
+  const getAllAttendanceById = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/attendance/${empcode}`
+      );
+
+      if (response.status === 200) {
+        setAttendanceList(response.data.paramObjectsMap.Attendance);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -115,11 +132,12 @@ export const Attendance = () => {
     // You might need to modify the data structure to fit CSVLink requirements
 
     const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
-      Date: row.date,
-      InTime: row.intime,
-      OutTime: row.outtime,
-      TotalHrs: row.tothrs,
+      "S No": row.id,
+      EmpCode: row.empcode,
+      Date: row.entry_date,
+      InTime: row.checkintime,
+      OutTime: row.checkouttime,
+      //TotalHrs: row.tothrs,
     }));
 
     // Define CSV headers
@@ -192,7 +210,7 @@ export const Attendance = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -200,7 +218,15 @@ export const Attendance = () => {
         }),
       },
       {
-        accessorKey: "date",
+        accessorKey: "empcode",
+        header: "Emp Code",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "entry_date",
         header: "Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -208,7 +234,7 @@ export const Attendance = () => {
         }),
       },
       {
-        accessorKey: "intime",
+        accessorKey: "checkintime",
         header: "IN Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -216,21 +242,21 @@ export const Attendance = () => {
         }),
       },
       {
-        accessorKey: "outtime",
+        accessorKey: "checkouttime",
         header: "OUT Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      {
-        accessorKey: "tothrs",
-        header: "Total Hrs",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
+      // {
+      //   accessorKey: "tothrs",
+      //   header: "Total Hrs",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
     ],
     [getCommonEditTextFieldProps]
   );
@@ -255,7 +281,7 @@ export const Attendance = () => {
       </div>
 
       <>
-        <div className="card w-full p-6 bg-base-100 shadow-xl mt-5">
+        <div className="card w-full p-6 bg-base-100 shadow-xl mt-3">
           <div className="d-flex justify-content-between">
             <h1 className="text-xl font-semibold mb-4">Attendance Report</h1>
           </div>
@@ -270,7 +296,7 @@ export const Attendance = () => {
               },
             }}
             columns={columns}
-            data={tableData}
+            data={attendanceList}
             editingMode="modal"
             enableColumnOrdering
             enableEditing

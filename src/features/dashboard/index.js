@@ -11,10 +11,10 @@ import UserChannels from "./components/UserChannels";
 // import DashboardTopBar from './components/DashboardTopBar'
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
-import CheckinCheckout from "./components/CheckinCheckout";
 import Attendance from "../flowScreens/attendance/Attendance";
+import TodayAttendance from "./components/TodayAttendance";
 // import DoughnutChart from './components/DoughnutChart'
-// import { useState } from 'react'
+import { default as React } from "react";
 
 const statsData = [
   {
@@ -45,6 +45,9 @@ const statsData = [
 
 function Dashboard() {
   const dispatch = useDispatch();
+  const [userRoleCheck, setUserRoleCheck] = React.useState(
+    localStorage.getItem("userDetails")
+  );
 
   const updateDashboardPeriod = (newRange) => {
     // Dashboard range changed, write code to refresh your values
@@ -82,7 +85,7 @@ function Dashboard() {
 
       <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
         <Attendance />
-        {/* <AmountStats /> */}
+        {/* <TodayAttendance /> */}
         {/* <PageStats /> */}
       </div>
 
@@ -90,6 +93,8 @@ function Dashboard() {
 
       <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
         <UserChannels />
+        {userRoleCheck === "HR" && <TodayAttendance />}
+
         {/* <DoughnutChart /> */}
       </div>
     </>

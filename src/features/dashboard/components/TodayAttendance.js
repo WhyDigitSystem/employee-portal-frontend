@@ -3,7 +3,7 @@ import { default as React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
 
-function UserChannels() {
+function TodayAttendance() {
   const [holidayList, setHolidayList] = useState([]);
 
   useEffect(() => {
@@ -25,26 +25,27 @@ function UserChannels() {
   };
 
   return (
-    <TitleCard title={"Holidays"}>
+    <TitleCard title={"Today Attendance"}>
       {/** Table Data */}
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
             <tr>
               <th></th>
-              <th className="normal-case">Holiday</th>
               <th className="normal-case">Date</th>
-              <th className="normal-case">Day</th>
+              <th className="normal-case">Emp ID</th>
+              <th className="normal-case">In Time</th>
+              <th className="normal-case">Out Time</th>
             </tr>
           </thead>
           <tbody>
-            {holidayList.map((u, k) => {
+            {holidayList.map((value, key) => {
               return (
-                <tr key={k}>
-                  <th>{k + 1}</th>
-                  <td>{u.festival}</td>
-                  <td>{u.holiday_date}</td>
-                  <td>{`${u.day}`}</td>
+                <tr key={key}>
+                  <th>{key + 1}</th>
+                  <td>{value.festival}</td>
+                  <td>{value.holiday_date}</td>
+                  <td>{`${value.day}`}</td>
                 </tr>
               );
             })}
@@ -65,4 +66,4 @@ function UserChannels() {
   );
 }
 
-export default UserChannels;
+export default TodayAttendance;
