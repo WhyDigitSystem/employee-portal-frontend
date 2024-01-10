@@ -58,6 +58,7 @@ export const PermissionRequest = () => {
 
   const handleBack = () => {
     setAdd(false);
+    getAllState();
   };
 
   const handleCreateNewRow = (values) => {

@@ -115,6 +115,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
           console.log("Data saved successfully:", response.data);
           setSavedData(response.data);
           handleNew();
+          handleClosePermission();
         })
         .catch((error) => {
           // Handle errors here
