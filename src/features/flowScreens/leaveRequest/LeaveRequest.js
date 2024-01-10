@@ -11,9 +11,16 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import Axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
-import { default as React, useCallback, useMemo, useState } from "react";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { CSVLink } from "react-csv";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
@@ -39,6 +46,7 @@ export const LeaveRequest = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [leaveRequestList, setLeaveRequestList] = useState([]);
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -50,6 +58,7 @@ export const LeaveRequest = () => {
 
   const handleBack = () => {
     setAdd(false);
+    getAllLeaveRequestById();
   };
 
   const handleCreateNewRow = (values) => {
@@ -79,13 +88,13 @@ export const LeaveRequest = () => {
     // You might need to modify the data structure to fit CSVLink requirements
 
     const csvData = tableData.map((row) => ({
-      "S No": row.SNo,
-      Date: row.date,
-      FromTime: row.ftime,
-      ToTime: row.ttime,
-      TotalHrs: row.tothrs,
+      "S No": row.id,
+      Date: row.fromdate,
+      FromTime: row.todate,
+      //ToTime: row.ttime,
+      TotalHrs: row.totaldays,
       Notes: row.notes,
-      Notify: row.notify,
+      Status: row.status,
     }));
 
     // Define CSV headers
@@ -157,10 +166,28 @@ export const LeaveRequest = () => {
     [validationErrors]
   );
 
+  useEffect(() => {
+    getAllLeaveRequestById();
+  }, []);
+
+  const getAllLeaveRequestById = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest`
+      );
+
+      if (response.status === 200) {
+        setLeaveRequestList(response.data.paramObjectsMap.leaveRequestVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
-        accessorKey: "SNo",
+        accessorKey: "id",
         header: "S No",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -168,32 +195,25 @@ export const LeaveRequest = () => {
         }),
       },
       {
-        accessorKey: "date",
-        header: "Date",
+        accessorKey: "fromdate",
+        header: "From",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "ftime",
-        header: "From Time",
+        accessorKey: "todate",
+        header: "To",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
+
       {
-        accessorKey: "ttime",
-        header: "To Time",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "tothrs",
-        header: "Total Hrs",
+        accessorKey: "totaldays",
+        header: "Total Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -209,8 +229,8 @@ export const LeaveRequest = () => {
         }),
       },
       {
-        accessorKey: "notify",
-        header: "Notify",
+        accessorKey: "status",
+        header: "Status",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -386,7 +406,7 @@ export const LeaveRequest = () => {
                 },
               }}
               columns={columns}
-              data={tableData}
+              data={leaveRequestList}
               editingMode="modal"
               enableColumnOrdering
               enableEditing

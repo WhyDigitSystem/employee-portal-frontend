@@ -1,4 +1,3 @@
-import { Edit } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -6,12 +5,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Stack,
   TextField,
   Tooltip,
 } from "@mui/material";
-import Axios from "axios";
+import axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -22,33 +20,17 @@ import {
   useState,
 } from "react";
 import { CSVLink } from "react-csv";
-import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
-import { BsListTask } from "react-icons/bs";
-import NewPermissionRequest from "./NewPermissionRequest";
 
-export const PermissionRequest = () => {
-  const buttonStyle = {
-    fontSize: "20px",
-  };
-
-  const [searchValue, setSearchValue] = useState("");
-  const [options, setOptions] = useState([
-    "Karupu",
-    "Cesil",
-    "Karthi",
-    "Guhan",
-    "Vasanth",
-  ]);
-
+export const TodayFullAttendance = () => {
   const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
   const [add, setAdd] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState(() => []);
   const [validationErrors, setValidationErrors] = useState({});
-  const [getState, setGetState] = React.useState();
+  const [todayAttendanceList, settodayAttendanceList] = useState([]);
 
-  const handleSearchChange = (event, newValue) => {
-    setSearchValue(newValue);
+  const buttonStyle = {
+    fontSize: "20px",
   };
 
   const handleAddOpen = () => {
@@ -57,7 +39,6 @@ export const PermissionRequest = () => {
 
   const handleBack = () => {
     setAdd(false);
-    getAllState();
   };
 
   const handleCreateNewRow = (values) => {
@@ -78,6 +59,27 @@ export const PermissionRequest = () => {
     setValidationErrors({});
   };
 
+  useEffect(() => {
+    getTodayAttendance();
+  }, []);
+
+  const getTodayAttendance = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/status`
+      );
+
+      if (response.status === 200) {
+        settodayAttendanceList(
+          // response.data.paramObjectsMap.EmployeeStatusVO.slice(0, 5)
+          response.data.paramObjectsMap.EmployeeStatusVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -88,25 +90,18 @@ export const PermissionRequest = () => {
 
     const csvData = tableData.map((row) => ({
       "S No": row.id,
-      Date: row.permissiondate,
-      FromTime: row.fromhour,
-      ToTime: row.tohour,
-      TotalHrs: row.totalhours,
-      Notes: row.notes,
-      Status: row.status,
-      //Notify: row.remarks,
+      Date: row.entrydate,
+      EmpCode: row.empcode,
+      EmpName: row.empname,
+      InTime: row.entrytime,
     }));
 
     // Define CSV headers
     const headers = [
-      { label: "S No", key: "id" },
-      { label: "Date", key: "permissiondate" },
-      { label: "FromTime", key: "fromhour" },
-      { label: "ToTime", key: "tohour" },
-      { label: "TotalHrs", key: "totalhours" },
-      { label: "Notes", key: "notes" },
-      { label: "Status", key: "Status" },
-      //{ label: "Notify", key: "remarks" },
+      { label: "S No", key: "SNo" },
+      { label: "Date", key: "Date" },
+      { label: "Festival", key: "Festival" },
+      { label: "Day", key: "day" },
     ];
 
     return (
@@ -120,11 +115,6 @@ export const PermissionRequest = () => {
       </CSVLink>
     );
   };
-
-  useEffect(() => {
-    // 👆 daisy UI themes initialization
-    getAllState();
-  }, []);
 
   const handleDeleteRow = useCallback(
     (row) => {
@@ -183,7 +173,7 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "permissiondate",
+        accessorKey: "entrydate",
         header: "Date",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -191,49 +181,32 @@ export const PermissionRequest = () => {
         }),
       },
       {
-        accessorKey: "fromhour",
-        header: "From Time",
+        accessorKey: "empcode",
+        header: "Emp ID",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "tohour",
-        header: "To Time",
+        accessorKey: "empname",
+        header: "Name",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "totalhours",
-        header: "Total Hrs",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-
-      {
-        accessorKey: "notes",
-        header: "Notes",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "entrytime",
+        header: "In Time",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       // {
-      //   accessorKey: "remarks",
-      //   header: "Notify",
+      //   accessorKey: "entrytime",
+      //   header: "Out Time",
       //   size: 140,
       //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
       //     ...getCommonEditTextFieldProps(cell),
@@ -243,109 +216,49 @@ export const PermissionRequest = () => {
     [getCommonEditTextFieldProps]
   );
 
-  const getAllState = () => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
-        {
-          headers,
-        }
-      )
-        .then((response) => {
-          console.log("Data saved successfully:", response.data);
-          setTableData(response.data.paramObjectsMap.PermissionRequestVO);
-          // handleView();
-        })
-        .catch((error) => {
-          // Handle errors here
-          console.error("Error saving data:", error);
-        });
-    }
-  };
-
   return (
     <>
-      {add ? (
-        <NewPermissionRequest newPermissionRequest={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          {/* <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Group / Ledger</h1>
-        </div> */}
-
-          <div className="d-flex flex-wrap justify-content-start mb-2">
-            <button
-              className="btn btn-ghost btn-sm normal-case col-xs-2"
-              onClick={handleAddOpen}
-            >
-              <AiOutlineWallet style={buttonStyle} />
-              <span className="ml-1">New</span>
-            </button>
-            <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-              <AiOutlineSearch style={buttonStyle} />
-              <span className="ml-1">Search</span>
-            </button>
-            {/* <button
-          className="btn btn-ghost btn-sm normal-case col-xs-2"
-          onClick={handleSave}
-        >
-          <AiFillSave style={buttonStyle} />
-          <span className="ml-1">Save</span>
-        </button> */}
-            <button
-              className="btn btn-ghost btn-sm normal-case col-xs-2"
-              //onClick={getAllCompanyFields}
-            >
-              <BsListTask style={buttonStyle} />
-              <span className="ml-1">List View</span>
-            </button>
-          </div>
-
-          <>
-            <MaterialReactTable
-              displayColumnDefOptions={{
-                "mrt-row-actions": {
-                  muiTableHeadCellProps: {
-                    align: "center",
-                  },
-                  size: 120,
+      <div className="card w-full p-6 bg-base-100 shadow-xl">
+        <>
+          <MaterialReactTable
+            displayColumnDefOptions={{
+              "mrt-row-actions": {
+                muiTableHeadCellProps: {
+                  align: "center",
                 },
-              }}
-              columns={columns}
-              data={tableData}
-              editingMode="modal"
-              enableColumnOrdering
-              enableEditing
-              onEditingRowSave={handleSaveRowEdits}
-              onEditingRowCancel={handleCancelRowEdits}
-              renderRowActions={({ row, table }) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "1rem",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  {/* <Tooltip arrow placement="left" title="Delete">
+                size: 120,
+              },
+            }}
+            columns={columns}
+            data={todayAttendanceList}
+            editingMode="modal"
+            enableColumnOrdering
+            //enableEditing
+            onEditingRowSave={handleSaveRowEdits}
+            onEditingRowCancel={handleCancelRowEdits}
+            renderRowActions={({ row, table }) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {/* <Tooltip arrow placement="left" title="Delete">
               <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                 <Delete />
               </IconButton>
             </Tooltip> */}
-                  <Tooltip arrow placement="right" title="Edit">
-                    <IconButton onClick={() => table.setEditingRow(row)}>
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              renderTopToolbarCustomActions={() => (
-                <Stack direction="row" spacing={2} className="ml-5 ">
-                  {/* <Tooltip title="Add">
+                {/* <Tooltip arrow placement="right" title="Edit">
+                <IconButton onClick={() => table.setEditingRow(row)}>
+                  <Edit />
+                </IconButton>
+              </Tooltip> */}
+              </Box>
+            )}
+            renderTopToolbarCustomActions={() => (
+              <Stack direction="row" spacing={2} className="ml-5 ">
+                {/* <Tooltip title="Add">
                     <div>
                       <button
                         className="btn btn-primary btn-sm"
@@ -355,21 +268,20 @@ export const PermissionRequest = () => {
                       </button>
                     </div>
                   </Tooltip> */}
-                  <Tooltip title="Export Data as CSV">
-                    <span>{exportDataAsCSV()}</span>
-                  </Tooltip>
-                </Stack>
-              )}
-            />
-            <CreateNewAccountModal
-              columns={columns}
-              open={createModalOpen}
-              onClose={() => setCreateModalOpen(false)}
-              onSubmit={handleCreateNewRow}
-            />
-          </>
-        </div>
-      )}
+                <Tooltip title="Export Data as CSV">
+                  <span>{exportDataAsCSV()}</span>
+                </Tooltip>
+              </Stack>
+            )}
+          />
+          <CreateNewAccountModal
+            columns={columns}
+            open={createModalOpen}
+            onClose={() => setCreateModalOpen(false)}
+            onSubmit={handleCreateNewRow}
+          />
+        </>
+      </div>
     </>
   );
 };
@@ -433,4 +345,4 @@ const validateEmail = (email) =>
     );
 const validateAge = (age) => age >= 18 && age <= 50;
 
-export default PermissionRequest;
+export default TodayFullAttendance;

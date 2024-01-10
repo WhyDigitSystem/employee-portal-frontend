@@ -21,7 +21,7 @@ import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
 
-const userRole = localStorage.getItem('userDetails');
+const userRole = localStorage.getItem("userDetails");
 
 const routes = [
   {
@@ -171,11 +171,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Request", // name that appear in Sidebar
       },
-      {
-        path: "/app/attendance", // url
-        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
-        name: "Attendance", // name that appear in Sidebar
-      },
+      // {
+      //   path: "/app/attendance", // url
+      //   icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+      //   name: "Attendance", // name that appear in Sidebar
+      // },
       {
         path: "/app/holidayreport", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
@@ -196,13 +196,18 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Attendance Report", // name that appear in Sidebar
       },
+      {
+        path: "/app/todayfullattendance", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Today Attendance", // name that appear in Sidebar
+      },
     ],
   },
 ];
 
-if (userRole !== 'HR')  {
+if (userRole !== "HR") {
   // Find the index of the Masters section in the routes array
-  const mastersIndex = routes.findIndex(route => route.name === 'Masters');
+  const mastersIndex = routes.findIndex((route) => route.name === "Masters");
 
   // Remove the Masters section if found
   if (mastersIndex !== -1) {
@@ -210,13 +215,17 @@ if (userRole !== 'HR')  {
   }
 }
 
-if (userRole === 'USER') {
-  const transactionsIndex = routes.findIndex(route => route.name === 'Transactions');
+if (userRole === "USER") {
+  const transactionsIndex = routes.findIndex(
+    (route) => route.name === "Transactions"
+  );
 
   if (transactionsIndex !== -1) {
-    routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(0, 4);
+    routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(
+      0,
+      4
+    );
   }
 }
-
 
 export default routes;

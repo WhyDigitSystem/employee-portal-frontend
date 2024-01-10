@@ -44,7 +44,7 @@ function UserChannels() {
                   <th>{k + 1}</th>
                   <td>{u.festival}</td>
                   <td>{u.holiday_date}</td>
-                  <td>{`${u.day}`}</td>
+                  <td>{u.day}</td>
                 </tr>
               );
             })}

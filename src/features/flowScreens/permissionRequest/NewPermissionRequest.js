@@ -33,6 +33,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [totalHours, setTotalHours] = useState("");
   const [notes, setNotes] = useState("");
   const [searchValue, setSearchValue] = useState(null);
+  const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
+  const [empName, setEmpName] = React.useState(localStorage.getItem("empName"));
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -72,6 +74,18 @@ function NewPermissionRequest({ newPermissionRequest }) {
     const minutes = originalDate.getUTCMinutes().toString().padStart(2, "0");
     const seconds = originalDate.getUTCSeconds().toString().padStart(2, "0");
 
+    // Calculate time difference
+    const fromDateTime = dayjs(fromTime);
+    const toDateTime = dayjs(selectedDate);
+    const duration = toDateTime.diff(fromDateTime, "minute"); // Difference in minutes
+
+    // Extract hours and minutes
+    const durationHours = Math.floor(duration / 60);
+    const durationMinutes = duration % 60;
+
+    // Update totalHours state
+    setTotalHours(`${durationHours}:${durationMinutes}`);
+
     // Formatted time string
     const formattedTime = `${hours}:${minutes}:${seconds}`;
 
@@ -97,6 +111,11 @@ function NewPermissionRequest({ newPermissionRequest }) {
       totalhours: totalHours,
       notes: notes,
       remarks: searchValue,
+      totalhours: "2024-01-10T13:09:17.642+00:00",
+      createdby: empcode,
+      updatedby: empcode,
+      empname: empName,
+      status: "Pending",
     };
     const token = localStorage.getItem("token");
 

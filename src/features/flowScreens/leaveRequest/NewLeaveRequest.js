@@ -99,6 +99,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
         totaldays: tot,
         notes: notes,
         notifyto: searchValue,
+        status: "Pending",
       };
 
       console.log("test", dataToSave);
@@ -120,6 +121,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
             handleNew();
+            handleCloseNewLeave();
           })
           .catch((error) => {
             console.error("Error saving data:", error);

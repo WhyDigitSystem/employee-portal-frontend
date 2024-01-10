@@ -4,20 +4,23 @@ import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
 
 function TodayAttendance() {
-  const [holidayList, setHolidayList] = useState([]);
+  const [todayAttendanceList, settodayAttendanceList] = useState([]);
 
   useEffect(() => {
-    getAllHolidays();
+    getTodayAttendance();
   }, []);
 
-  const getAllHolidays = async () => {
+  const getTodayAttendance = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/status`
       );
 
       if (response.status === 200) {
-        setHolidayList(response.data.paramObjectsMap.holidayVO.slice(0, 5));
+        settodayAttendanceList(
+          // response.data.paramObjectsMap.EmployeeStatusVO.slice(0, 5)
+          response.data.paramObjectsMap.EmployeeStatusVO
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -34,31 +37,34 @@ function TodayAttendance() {
               <th></th>
               <th className="normal-case">Date</th>
               <th className="normal-case">Emp ID</th>
+              <th className="normal-case">Emp Name</th>
               <th className="normal-case">In Time</th>
-              <th className="normal-case">Out Time</th>
+              {/* <th className="normal-case">Out Time</th> */}
             </tr>
           </thead>
           <tbody>
-            {holidayList.map((value, key) => {
+            {todayAttendanceList.map((value, key) => {
               return (
                 <tr key={key}>
                   <th>{key + 1}</th>
-                  <td>{value.festival}</td>
-                  <td>{value.holiday_date}</td>
-                  <td>{`${value.day}`}</td>
+                  <td>{value.entrydate}</td>
+                  <td>{value.empcode}</td>
+                  <td>{value.empname}</td>
+                  <td>{`${value.entrytime}`}</td>
+                  {/* <td>{value.status}</td> */}
                 </tr>
               );
             })}
           </tbody>
         </table>
-        {holidayList.length <= 6 && (
+        {todayAttendanceList.length <= 6 && (
           <p
             className="text-end"
             sx={{
               color: "green",
             }}
           >
-            <Link to="/app/holidayreport">More...</Link>
+            <Link to="/app/todayfullattendance">More...</Link>
           </p>
         )}
       </div>
