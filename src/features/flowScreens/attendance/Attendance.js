@@ -32,15 +32,7 @@ export const Attendance = () => {
     fontSize: "20px",
   };
   const [searchValue, setSearchValue] = useState("");
-  const [options, setOptions] = useState([
-    "Karupu",
-    "Cesil",
-    "Karthi",
-    "Guhan",
-    "Vasanth",
-  ]);
   const dispatch = useDispatch();
-  const [value, setValue] = React.useState();
   const [userid, setUserId] = React.useState(localStorage.getItem("empcode"));
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [checkedStatus, setCheckedStatus] = React.useState(false);
@@ -52,6 +44,25 @@ export const Attendance = () => {
   const [attendanceList, setAttendanceList] = useState([]);
 
   useEffect(() => {
+    // Function to fetch employee status and update checkedStatus state
+    const fetchEmployeeStatus = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+        );
+
+        if (response.data.statusFlag === "Ok") {
+          const status = response.data.paramObjectsMap.EmployeeStatus.status;
+          // Update the checkedStatus state based on the fetched status
+          setCheckedStatus(status === "In");
+        }
+      } catch (error) {
+        console.error("Error fetching employee status:", error);
+      }
+    };
+
+    // Call the function to fetch employee status when the component mounts
+    fetchEmployeeStatus();
     getAllAttendanceById();
     // Run the code when the component mounts
     const intervalId = setInterval(() => {
@@ -61,34 +72,94 @@ export const Attendance = () => {
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  // useEffect(() => {
+  //   getAllAttendanceById();
+  //   // getCheckinStatus();
+  //   // Run the code when the component mounts
+  //   const intervalId = setInterval(() => {
+  //     const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
+  //     setFormattedDate(currentDate);
+  //   }, 1000); // Update every second
+
+  //   // Clean up the interval when the component unmounts
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
   };
 
-  const handleCheck = () => {
-    const apiUrl = checkedStatus
-      ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`
-      : `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`;
+  // const getCheckinStatus = async () => {
+  //   try {
+  //     const response = await Axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+  //     );
 
-    const requestBody = checkedStatus ? { userid } : { userid };
+  //     if (response.status === 200) {
+  //       setCheckedStatus(response.data.paramObjectsMap.status === "In");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
-    Axios.post(apiUrl, requestBody)
-      .then((response) => {
-        console.log("Response:", response.data);
+  // const handleCheck = () => {
+  //   const apiUrl = checkedStatus
+  //     ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`
+  //     : `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`;
+
+  //   const requestBody = checkedStatus ? { userid } : { userid };
+
+  //   Axios.post(apiUrl, requestBody)
+  //     .then((response) => {
+  //       console.log("Response:", response.data);
+  //       setCheckedStatus(!checkedStatus);
+  //       dispatch(
+  //         showNotification(
+  //           checkedStatus
+  //             ? { message: "You have Checked Out successfully", status: 1 }
+  //             : { message: "You have Checked In successfully", status: 1 }
+  //         )
+  //       );
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
+  const handleCheck = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+      );
+
+      if (response.data.statusFlag === "Ok") {
+        const status = response.data.paramObjectsMap.EmployeeStatus.status;
+
+        if (status === "In") {
+          // Employee is already checked in, perform checkout
+          await Axios.post(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
+            { userid } // Replace with your request body if needed
+          );
+          // Update any UI or state to reflect the checkout action
+        } else {
+          // Employee is checked out, perform checkin
+          await Axios.post(
+            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
+            { userid } // Replace with your request body if needed
+          );
+          // Update any UI or state to reflect the checkin action
+        }
+
+        // Update checkedStatus state or UI as needed after action
         setCheckedStatus(!checkedStatus);
-        dispatch(
-          showNotification(
-            checkedStatus
-              ? { message: "You have Checked Out successfully", status: 1 }
-              : { message: "You have Checked In successfully", status: 1 }
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      }
+    } catch (error) {
+      console.error("Error during check:", error);
+    }
   };
 
   const handleCreateNewRow = (values) => {
