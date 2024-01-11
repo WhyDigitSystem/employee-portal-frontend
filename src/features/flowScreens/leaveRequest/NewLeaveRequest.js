@@ -1,5 +1,8 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -28,6 +31,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [from, setFrom] = React.useState(null);
   const [to, setTo] = React.useState(null);
   const [tot, setTot] = React.useState("");
+  const [leaveType, setLeaveType] = React.useState("");
 
   const [notes, setNotes] = React.useState("");
 
@@ -38,6 +42,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
   };
   const handleNotes = (event) => {
     setNotes(event.target.value);
+  };
+  const handleLeaveType = (event) => {
+    setLeaveType(event.target.value);
   };
 
   const handleTo = (newDate) => {
@@ -61,6 +68,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
     setFrom(null);
     setTo(null);
     setTot("");
+    setLeaveType("");
     setNotes("");
     setSearchValue("");
   };
@@ -97,6 +105,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
         fromdate: from,
         todate: to,
         totaldays: tot,
+        leavetype: leaveType,
         notes: notes,
         notifyto: searchValue,
         status: "Pending",
@@ -196,6 +205,23 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 disabled
                 value={tot}
               />
+            </FormControl>
+          </div>
+          <div className="col-md-4 mb-3">
+            <FormControl fullWidth size="small">
+              <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Leave Type"
+                value={leaveType}
+                onChange={handleLeaveType}
+                error={Boolean(errors.gender)}
+              >
+                <MenuItem value={"CL"}>CL</MenuItem>
+                <MenuItem value={"PL"}>PL</MenuItem>
+                {/* <MenuItem value={"Others"}>Others</MenuItem> */}
+              </Select>
             </FormControl>
           </div>
 

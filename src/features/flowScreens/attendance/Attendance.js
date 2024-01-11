@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useDispatch } from "react-redux";
 
-import { Edit } from "@mui/icons-material";
+// import { Edit } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -15,7 +15,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Stack,
   TextField,
   Tooltip,
@@ -24,7 +23,6 @@ import Axios from "axios";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
 import { CSVLink } from "react-csv";
-import { showNotification } from "../../common/headerSlice";
 import { data } from "./makeData";
 
 export const Attendance = () => {
@@ -370,7 +368,7 @@ export const Attendance = () => {
             data={attendanceList}
             editingMode="modal"
             enableColumnOrdering
-            enableEditing
+            //enableEditing
             onEditingRowSave={handleSaveRowEdits}
             onEditingRowCancel={handleCancelRowEdits}
             renderRowActions={({ row, table }) => (
@@ -385,12 +383,12 @@ export const Attendance = () => {
             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
               <Delete />
             </IconButton>
-          </Tooltip> */}
+          </Tooltip> 
                 <Tooltip arrow placement="right" title="Edit">
                   <IconButton onClick={() => table.setEditingRow(row)}>
                     <Edit />
                   </IconButton>
-                </Tooltip>
+              </Tooltip> */}
               </Box>
             )}
             renderTopToolbarCustomActions={() => (

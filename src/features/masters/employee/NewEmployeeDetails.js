@@ -35,10 +35,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [altMobNo, setAltMobNo] = React.useState("");
   const [resigningDate, setResigningDate] = React.useState(null);
   const [bank, setBank] = React.useState("");
-  const [accNo, setAccNo] = React.useState(1);
+  const [accNo, setAccNo] = React.useState("");
   const [ifsc, setIfsc] = React.useState("");
   const [reportPerson, setReportPerson] = React.useState("");
   const [savedData, setSavedData] = React.useState("");
+  const [grade, setGrade] = React.useState("");
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
@@ -51,10 +52,15 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setEmpCode(event.target.value);
   };
   const handleEmpName = (event) => {
-    setEmpName(event.target.value);
+    const alphaValue = event.target.value.replace(/[^A-Za-z]/g, "");
+    setEmpName(alphaValue);
+    //setEmpName(event.target.value);
   };
   const handleGender = (event) => {
     setGender(event.target.value);
+  };
+  const handleGrade = (event) => {
+    setGrade(event.target.value);
   };
   //   const handleDob = (event) => {
   //     setDob(event.target.value);
@@ -88,7 +94,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setPan(event.target.value);
   };
   const handleAadharNo = (event) => {
-    setAadharNo(event.target.value);
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setAadharNo(numericValue);
+    //setAadharNo(event.target.value);
   };
   //   const handleUserType = (event) => {
   //     setUserType(event.target.value);
@@ -99,16 +107,24 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setResigningDate(formattedDate);
   };
   const handleMobNo = (event) => {
-    setMobNo(event.target.value);
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setMobNo(numericValue);
+    //setMobNo(event.target.value);
   };
   const handleAltMobNo = (event) => {
-    setAltMobNo(event.target.value);
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setAltMobNo(numericValue);
+    //setAltMobNo(event.target.value);
   };
   const handleBank = (event) => {
-    setBank(event.target.value);
+    const alphaValue = event.target.value.replace(/[^A-Za-z]/g, "");
+    setBank(alphaValue);
+    //setBank(event.target.value);
   };
   const handleAccNo = (event) => {
-    setAccNo(event.target.value);
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setAccNo(numericValue);
+    //setAccNo(event.target.value);
   };
   const handleIfsc = (event) => {
     setIfsc(event.target.value);
@@ -126,6 +142,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setDept("");
     setDesignation("");
     setRole("");
+    setGrade("");
     setEmail("");
     setJoinDate("");
     setPan("");
@@ -274,62 +291,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     }
   };
 
-  //   const handleSave = () => {
-  //     if (handleValidation()) {
-  //       // Replace this with your logic to save the data to a backend or database
-  //       const dataToSave = {
-  //         empcode: empCode,
-  //         empname: empName,
-  //         gender: gender,
-  //         date_of_birth: dob,
-  //         blood: bloodGroup,
-  //         department: dept,
-  //         designation: designation,
-  //         role: role,
-  //         email: email,
-  //         joining_date: joinDate,
-  //         pan: pan,
-  //         aadhar: aadharNo,
-  //         mobile_no: mobNo,
-  //         alternate_mobile_no: altMobNo,
-  //         resigning_date: resigningDate,
-  //         bank_name: bank,
-  //         account_no: accNo,
-  //         ifsc_code: ifsc,
-  //         reporting_person: reportPerson,
-  //       };
-
-  //       console.log("test", dataToSave);
-
-  //       // handleEmail();
-
-  //       const token = localStorage.getItem("token");
-
-  //       if (token) {
-  //         const headers = {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         };
-
-  //         Axios.post(
-  //           `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
-  //           dataToSave,
-  //           { headers }
-  //         )
-  //           .then((response) => {
-  //             console.log("Data saved successfully:", response.data);
-  //             setSavedData(response.data);
-  //             handleNew();
-  //           })
-  //           .catch((error) => {
-  //             console.error("Error saving data:", error);
-  //           });
-  //       } else {
-  //         console.error("User is not authenticated. Please log in.");
-  //       }
-  //     }
-  //   };
-
   const handleClosePermission = () => {
     newEmployee(false);
   };
@@ -339,20 +300,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       <div>
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="row d-flex justify-content-center align-items-center">
-            {/* <div className="d-flex flex-wrap justify-content-start">
-              <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-                <AiOutlineWallet style={buttonStyle} />
-                <span className="ml-1">New</span>
-              </button>
-              <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-                <AiOutlineSearch style={buttonStyle} />
-                <span className="ml-1">Search</span>
-              </button>
-              <button className="btn btn-ghost btn-sm normal-case col-xs-2">
-                <BsListTask style={buttonStyle} />
-                <span className="ml-1">List View</span>
-              </button>
-            </div> */}
             <div className="d-flex justify-content-between">
               <h1 className="text-xl font-semibold mb-3">New Employee</h1>
               <IoMdClose
@@ -362,7 +309,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               />
             </div>
             <div className="row d-flex mt-3">
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="employee"
@@ -377,7 +324,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="name"
@@ -392,7 +339,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">Gender</InputLabel>
                   <Select
@@ -409,9 +356,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </Select>
                 </FormControl>
               </div>
-            </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4">
+
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -426,37 +372,54 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </LocalizationProvider>
                 </FormControl>
               </div>
-              <div className="col-md-4">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="bloodGroup"
+
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">
+                    Blood Group
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     label="Blood Group"
-                    size="small"
                     value={bloodGroup}
                     onChange={handleBloodGroup}
                     error={Boolean(errors.bloodGroup)}
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
-                  />
+                  >
+                    <MenuItem value={"A+"}>A+</MenuItem>
+                    <MenuItem value={"A-"}>A-</MenuItem>
+                    <MenuItem value={"B+"}>Others</MenuItem>
+                    <MenuItem value={"B-"}>A+</MenuItem>
+                    <MenuItem value={"AB+"}>A-</MenuItem>
+                    <MenuItem value={"AB-"}>Others</MenuItem>
+                    <MenuItem value={"O+"}>A+</MenuItem>
+                    <MenuItem value={"O-"}>A-</MenuItem>
+                  </Select>
                 </FormControl>
               </div>
-              <div className="col-md-4">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="department"
+
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">
+                    Department
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
                     label="Department"
-                    size="small"
-                    value={dept}
+                    value={designation}
                     onChange={handleDept}
                     error={Boolean(errors.dept)}
-                    placeholder="Informaton Technology"
-                    inputProps={{ maxLength: 30 }}
-                  />
+                  >
+                    <MenuItem value={"IT "}>IT</MenuItem>
+                    <MenuItem value={"Support"}>Support</MenuItem>
+                    <MenuItem value={"Sales"}>Sales</MenuItem>
+                    <MenuItem value={"Accounts"}>Accounts</MenuItem>
+                  </Select>
                 </FormControl>
               </div>
-            </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4">
+
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">
                     Designation
@@ -469,13 +432,22 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     onChange={handleDesignation}
                     error={Boolean(errors.designation)}
                   >
-                    <MenuItem value={"dev"}>Software Developer</MenuItem>
-                    <MenuItem value={"eng"}>Software Engineer</MenuItem>
-                    <MenuItem value={"infra"}>Infra</MenuItem>
+                    <MenuItem value={"Desktop App Developer"}>
+                      Desktop App Developer
+                    </MenuItem>
+                    <MenuItem value={"Frontend Developer"}>
+                      Frontend Developer
+                    </MenuItem>
+                    <MenuItem value={"Backend Developer"}>
+                      Backend Developer
+                    </MenuItem>
+                    <MenuItem value={"Full Stack Developer"}>
+                      Full Stack Developer
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">Role</InputLabel>
                   <Select
@@ -494,7 +466,26 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </Select>
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">Grade</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value={age}
+                    label="Grade"
+                    value={grade}
+                    onChange={handleGrade}
+                    error={Boolean(errors.grade)}
+                  >
+                    <MenuItem value={"A"}>A</MenuItem>
+                    <MenuItem value={"B"}>B</MenuItem>
+                    <MenuItem value={"C"}>C</MenuItem>
+                    <MenuItem value={"D"}>D</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="email"
@@ -508,9 +499,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   />
                 </FormControl>
               </div>
-            </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4">
+
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -526,7 +516,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </LocalizationProvider>
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="pan"
@@ -535,12 +525,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     value={pan}
                     onChange={handlePan}
                     error={Boolean(errors.pan)}
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 10 }}
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="aadharNo"
@@ -549,14 +538,12 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     value={aadharNo}
                     onChange={handleAadharNo}
                     error={Boolean(errors.aadharNo)}
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 12 }}
                   />
                 </FormControl>
               </div>
-            </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4">
+
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="mobileNumber"
@@ -567,11 +554,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     error={Boolean(errors.mobNo)}
                     required
                     //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 10 }}
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
                     id="alternateMobile"
@@ -582,11 +569,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     error={Boolean(errors.altMobNo)}
                     required
                     //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 10 }}
                   />
                 </FormControl>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
@@ -601,9 +588,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </LocalizationProvider>
                 </FormControl>
               </div>
-            </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4 mb-3">
+
+              <div className="col-md-4 mb-3 mb-3">
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox defaultChecked />}
@@ -645,11 +631,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                         label="Account Number"
                         size="small"
                         value={accNo}
-                        type="number"
+                        //type="number"
                         onChange={handleAccNo}
                         error={Boolean(errors.accNo)}
-                        //placeholder="accountcode"
-                        inputProps={{ maxLength: 30 }}
+                        inputProps={{ maxLength: 20 }}
                       />
                     </FormControl>
                   </div>

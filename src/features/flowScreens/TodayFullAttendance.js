@@ -164,17 +164,25 @@ export const TodayFullAttendance = () => {
 
   const columns = useMemo(
     () => [
+      // {
+      //   accessorKey: "id",
+      //   header: "S No",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
+      // {
+      //   accessorKey: "entrydate",
+      //   header: "Date",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
       {
-        accessorKey: "id",
-        header: "S No",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "entrydate",
-        header: "Date",
+        accessorKey: "empname",
+        header: "Name",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -188,14 +196,7 @@ export const TodayFullAttendance = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      {
-        accessorKey: "empname",
-        header: "Name",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
+
       {
         accessorKey: "entrytime",
         header: "In Time",
@@ -204,14 +205,14 @@ export const TodayFullAttendance = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      // {
-      //   accessorKey: "entrytime",
-      //   header: "Out Time",
-      //   size: 140,
-      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-      //     ...getCommonEditTextFieldProps(cell),
-      //   }),
-      // },
+      {
+        accessorKey: "entrytime",
+        header: "Out Time",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
     ],
     [getCommonEditTextFieldProps]
   );

@@ -21,6 +21,7 @@ function TodayAttendance() {
           // response.data.paramObjectsMap.EmployeeStatusVO.slice(0, 5)
           response.data.paramObjectsMap.EmployeeStatusVO
         );
+        console.log("sts", response.data.paramObjectsMap.EmployeeStatusVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -34,22 +35,23 @@ function TodayAttendance() {
         <table className="table w-full">
           <thead>
             <tr>
-              <th></th>
-              <th className="normal-case">Date</th>
-              <th className="normal-case">Emp ID</th>
+              {/* <th></th> */}
               <th className="normal-case">Emp Name</th>
+              <th className="normal-case">Emp ID</th>
               <th className="normal-case">In Time</th>
-              {/* <th className="normal-case">Out Time</th> */}
+              <th className="normal-case">Out Time</th>
+              {/* <th className="normal-case">status</th> */}
             </tr>
           </thead>
           <tbody>
             {todayAttendanceList.map((value, key) => {
               return (
                 <tr key={key}>
-                  <th>{key + 1}</th>
-                  <td>{value.entrydate}</td>
-                  <td>{value.empcode}</td>
+                  {/* <th>{key + 1}</th> */}
+
                   <td>{value.empname}</td>
+                  <td>{value.empcode}</td>
+                  <td>{value.entrydate}</td>
                   <td>{`${value.entrytime}`}</td>
                   {/* <td>{value.status}</td> */}
                 </tr>
