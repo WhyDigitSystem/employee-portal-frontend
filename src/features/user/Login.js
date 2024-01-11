@@ -121,7 +121,7 @@ function Login() {
           );
           // Redirect the user to the welcome page
           console.log("token", response.data);
-          window.location.href = "/app/welcome";
+          window.location.href = "/app/dashboard";
         }
 
         setLoading(false);
@@ -153,7 +153,12 @@ function Login() {
             <LandingIntro />
           </div>
           <div className="py-24 px-10">
-            <h2 className="text-2xl font-semibold mb-2 text-center">Login</h2>
+            <div className="mb-2 border-bg login-border d-flex flex-row">
+              <div className="signin-btn">Sign In</div>
+              <a href="/register" className="signup-btn signin-hide">
+                SignUp
+              </a>
+            </div>
             <form onSubmit={(e) => submitForm(e)}>
               <div className="mb-4">
                 <InputText
@@ -192,15 +197,6 @@ function Login() {
               >
                 Login
               </button>
-
-              <div className="text-center mt-4">
-                Don't have an account yet?{" "}
-                <Link to="/register">
-                  <span className="  inline-block  hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
-                    Register
-                  </span>
-                </Link>
-              </div>
             </form>
           </div>
         </div>
