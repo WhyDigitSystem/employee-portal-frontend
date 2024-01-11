@@ -94,6 +94,7 @@ export const TodayFullAttendance = () => {
       EmpCode: row.empcode,
       EmpName: row.empname,
       InTime: row.entrytime,
+      Status: row.status,
     }));
 
     // Define CSV headers
@@ -208,6 +209,14 @@ export const TodayFullAttendance = () => {
       {
         accessorKey: "entrytime",
         header: "Out Time",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
