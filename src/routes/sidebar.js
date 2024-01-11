@@ -159,7 +159,7 @@ const routes = [
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Transactions", // name that appear in Sidebar
+    name: "Me", // name that appear in Sidebar
     submenu: [
       {
         path: "/app/permissionrequest", // url
