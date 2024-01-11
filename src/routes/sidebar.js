@@ -216,9 +216,7 @@ if (userRole !== "HR") {
 }
 
 if (userRole === "USER") {
-  const transactionsIndex = routes.findIndex(
-    (route) => route.name === "Transactions"
-  );
+  const transactionsIndex = routes.findIndex((route) => route.name === "Me");
 
   if (transactionsIndex !== -1) {
     routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(
