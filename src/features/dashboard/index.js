@@ -15,6 +15,8 @@ import Attendance from "../flowScreens/attendance/Attendance";
 import TodayAttendance from "./components/TodayAttendance";
 // import DoughnutChart from './components/DoughnutChart'
 import { default as React } from "react";
+import DashboardLeaveApproval from "./components/DashboardLeaveApproval";
+import DashboardPermissionApproval from "./components/DashboardPermissionApproval";
 
 const statsData = [
   {
@@ -86,7 +88,6 @@ function Dashboard() {
       <div className="grid lg:grid-cols-1 grid-cols-1 gap-6">
         {userRoleCheck !== "MANAGEMENT" && <Attendance />}
 
-        {/* <TodayAttendance /> */}
         {/* <PageStats /> */}
       </div>
 
@@ -95,7 +96,11 @@ function Dashboard() {
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
         <UserChannels />
         {(userRoleCheck === "HR" || userRoleCheck === "MANAGEMENT") && (
-          <TodayAttendance />
+          <>
+            <TodayAttendance />
+            <DashboardLeaveApproval />
+            <DashboardPermissionApproval />
+          </>
         )}
 
         {/* <DoughnutChart /> */}

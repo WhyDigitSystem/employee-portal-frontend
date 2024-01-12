@@ -34,7 +34,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [notes, setNotes] = useState("");
   const [searchValue, setSearchValue] = useState(null);
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
-  const [empName, setEmpName] = React.useState(localStorage.getItem("empName"));
+  const [empname, setEmpName] = React.useState(localStorage.getItem("empname"));
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -114,7 +114,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
       totalhours: "2024-01-10T13:09:17.642+00:00",
       createdby: empcode,
       updatedby: empcode,
-      empname: empName,
+      empcode: empcode,
+      empname: empname,
       status: "Pending",
     };
     const token = localStorage.getItem("token");
