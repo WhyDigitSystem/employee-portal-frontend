@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import { encryptPassword } from "../../user/components/utils";
 
 export const NewEmployeeDetails = ({ newEmployee }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -40,7 +41,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [reportPerson, setReportPerson] = React.useState("");
   const [savedData, setSavedData] = React.useState("");
   const [grade, setGrade] = React.useState("");
-  const [pwd, setPwd] = React.useState("");
+
+  const pwd = empCode + dob;
+  const trimmedpwd = pwd.trim();
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
@@ -271,7 +274,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         empname: empName,
         role: role,
         email: email,
-        password: empCode + dob,
+        password: encryptPassword(trimmedpwd),
       };
       const token = localStorage.getItem("token");
 
