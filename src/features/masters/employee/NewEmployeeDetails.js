@@ -40,6 +40,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [reportPerson, setReportPerson] = React.useState("");
   const [savedData, setSavedData] = React.useState("");
   const [grade, setGrade] = React.useState("");
+  const [pwd, setPwd] = React.useState("");
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
@@ -265,6 +266,13 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         ifsc_code: ifsc,
         reporting_person: reportPerson,
       };
+      const dataToSaveUser = {
+        empcode: empCode,
+        empname: empName,
+        role: role,
+        email: email,
+        password: empCode + dob,
+      };
       const token = localStorage.getItem("token");
 
       if (token) {
@@ -276,6 +284,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         Axios.post(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
           dataToSave,
+          { headers }
+        );
+        Axios.post(
+          `${process.env.REACT_APP_API_URL}/api/user/signup`,
+          dataToSaveUser,
           { headers }
         )
           .then((response) => {
@@ -459,7 +472,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     onChange={handleRole}
                     error={Boolean(errors.role)}
                   >
-                    <MenuItem value={"User"}>User</MenuItem>
+                    <MenuItem value={"USER"}>User</MenuItem>
                     <MenuItem value={"Team Lead"}>Team Lead</MenuItem>
                     <MenuItem value={"Management"}>Management</MenuItem>
                     <MenuItem value={"HR"}>HR</MenuItem>

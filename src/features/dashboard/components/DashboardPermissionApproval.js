@@ -85,7 +85,7 @@ function DashboardPermissionApproval() {
               color: "green",
             }}
           >
-            <Link to="/app/todayfullattendance">More...</Link>
+            <Link to="/app/permissionapproval">More...</Link>
           </p>
         )}
       </div>

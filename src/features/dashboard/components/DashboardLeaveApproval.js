@@ -58,7 +58,41 @@ function DashboardLeaveApproval() {
                       {moment(value.todate).format("DD-MM-YY")}
                     </td>
                     <td className="dasboardPermissiontbl">{`${value.totaldays}`}</td>
-                    <td className="dasboardPermissiontbl">{value.status}</td>
+                    {/* <td className="dasboardPermissiontbl">{value.status}</td> */}
+                    <td className="dasboardPermissiontbl">
+                      {/* {value.status ? ( */}
+                      <span style={{ color: "red" }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="16"
+                          width="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            fill="currentColor"
+                            d="M10 4v6h4V4h-4zm0 10h4v-2h-4v2zm0-4h4V8h-4v2z"
+                          />
+                        </svg>
+                      </span>
+                      {/* ) : ( */}
+                      <span style={{ color: "green" }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="16"
+                          width="16"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            fill="currentColor"
+                            d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
+                          />
+                        </svg>
+                      </span>
+                      {/* )} */}
+                      {/* &nbsp;{value.status ? "Pending" : "Other Status"} */}
+                    </td>
                   </tr>
                 );
               })}
@@ -71,7 +105,7 @@ function DashboardLeaveApproval() {
               color: "green",
             }}
           >
-            <Link to="/app/todayfullattendance">More...</Link>
+            <Link to="/app/leaveapproval">More...</Link>
           </p>
         )}
       </div>
