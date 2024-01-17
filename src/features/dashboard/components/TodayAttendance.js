@@ -38,9 +38,9 @@ function TodayAttendance() {
               {/* <th></th> */}
               <th className="normal-case">Emp Name</th>
               <th className="normal-case">Emp ID</th>
-              <th className="normal-case">In Time</th>
-              <th className="normal-case">Out Time</th>
-              {/* <th className="normal-case">status</th> */}
+              <th className="normal-case">Time</th>
+              {/* <th className="normal-case">Out Time</th> */}
+              <th className="normal-case">status</th>
             </tr>
           </thead>
           <tbody>
@@ -52,8 +52,8 @@ function TodayAttendance() {
                   <td>{value.empname}</td>
                   <td>{value.empcode}</td>
                   <td>{value.entrytime}</td>
-                  <td>{`${value.entrytime}`}</td>
-                  {/* <td>{value.status}</td> */}
+                  {/* <td>{`${value.entrytime}`}</td> */}
+                  <td>{value.status}</td>
                 </tr>
               );
             })}
