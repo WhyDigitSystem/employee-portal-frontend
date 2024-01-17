@@ -51,7 +51,7 @@ function TodayAttendance() {
 
                   <td>{value.empname}</td>
                   <td>{value.empcode}</td>
-                  <td>{value.entrydate}</td>
+                  <td>{value.entrytime}</td>
                   <td>{`${value.entrytime}`}</td>
                   {/* <td>{value.status}</td> */}
                 </tr>
