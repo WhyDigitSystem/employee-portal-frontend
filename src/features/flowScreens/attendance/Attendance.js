@@ -16,8 +16,6 @@ import {
 } from "react";
 
 import { useDispatch } from "react-redux";
-
-// import { Edit } from "@mui/icons-material";
 import Axios from "axios";
 import moment from "moment";
 import { CSVLink } from "react-csv";
@@ -38,6 +36,7 @@ export const Attendance = () => {
   const [formattedDate, setFormattedDate] = useState("");
   const [errors, setErrors] = useState({});
   const [attendanceList, setAttendanceList] = useState([]);
+  const [checkinTime, setCheckinTime] = React.useState("");
 
   useEffect(() => {
     // Function to fetch employee status and update checkedStatus state
@@ -56,9 +55,26 @@ export const Attendance = () => {
         console.error("Error fetching employee status:", error);
       }
     };
+    const fetchEmployeeTime = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
+        );
+
+        if (response.data.statusFlag === "Ok") {
+          // Update the checkedStatus state based on the fetched status
+          setCheckinTime(
+            response.data.paramObjectsMap.EmployeeStatusVO.entrytime
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching employee status:", error);
+      }
+    };
 
     // Call the function to fetch employee status when the component mounts
     fetchEmployeeStatus();
+    fetchEmployeeTime();
     getAllAttendanceById();
     // Run the code when the component mounts
     const intervalId = setInterval(() => {
@@ -101,6 +117,7 @@ export const Attendance = () => {
 
         // Update checkedStatus state or UI as needed after action
         setCheckedStatus(!checkedStatus);
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error during check:", error);
@@ -280,7 +297,7 @@ export const Attendance = () => {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <div className="d-flex justify-content-between mt-3">
+        <div className="d-flex justify-content-between">
           <p className="font-semibold text-xl">{formattedDate}</p>
           <button
             type="button"
@@ -293,8 +310,11 @@ export const Attendance = () => {
           >
             {checkedStatus ? "CheckOut" : "CheckIN"}
           </button>
-          {/* <span>{empcode}</span> */}
         </div>
+        <p className="font-bold text-lg text-right me-3 mt-2">
+          <span className="font-normal text-md">CheckIn time: </span>
+          {checkinTime}
+        </p>
       </div>
 
       {/* <>
