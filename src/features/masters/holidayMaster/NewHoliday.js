@@ -4,6 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
+import dayjs from "dayjs";
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
@@ -25,11 +26,14 @@ function NewHoliday({ newHoliday }) {
   const handleDay = (event) => {
     setDay(event.target.value);
   };
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const handleDateChange = (newDate) => {
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    //setSelectedDate(date);
+    setSelectedDate(formattedDate);
 
     // Calculate the day of the week and update the "Day" input
-    if (date) {
+    if (formattedDate) {
       const daysOfWeek = [
         "Sunday",
         "Monday",
@@ -39,7 +43,7 @@ function NewHoliday({ newHoliday }) {
         "Friday",
         "Saturday",
       ];
-      const dayOfWeek = daysOfWeek[new Date(date).getDay()];
+      const dayOfWeek = daysOfWeek[new Date(formattedDate).getDay()];
       setDay(dayOfWeek);
     }
   };

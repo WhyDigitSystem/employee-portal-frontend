@@ -56,9 +56,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setEmpCode(event.target.value);
   };
   const handleEmpName = (event) => {
-    const alphaValue = event.target.value.replace(/[^A-Za-z]/g, "");
+    const alphaValue = event.target.value.replace(/[^A-Za-z ]/g, "");
     setEmpName(alphaValue);
-    //setEmpName(event.target.value);
   };
   const handleGender = (event) => {
     setGender(event.target.value);
@@ -100,7 +99,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const handleAadharNo = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setAadharNo(numericValue);
-    //setAadharNo(event.target.value);
   };
   //   const handleUserType = (event) => {
   //     setUserType(event.target.value);
@@ -172,9 +170,12 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       newErrors.empName = "BranchCode is required";
     }
 
-    // if (gender.trim() === "") {
-    //   newErrors.gender = "Company is required";
-    // }
+    if (gender.trim() === "") {
+      newErrors.gender = "Company is required";
+    }
+    if (grade.trim() === "") {
+      newErrors.grade = "Company is required";
+    }
 
     // if (dob.trim() === "") {
     //   newErrors.dob = "Address is required";
@@ -192,9 +193,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       newErrors.designation = "Please select a valid country";
     }
 
-    // if (role.trim() === "") {
-    //   newErrors.role = "Zipcode is required";
-    // }
+    if (role.trim() === "") {
+      newErrors.role = "Zipcode is required";
+    }
 
     if (email.trim() === "") {
       newErrors.email = "Phone Number is required";
@@ -202,10 +203,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
 
     // if (joinDate.trim() === "") {
     //   newErrors.joinDate = "Email is required";
-    // }
-
-    // if (userType.trim() === "") {
-    //   newErrors.userType = "Gst is required";
     // }
 
     if (mobNo.trim() === "") {
@@ -228,17 +225,17 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       newErrors.bank = "Zipcode is required";
     }
 
-    // if (accNo.trim() === "") {
-    //   newErrors.accNo = "Phone Number is required";
-    // }
+    if (accNo.trim() === "") {
+      newErrors.accNo = "Phone Number is required";
+    }
 
     if (ifsc.trim() === "") {
       newErrors.ifsc = "Email is required";
     }
 
-    // if (reportPerson.trim() === "") {
-    //   newErrors.reportPerson = "Gst is required";
-    // }
+    if (reportPerson.trim() === "") {
+      newErrors.reportPerson = "Gst is required";
+    }
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -351,7 +348,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     error={Boolean(errors.empName)}
                     required
                     //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
+                    inputProps={{ maxLength: 50 }}
                   />
                 </FormControl>
               </div>
@@ -404,12 +401,12 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   >
                     <MenuItem value={"A+"}>A+</MenuItem>
                     <MenuItem value={"A-"}>A-</MenuItem>
-                    <MenuItem value={"B+"}>Others</MenuItem>
-                    <MenuItem value={"B-"}>A+</MenuItem>
-                    <MenuItem value={"AB+"}>A-</MenuItem>
-                    <MenuItem value={"AB-"}>Others</MenuItem>
-                    <MenuItem value={"O+"}>A+</MenuItem>
-                    <MenuItem value={"O-"}>A-</MenuItem>
+                    <MenuItem value={"B+"}>B+</MenuItem>
+                    <MenuItem value={"B-"}>B-</MenuItem>
+                    <MenuItem value={"AB+"}>AB+</MenuItem>
+                    <MenuItem value={"AB-"}>AB-</MenuItem>
+                    <MenuItem value={"O+"}>O+</MenuItem>
+                    <MenuItem value={"O-"}>O-</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -423,11 +420,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Department"
-                    value={designation}
+                    value={dept}
                     onChange={handleDept}
                     error={Boolean(errors.dept)}
                   >
-                    <MenuItem value={"IT "}>IT</MenuItem>
+                    <MenuItem value={"IT"}>IT</MenuItem>
                     <MenuItem value={"Support"}>Support</MenuItem>
                     <MenuItem value={"Sales"}>Sales</MenuItem>
                     <MenuItem value={"Accounts"}>Accounts</MenuItem>
@@ -469,16 +466,17 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    // value={age}
                     label="Role"
                     value={role}
                     onChange={handleRole}
                     error={Boolean(errors.role)}
                   >
                     <MenuItem value={"USER"}>User</MenuItem>
-                    <MenuItem value={"Team Lead"}>Team Lead</MenuItem>
-                    <MenuItem value={"Management"}>Management</MenuItem>
+                    <MenuItem value={"TEAM_LEAD"}>TEAM LEAD</MenuItem>
+                    <MenuItem value={"MANAGEMENT"}>MANAGEMENT</MenuItem>
                     <MenuItem value={"HR"}>HR</MenuItem>
+                    <MenuItem value={"OWNER"}>Owner</MenuItem>
+                    <MenuItem value={"ADMIN"}>Admin</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -488,7 +486,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    // value={age}
                     label="Grade"
                     value={grade}
                     onChange={handleGrade}

@@ -86,7 +86,7 @@ function Dashboard() {
       {/** ---------------------- Different stats content 2 ------------------------- */}
 
       <div className="grid lg:grid-cols-1 grid-cols-1 gap-6">
-        {userRoleCheck !== "MANAGEMENT" && <Attendance />}
+        {(userRoleCheck === "USER" || userRoleCheck === "HR") && <Attendance />}
 
         {/* <PageStats /> */}
       </div>
@@ -95,7 +95,9 @@ function Dashboard() {
 
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
         <UserChannels />
-        {(userRoleCheck === "HR" || userRoleCheck === "MANAGEMENT") && (
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "ADMIN") && (
           <>
             <TodayAttendance />
             <DashboardLeaveApproval />

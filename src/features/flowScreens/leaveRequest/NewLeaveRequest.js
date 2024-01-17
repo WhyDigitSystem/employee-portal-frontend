@@ -145,7 +145,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">New Leave Request</h1>
+          <h1 className="text-xl font-semibold mb-3">Leave Request</h1>
           <IoMdClose
             onClick={handleCloseNewLeave}
             type="button"

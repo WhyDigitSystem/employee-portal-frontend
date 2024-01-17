@@ -29,108 +29,12 @@ const routes = [
     icon: <Squares2X2Icon className={iconClasses} />,
     name: "Dashboard",
   },
-  // {
-  //   path: "/app/leads", // url
-  //   icon: <InboxArrowDownIcon className={iconClasses} />, // icon component
-  //   name: "Leads", // name that appear in Sidebar
-  // },
-  // {
-  //   path: "/app/transactions", // url
-  //   icon: <CurrencyDollarIcon className={iconClasses} />, // icon component
-  //   name: "Transactions", // name that appear in Sidebar
-  // },
-  // {
-  //   path: "/app/charts", // url
-  //   icon: <ChartBarIcon className={iconClasses} />, // icon component
-  //   name: "Analytics", // name that appear in Sidebar
-  // },
-  // {
-  //   path: "/app/integration", // url
-  //   icon: <BoltIcon className={iconClasses} />, // icon component
-  //   name: "Integration", // name that appear in Sidebar
-  // },
+
   {
     path: "/app/calendar", // url
     icon: <CalendarDaysIcon className={iconClasses} />, // icon component
     name: "Calendar", // name that appear in Sidebar
   },
-
-  // {
-  //   path: "", //no url needed as this has submenu
-  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-  //   name: "Pages", // name that appear in Sidebar
-  //   submenu: [
-  //     {
-  //       path: "/login",
-  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-  //       name: "Login",
-  //     },
-  //     {
-  //       path: "/register", //url
-  //       icon: <UserIcon className={submenuIconClasses} />, // icon component
-  //       name: "Register", // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: "/forgot-password",
-  //       icon: <KeyIcon className={submenuIconClasses} />,
-  //       name: "Forgot Password",
-  //     },
-  //     {
-  //       path: "/app/blank",
-  //       icon: <DocumentIcon className={submenuIconClasses} />,
-  //       name: "Blank Page",
-  //     },
-  //     {
-  //       path: "/app/404",
-  //       icon: <ExclamationTriangleIcon className={submenuIconClasses} />,
-  //       name: "404",
-  //     },
-  //   ],
-  // },
-  // {
-  //   path: "", //no url needed as this has submenu
-  //   icon: <Cog6ToothIcon className={`${iconClasses} inline`} />, // icon component
-  //   name: "Settings", // name that appear in Sidebar
-  //   submenu: [
-  //     {
-  //       path: "/app/settings-profile", //url
-  //       icon: <UserIcon className={submenuIconClasses} />, // icon component
-  //       name: "Profile", // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: "/app/settings-billing",
-  //       icon: <WalletIcon className={submenuIconClasses} />,
-  //       name: "Billing",
-  //     },
-  //     {
-  //       path: "/app/settings-team", // url
-  //       icon: <UsersIcon className={submenuIconClasses} />, // icon component
-  //       name: "Team Members", // name that appear in Sidebar
-  //     },
-  //   ],
-  // },
-  // {
-  //   path: "", //no url needed as this has submenu
-  //   icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
-  //   name: "Documentation", // name that appear in Sidebar
-  //   submenu: [
-  //     {
-  //       path: "/app/getting-started", // url
-  //       icon: <DocumentTextIcon className={submenuIconClasses} />, // icon component
-  //       name: "Getting Started", // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: "/app/features",
-  //       icon: <TableCellsIcon className={submenuIconClasses} />,
-  //       name: "Features",
-  //     },
-  //     {
-  //       path: "/app/components",
-  //       icon: <CodeBracketSquareIcon className={submenuIconClasses} />,
-  //       name: "Components",
-  //     },
-  //   ],
-  // },
 
   // Our Changes
 
@@ -154,8 +58,14 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Holidays", // name that appear in Sidebar
       },
+      {
+        path: "/app/leaveprocess", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Leave Process", // name that appear in Sidebar
+      },
     ],
   },
+  // transaction Folder
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
@@ -171,16 +81,20 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Request", // name that appear in Sidebar
       },
-      // {
-      //   path: "/app/attendance", // url
-      //   icon: <CalendarDaysIcon className={iconClasses} />, // icon component
-      //   name: "Attendance", // name that appear in Sidebar
-      // },
+      //
       {
         path: "/app/holidayreport", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Holiday Report", // name that appear in Sidebar
       },
+    ],
+  },
+  // transaction folder end
+  {
+    path: "", // url
+    icon: <CalendarDaysIcon className={`${iconClasses} inline`} />, // icon component
+    name: "Team", // name that appear in Sidebar
+    submenu: [
       {
         path: "/app/leaveapproval", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
@@ -201,6 +115,12 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Today Attendance", // name that appear in Sidebar
       },
+
+      // {
+      //      path: "/app/attendance", // url
+      //      icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+      //      name: "Attendance", // name that appear in Sidebar
+      // },
     ],
   },
 ];
@@ -223,6 +143,24 @@ if (userRole === "USER") {
       0,
       3
     );
+  }
+
+  if (userRole === "USER") {
+    // Remove the "Team" section
+    const teamIndex = routes.findIndex((route) => route.name === "Team");
+
+    if (teamIndex !== -1) {
+      routes.splice(teamIndex, 1);
+    }
+  }
+}
+
+if (userRole === "ADMIN") {
+  // Remove the "Team" section
+  const transactionsIndex = routes.findIndex((route) => route.name === "Me");
+
+  if (transactionsIndex !== -1) {
+    routes.splice(transactionsIndex, 1);
   }
 }
 

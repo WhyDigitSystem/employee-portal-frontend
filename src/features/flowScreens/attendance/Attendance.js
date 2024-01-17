@@ -1,15 +1,4 @@
 import {
-  default as React,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useDispatch } from "react-redux";
-
-// import { Edit } from "@mui/icons-material";
-import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -17,10 +6,19 @@ import {
   DialogTitle,
   Stack,
   TextField,
-  Tooltip,
 } from "@mui/material";
+import {
+  default as React,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import { useDispatch } from "react-redux";
+
+// import { Edit } from "@mui/icons-material";
 import Axios from "axios";
-import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
 import { CSVLink } from "react-csv";
 import { data } from "./makeData";
@@ -72,60 +70,9 @@ export const Attendance = () => {
     return () => clearInterval(intervalId);
   }, []); // Empty dependency array ensures this runs only once on mount
 
-  // useEffect(() => {
-  //   getAllAttendanceById();
-  //   // getCheckinStatus();
-  //   // Run the code when the component mounts
-  //   const intervalId = setInterval(() => {
-  //     const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
-  //     setFormattedDate(currentDate);
-  //   }, 1000); // Update every second
-
-  //   // Clean up the interval when the component unmounts
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
   };
-
-  // const getCheckinStatus = async () => {
-  //   try {
-  //     const response = await Axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setCheckedStatus(response.data.paramObjectsMap.status === "In");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // const handleCheck = () => {
-  //   const apiUrl = checkedStatus
-  //     ? `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`
-  //     : `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`;
-
-  //   const requestBody = checkedStatus ? { userid } : { userid };
-
-  //   Axios.post(apiUrl, requestBody)
-  //     .then((response) => {
-  //       console.log("Response:", response.data);
-  //       setCheckedStatus(!checkedStatus);
-  //       dispatch(
-  //         showNotification(
-  //           checkedStatus
-  //             ? { message: "You have Checked Out successfully", status: 1 }
-  //             : { message: "You have Checked In successfully", status: 1 }
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
 
   const handleCheck = async () => {
     try {
@@ -136,7 +83,7 @@ export const Attendance = () => {
       if (response.data.statusFlag === "Ok") {
         const status = response.data.paramObjectsMap.EmployeeStatus.status;
 
-        if (status === "In") {
+        if (status === "In" || status === "null") {
           // Employee is already checked in, perform checkout
           await Axios.post(
             `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
@@ -346,10 +293,11 @@ export const Attendance = () => {
           >
             {checkedStatus ? "CheckOut" : "CheckIN"}
           </button>
+          {/* <span>{empcode}</span> */}
         </div>
       </div>
 
-      <>
+      {/* <>
         <div className="card w-full p-6 bg-base-100 shadow-xl mt-3">
           <div className="d-flex justify-content-between">
             <h1 className="text-xl font-semibold mb-4">Attendance Report</h1>
@@ -378,31 +326,10 @@ export const Attendance = () => {
                   gap: "1rem",
                   justifyContent: "flex-end",
                 }}
-              >
-                {/* <Tooltip arrow placement="left" title="Delete">
-            <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-              <Delete />
-            </IconButton>
-          </Tooltip> 
-                <Tooltip arrow placement="right" title="Edit">
-                  <IconButton onClick={() => table.setEditingRow(row)}>
-                    <Edit />
-                  </IconButton>
-              </Tooltip> */}
-              </Box>
+              ></Box>
             )}
             renderTopToolbarCustomActions={() => (
               <Stack direction="row" spacing={2} className="ml-5 ">
-                {/* <Tooltip title="Add">
-                  <div>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => setCreateModalOpen(true)}
-                    >
-                      Add
-                    </button>
-                  </div>
-                </Tooltip> */}
                 <Tooltip title="Export Data as CSV">
                   <span>{exportDataAsCSV()}</span>
                 </Tooltip>
@@ -416,7 +343,7 @@ export const Attendance = () => {
             onSubmit={handleCreateNewRow}
           />
         </div>
-      </>
+      </> */}
     </>
   );
 };

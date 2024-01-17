@@ -67,7 +67,7 @@ function NewLeaveType({ newLeaveType }) {
     if (handleValidation()) {
       console.log("test");
       const dataToSave = {
-        //holiday_date: leaveCode,
+        leave_code: leaveCode,
         leave_type: leaveType,
         total_leave: totLeave,
       };

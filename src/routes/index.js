@@ -39,6 +39,7 @@ const AttendanceReport = lazy(() =>
 const TodayFullAttendance = lazy(() =>
   import("../pages/protected/TodayFullAttendance")
 );
+const LeaveProcess = lazy(() => import("../pages/protected/LeaveProcess"));
 
 const routes = [
   {
@@ -146,6 +147,10 @@ const routes = [
   {
     path: "/todayfullattendance",
     component: TodayFullAttendance,
+  },
+  {
+    path: "/leaveprocess",
+    component: LeaveProcess,
   },
 ];
 

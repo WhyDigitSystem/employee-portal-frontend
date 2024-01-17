@@ -128,7 +128,7 @@ export const LeaveType = () => {
 
     const csvData = tableData.map((row) => ({
       "S No": row.id,
-      //LeaveCode: row.leaveCode,
+      LeaveCode: row.leave_code,
       LeaveType: row.leave_type,
       TotalLeave: row.total_leave,
       //Active: row.active,
@@ -137,7 +137,7 @@ export const LeaveType = () => {
     // Define CSV headers
     const headers = [
       { label: "S No", key: "id" },
-      // { label: "LeaveCode", key: "LeaveCode" },
+      { label: "LeaveCode", key: "LeaveCode" },
       { label: "LeaveType", key: "teave_type" },
       { label: "TotalLeave", key: "total_leave" },
       // { label: "Active", key: "Active" },
@@ -211,14 +211,14 @@ export const LeaveType = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      // {
-      //   accessorKey: "leaveCode",
-      //   header: "Leave Code",
-      //   size: 140,
-      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-      //     ...getCommonEditTextFieldProps(cell),
-      //   }),
-      // },
+      {
+        accessorKey: "leave_code",
+        header: "Leave Code",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
       {
         accessorKey: "leave_type",
         header: "Leave Type",
