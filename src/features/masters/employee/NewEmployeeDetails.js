@@ -209,29 +209,29 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       newErrors.mobNo = "Address is required";
     }
 
-    if (altMobNo === "") {
-      newErrors.altMobNo = "City is required";
-    }
+    // if (altMobNo === "") {
+    //   newErrors.altMobNo = "City is required";
+    // }
 
-    if (pan === "") {
-      newErrors.pan = "State is required";
-    }
+    // if (pan === "") {
+    //   newErrors.pan = "State is required";
+    // }
 
-    if (aadharNo === "") {
-      newErrors.aadharNo = "Please select a valid country";
-    }
+    // if (aadharNo === "") {
+    //   newErrors.aadharNo = "Please select a valid country";
+    // }
 
     if (bank.trim() === "") {
       newErrors.bank = "Zipcode is required";
     }
 
-    if (accNo.trim() === "") {
-      newErrors.accNo = "Phone Number is required";
-    }
+    // if (accNo.trim() === "") {
+    //   newErrors.accNo = "Phone Number is required";
+    // }
 
-    if (ifsc.trim() === "") {
-      newErrors.ifsc = "Email is required";
-    }
+    // if (ifsc.trim() === "") {
+    //   newErrors.ifsc = "Email is required";
+    // }
 
     if (reportPerson.trim() === "") {
       newErrors.reportPerson = "Gst is required";
