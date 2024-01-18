@@ -38,7 +38,7 @@ function TodayAttendance() {
               {/* <th></th> */}
               <th className="normal-case">Emp Name</th>
               <th className="normal-case">Emp ID</th>
-              <th className="normal-case">Time</th>
+              <th className="normal-case">In Time</th>
               {/* <th className="normal-case">Out Time</th> */}
               <th className="normal-case">status</th>
             </tr>

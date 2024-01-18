@@ -19,6 +19,8 @@ const errorInputStyle = {
 function NewLeaveRequest({ newLeaveRequest }) {
   const [searchValue, setSearchValue] = useState("");
   const [savedData, setSavedData] = React.useState();
+  const [empName, setEmpName] = React.useState(localStorage.getItem("empname"));
+  const [empCode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
 
   const [options, setOptions] = useState([
     "Karupu",
@@ -102,6 +104,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
     if (handleValidation()) {
       // Replace this with your logic to save the data to a backend or database
       const dataToSave = {
+        empcode: empCode,
+        empname: empName,
         fromdate: from,
         todate: to,
         totaldays: tot,

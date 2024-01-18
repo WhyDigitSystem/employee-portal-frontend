@@ -46,6 +46,7 @@ export const PermissionRequest = () => {
   const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
   const [getState, setGetState] = React.useState();
+  const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -251,7 +252,7 @@ export const PermissionRequest = () => {
         Authorization: `Bearer ${token}`,
       };
       Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequests/${empcode}`,
         {
           headers,
         }

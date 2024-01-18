@@ -40,6 +40,7 @@ const TodayFullAttendance = lazy(() =>
   import("../pages/protected/TodayFullAttendance")
 );
 const LeaveProcess = lazy(() => import("../pages/protected/LeaveProcess"));
+const ChangePwd = lazy(() => import("../pages/protected/ChangePwd"));
 
 const routes = [
   {
@@ -151,6 +152,10 @@ const routes = [
   {
     path: "/leaveprocess",
     component: LeaveProcess,
+  },
+  {
+    path: "/changepwd",
+    component: ChangePwd,
   },
 ];
 

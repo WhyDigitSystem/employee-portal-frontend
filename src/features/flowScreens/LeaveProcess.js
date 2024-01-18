@@ -3,22 +3,31 @@ import { default as React, useEffect, useState } from "react";
 import TitleCard from "../../components/Cards/TitleCard";
 
 export const LeaveProcess = () => {
-  const [leaveBalanceList, setLeaveBalanceList] = useState([]);
+  const [empList, setEmpList] = useState([]);
+  //const [crLeave, setCrLeave] = useState([]);
+  const [errors, setErrors] = React.useState({});
+  const [empLeave, setEmpLeave] = useState({});
+
+  const handleCrLeave = (event, empIndex) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setEmpLeave({
+      ...empLeave,
+      [empIndex]: numericValue,
+    });
+  };
 
   useEffect(() => {
-    getAllHolidays();
+    getAllEmp();
   }, []);
 
-  const getAllHolidays = async () => {
+  const getAllEmp = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/leave/balance`
       );
 
       if (response.status === 200) {
-        setLeaveBalanceList(
-          response.data.paramObjectsMap.leaveBalanceVO.slice(0, 5)
-        );
+        setEmpList(response.data.paramObjectsMap.leaveBalanceVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -26,13 +35,13 @@ export const LeaveProcess = () => {
   };
 
   return (
-    <TitleCard title={"ABC"}>
+    <TitleCard title={""}>
       {/** Table Data */}
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
             <tr>
-              <th></th>
+              <th className="normal-case">SNo</th>
               <th className="normal-case">Emp Code</th>
               <th className="normal-case">Name</th>
               <th className="normal-case">Leave Type</th>
@@ -41,16 +50,29 @@ export const LeaveProcess = () => {
             </tr>
           </thead>
           <tbody>
-            {leaveBalanceList.map((u, k) => {
+            {empList.map((u, k) => {
               return (
                 <tr key={k}>
                   <th>{k + 1}</th>
                   <td>{u.empcode}</td>
                   <td>{u.empname}</td>
-                  {/* <td>{u.leavetype}</td> */}
-                  <td>{"CL"}</td>
+                  <td>{u.leavetype}</td>
+                  {/* <td>{"CL"}</td> */}
                   <td>{u.availableleave}</td>
-                  <td>{"testing"}</td>
+                  <td>
+                    <input
+                      type="text"
+                      id={`crleave_${k}`}
+                      value={empLeave[k] || ""}
+                      onChange={(event) => handleCrLeave(event, k)}
+                      maxLength={2}
+                      error={Boolean(errors[k])}
+                    />
+
+                    {errors.avlLeave && (
+                      <p className="error-text">{errors.avlLeave}</p>
+                    )}
+                  </td>
                 </tr>
               );
             })}
@@ -70,5 +92,3 @@ export const LeaveProcess = () => {
     </TitleCard>
   );
 };
-
-//export default UserChannels;

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import TableComponent from "./TableComponent";
-import ModalComponent from "./ModalComponent";
-import { GrStatusInfo } from "react-icons/gr";
 import Axios from "axios";
-import { SlOptionsVertical } from "react-icons/sl";
+import React, { useEffect, useState } from "react";
 import { LiaCommentSolid } from "react-icons/lia";
+import { SlOptionsVertical } from "react-icons/sl";
+import ModalComponent from "./ModalComponent";
+import TableComponent from "./TableComponent";
 
 export const PermissionApproval = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,6 +25,9 @@ export const PermissionApproval = () => {
 
   const columns = [
     { Header: "SNo", accessor: "id" },
+    { Header: "EmpCode", accessor: "empcode" },
+    { Header: "EmpName", accessor: "empname" },
+
     { Header: "Date", accessor: "permissiondate" },
     { Header: "From Time", accessor: "fromhour" },
     { Header: "To Time", accessor: "tohour" },
