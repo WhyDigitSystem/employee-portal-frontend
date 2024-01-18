@@ -3,23 +3,19 @@ import TextField from "@mui/material/TextField";
 import Axios from "axios";
 import React, { useState } from "react";
 import "react-tabs/style/react-tabs.css";
+import ErrorText from "../../../components/Typography/ErrorText";
 import { encryptPassword } from "../../user/components/utils";
 
-// function ChangePwd({ newLeaveType }) {
 export const ChangePwd = () => {
-  //const [tabIndex, setTabIndex] = useState(0);
-  const [curPwd, setcurPwd] = useState();
-  const [newPwd, setNewPwd] = useState();
-  const [cPwd, setCPwd] = useState();
+  const [curPwd, setcurPwd] = useState("");
+  const [newPwd, setNewPwd] = useState("");
+  const [cPwd, setCPwd] = useState("");
   const [errors, setErrors] = React.useState({});
   const [savedData, setSavedData] = React.useState("");
   const [empMail, setEmpMail] = React.useState(
     localStorage.getItem("userName")
   );
 
-  // const handleTabSelect = (index) => {
-  //   setTabIndex(index);
-  //};
   const handleCurPwd = (event) => {
     setcurPwd(event.target.value);
   };
@@ -34,10 +30,6 @@ export const ChangePwd = () => {
     fontSize: "20px", // Adjust the font size as needed save
   };
 
-  //   const handleCloseNewLeaveType = () => {
-  //     newLeaveType(false);
-  //   };
-
   const handleNew = () => {
     setcurPwd("");
     setNewPwd("");
@@ -45,18 +37,38 @@ export const ChangePwd = () => {
   };
 
   const handleValidation = () => {
+    console.log("test");
     const newErrors = {};
 
     if (curPwd === "") {
-      newErrors.curPwd = "Date is required";
+      console.log("sahf");
+
+      newErrors.curPwd = "Current Password is required";
     }
 
     if (newPwd === "") {
-      newErrors.newPwd = "Day is required";
+      newErrors.newPwd = "New Password is required";
+    }
+    if (newPwd.length < 8) {
+      newErrors.newPwd = "Password must be at least 8 characters long.";
+    }
+    if (!/[A-Z]/.test(newPwd)) {
+      newErrors.newPwd = "Password must contain at least one uppercase letter.";
+    }
+    if (!/[a-z]/.test(newPwd)) {
+      newErrors.newPwd = "Password must contain at least one lowercase letter.";
+    }
+    if (!/[@#$%^&+=]/.test(newPwd)) {
+      newErrors.newPwd =
+        "Password must contain at least one special character (@#$%^&+=).";
     }
 
     if (cPwd === "") {
-      newErrors.cPwd = "Festival is required";
+      newErrors.cPwd = "Confirm Password is required";
+    }
+
+    if (newPwd !== cPwd) {
+      newErrors.cPwd = "New and Confirm Password are Mismatch";
     }
 
     setErrors(newErrors);
@@ -65,9 +77,9 @@ export const ChangePwd = () => {
   };
 
   const handleSave = () => {
-    const trimmedCurPwd = curPwd.trim();
-    const trimmedNewPwd = newPwd.trim();
     if (handleValidation()) {
+      const trimmedCurPwd = curPwd.trim();
+      const trimmedNewPwd = newPwd.trim();
       console.log("test");
       const dataToSave = {
         email: empMail,
@@ -120,7 +132,7 @@ export const ChangePwd = () => {
                     value={curPwd}
                     onChange={handleCurPwd}
                     error={Boolean(errors.curPwd)}
-                    inputProps={{ maxLength: 30 }}
+                    //inputProps={{ maxLength: 30 }}
                   />
                 </FormControl>
               </div>
@@ -133,7 +145,7 @@ export const ChangePwd = () => {
                     value={newPwd}
                     onChange={handleNewPwd}
                     error={Boolean(errors.newPwd)}
-                    inputProps={{ maxLength: 30 }}
+                    //inputProps={{ maxLength: 30 }}
                   />
                 </FormControl>
               </div>
@@ -146,11 +158,14 @@ export const ChangePwd = () => {
                     value={cPwd}
                     onChange={handleCPwd}
                     error={Boolean(errors.cPwd)}
-                    inputProps={{ maxLength: 30 }}
+                    //inputProps={{ maxLength: 30 }}
                   />
                 </FormControl>
               </div>
             </div>
+            <ErrorText styleClass="mt-8">
+              {errors.curPwd || errors.newPwd || errors.cPwd}
+            </ErrorText>
           </center>
 
           <div className="d-flex flex-row mt-3">
