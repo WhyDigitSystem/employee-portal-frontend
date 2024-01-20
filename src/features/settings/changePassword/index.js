@@ -1,4 +1,8 @@
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import FormControl from "@mui/material/FormControl";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import Axios from "axios";
 import React, { useState } from "react";
@@ -15,6 +19,8 @@ export const ChangePwd = () => {
   const [empMail, setEmpMail] = React.useState(
     localStorage.getItem("userName")
   );
+  const [showCurPwd, setShowCurPwd] = useState(false);
+  const [showCPwd, setShowCPwd] = useState(false);
 
   const handleCurPwd = (event) => {
     setcurPwd(event.target.value);
@@ -24,6 +30,13 @@ export const ChangePwd = () => {
   };
   const handleCPwd = (event) => {
     setCPwd(event.target.value);
+  };
+
+  const handleToggleCurPwdVisibility = () => {
+    setShowCurPwd(!showCurPwd);
+  };
+  const handleToggleCPwdVisibility = () => {
+    setShowCPwd(!showCPwd);
   };
 
   const buttonStyle = {
@@ -80,7 +93,7 @@ export const ChangePwd = () => {
     if (handleValidation()) {
       const trimmedCurPwd = curPwd.trim();
       const trimmedNewPwd = newPwd.trim();
-      console.log("test");
+      //console.log("test");
       const dataToSave = {
         email: empMail,
         newPassword: encryptPassword(trimmedNewPwd),
@@ -109,6 +122,7 @@ export const ChangePwd = () => {
           })
           .catch((error) => {
             console.error("Error saving data:", error);
+            //console.log("Your Current Password is not Correct!...");
           });
       } else {
         console.error("User is not authenticated. Please log in.");
@@ -121,52 +135,80 @@ export const ChangePwd = () => {
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row d-flex justify-content-center align-items-center">
           <div className="d-flex justify-content-between"></div>
-          <center>
-            <div className="justify-content-center mt-3">
-              <div className="col-md-4 mb-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="currentpwd"
-                    label="Current Password"
-                    size="small"
-                    value={curPwd}
-                    onChange={handleCurPwd}
-                    error={Boolean(errors.curPwd)}
-                    //inputProps={{ maxLength: 30 }}
-                  />
-                </FormControl>
-              </div>
-              <div className="col-md-4 mt-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="newpwd"
-                    label="New Password"
-                    size="small"
-                    value={newPwd}
-                    onChange={handleNewPwd}
-                    error={Boolean(errors.newPwd)}
-                    //inputProps={{ maxLength: 30 }}
-                  />
-                </FormControl>
-              </div>
-              <div className="col-md-4 mt-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="repwd"
-                    label="Re-Enter Password"
-                    size="small"
-                    value={cPwd}
-                    onChange={handleCPwd}
-                    error={Boolean(errors.cPwd)}
-                    //inputProps={{ maxLength: 30 }}
-                  />
-                </FormControl>
-              </div>
+
+          <div className="justify-content-center mt-3">
+            <div className="col-md-4 mb-3">
+              <FormControl fullWidth variant="filled">
+                <TextField
+                  id="currentpwd"
+                  label="Current Password"
+                  size="small"
+                  //type="password"
+                  type={showCurPwd ? "text" : "password"}
+                  value={curPwd}
+                  onChange={handleCurPwd}
+                  error={Boolean(errors.curPwd)}
+                  //inputProps={{ maxLength: 30 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleToggleCurPwdVisibility}>
+                          {showCurPwd ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormControl>
             </div>
-            <ErrorText styleClass="mt-8">
-              {errors.curPwd || errors.newPwd || errors.cPwd}
-            </ErrorText>
-          </center>
+            <div className="col-md-4 mt-3">
+              <FormControl fullWidth variant="filled">
+                <TextField
+                  id="newpwd"
+                  label="New Password"
+                  size="small"
+                  value={newPwd}
+                  onChange={handleNewPwd}
+                  error={Boolean(errors.newPwd)}
+                  //inputProps={{ maxLength: 30 }}
+                />
+              </FormControl>
+            </div>
+            <div className="col-md-4 mt-3">
+              <FormControl fullWidth variant="filled">
+                <TextField
+                  id="repwd"
+                  label="Re-Enter Password"
+                  size="small"
+                  value={cPwd}
+                  type={showCPwd ? "text" : "password"}
+                  onChange={handleCPwd}
+                  error={Boolean(errors.cPwd)}
+                  //inputProps={{ maxLength: 30 }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleToggleCPwdVisibility}>
+                          {showCPwd ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </FormControl>
+            </div>
+          </div>
+          <ErrorText styleClass="mt-8">
+            {errors.curPwd || errors.newPwd || errors.cPwd}
+          </ErrorText>
 
           <div className="d-flex flex-row mt-3">
             <button

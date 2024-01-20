@@ -128,13 +128,15 @@ function Header() {
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li className="justify-between">
-                <Link to={"/app/settings-profile"}>
+                {/* <Link to={"/app/settings-profile"}> */}
+                <Link to={"#"}>
                   Profile Settings
                   <span className="badge">New</span>
                 </Link>
               </li>
               <li className="">
-                <Link to={"/app/settings-billing"}>Bill History</Link>
+                {/* <Link to={"/app/settings-billing"}>Bill History</Link> */}
+                <Link to={"#"}>Bill History</Link>
               </li>
               <li className="">
                 <Link to={"/app/changepwd"}>Change Password</Link>

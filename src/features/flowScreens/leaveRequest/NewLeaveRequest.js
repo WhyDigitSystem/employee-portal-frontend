@@ -30,11 +30,11 @@ function NewLeaveRequest({ newLeaveRequest }) {
     "Vasanth",
   ]);
   const [errors, setErrors] = React.useState({});
+
   const [from, setFrom] = React.useState(null);
   const [to, setTo] = React.useState(null);
   const [tot, setTot] = React.useState("");
   const [leaveType, setLeaveType] = React.useState("");
-
   const [notes, setNotes] = React.useState("");
 
   const handleFrom = (newDate) => {
@@ -42,6 +42,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
     setFrom(formattedDate);
   };
+
   const handleNotes = (event) => {
     setNotes(event.target.value);
   };
@@ -79,19 +80,16 @@ function NewLeaveRequest({ newLeaveRequest }) {
     const newErrors = {};
 
     if (!from) {
-      newErrors.from = "Start date is required";
+      newErrors.from = "From Date is required";
     }
-
     if (!to) {
-      newErrors.to = "End date is required";
+      newErrors.to = "To Date is required";
     }
-
+    if (leaveType === "") {
+      newErrors.leaveType = "Leave Type is required";
+    }
     if (!notes) {
-      newErrors.notes = "Address is required";
-    }
-
-    if (!searchValue) {
-      newErrors.searchValue = "City is required";
+      newErrors.notes = "Notes is required";
     }
 
     setErrors(newErrors);
@@ -100,9 +98,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
   };
 
   const handleSave = () => {
-    console.log("test");
+    handleValidation();
     if (handleValidation()) {
-      // Replace this with your logic to save the data to a backend or database
       const dataToSave = {
         empcode: empCode,
         empname: empName,
@@ -159,25 +156,20 @@ function NewLeaveRequest({ newLeaveRequest }) {
 
         <div className="row d-flex mt-3">
           <div className="col-md-4 mb-3">
-            <FormControl
-              fullWidth
-              variant="filled"
-              error={Boolean(errors.from)}
-            >
+            <FormControl fullWidth variant="filled">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="From"
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  //disablePast
                   value={from}
                   onChange={handleFrom}
-                  error={Boolean(errors.from)}
-                  InputProps={{
-                    style: Boolean(errors.from) ? errorInputStyle : {}, // Apply error style if there's an error
-                  }}
                 />
+
+                {errors.from && (
+                  <span className="text-red-500">{errors.from}</span>
+                )}
               </LocalizationProvider>
             </FormControl>
           </div>
@@ -191,11 +183,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   }}
                   value={to}
                   onChange={handleTo}
-                  error={Boolean(errors.to)}
-                  InputProps={{
-                    style: Boolean(errors.to) ? errorInputStyle : {}, // Apply error style if there's an error
-                  }}
                 />
+                {errors.to && <span className="text-red-500">{errors.to}</span>}
               </LocalizationProvider>
             </FormControl>
           </div>
@@ -220,12 +209,15 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 label="Leave Type"
                 value={leaveType}
                 onChange={handleLeaveType}
-                error={Boolean(errors.gender)}
+                //error={Boolean(errors.leaveType)}
               >
                 <MenuItem value={"CL"}>CL</MenuItem>
                 <MenuItem value={"PL"}>PL</MenuItem>
                 {/* <MenuItem value={"Others"}>Others</MenuItem> */}
               </Select>
+              {errors.leaveType && (
+                <span className="text-red-500">{errors.leaveType}</span>
+              )}
             </FormControl>
           </div>
 
@@ -238,8 +230,11 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 multiline
                 value={notes}
                 onChange={handleNotes}
-                error={Boolean(errors.notes)}
+                //error={Boolean(errors.notes)}
               />
+              {errors.notes && (
+                <span className="text-red-500">{errors.notes}</span>
+              )}
             </FormControl>
           </div>
           <div className="col-md-4 mb-3">
@@ -271,6 +266,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
             </FormControl>
           </div>
         </div>
+
         <div className="d-flex flex-row mt-3">
           <button
             type="button"

@@ -26,7 +26,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [add, setAdd] = React.useState(false);
   const [stateCode, setStateCode] = React.useState("");
   const [savedData, setSavedData] = React.useState();
-
+  const [errors, setErrors] = React.useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [fromTime, setFromTime] = useState(null);
   const [toTime, setToTime] = useState(null);
@@ -102,45 +102,68 @@ function NewPermissionRequest({ newPermissionRequest }) {
     setSearchValue("");
   };
 
-  const handleSave = () => {
-    // Create an object with the form data
-    const dataToSave = {
-      permissiondate: selectedDate,
-      fromhour: fromTime,
-      tohour: toTime,
-      totalhours: totalHours,
-      notes: notes,
-      remarks: searchValue,
-      totalhours: "2024-01-10T13:09:17.642+00:00",
-      createdby: empcode,
-      updatedby: empcode,
-      empcode: empcode,
-      empname: empname,
-      status: "Pending",
-    };
-    const token = localStorage.getItem("token");
+  const handleValidation = () => {
+    const newErrors = {};
 
-    if (token) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    if (!selectedDate) {
+      newErrors.selectedDate = "Date is Required";
+    }
+    if (!fromTime) {
+      newErrors.fromTime = "From Time is Required";
+    }
+    if (!toTime) {
+      newErrors.toTime = "To Time is Required";
+    }
+    if (!notes) {
+      newErrors.notes = "Notes is Required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (handleValidation()) {
+      const dataToSave = {
+        permissiondate: selectedDate,
+        fromhour: fromTime,
+        tohour: toTime,
+        totalhours: totalHours,
+        notes: notes,
+        remarks: searchValue,
+        totalhours: "2024-01-10T13:09:17.642+00:00",
+        createdby: empcode,
+        updatedby: empcode,
+        empcode: empcode,
+        empname: empname,
+        status: "Pending",
       };
-      // Make a POST request to your API endpoint to save the data
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
-        dataToSave,
-        { headers }
-      )
-        .then((response) => {
-          console.log("Data saved successfully:", response.data);
-          setSavedData(response.data);
-          handleNew();
-          handleClosePermission();
-        })
-        .catch((error) => {
-          // Handle errors here
-          console.error("Error saving data:", error);
-        });
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+        // Make a POST request to your API endpoint to save the data
+        Axios.post(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
+          dataToSave,
+          { headers }
+        )
+          .then((response) => {
+            console.log("Data saved successfully:", response.data);
+            setSavedData(response.data);
+            handleNew();
+            handleClosePermission();
+          })
+          .catch((error) => {
+            // Handle errors here
+            console.error("Error saving data:", error);
+          });
+      } else {
+        console.error("User is not authenticated. Please log in.");
+      }
     }
   };
 
@@ -167,7 +190,11 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 }}
                 value={selectedDate}
                 onChange={handleDateChange}
+                //error={Boolean(errors.selectedDate)}
               />
+              {errors.selectedDate && (
+                <span className="text-red-500">{errors.selectedDate}</span>
+              )}
             </LocalizationProvider>
           </FormControl>
         </div>
@@ -183,6 +210,9 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 onChange={handleFromTime}
               />
             </DemoContainer>
+            {errors.fromTime && (
+              <span className="text-red-500">{errors.fromTime}</span>
+            )}
           </LocalizationProvider>
         </div>
 
@@ -197,6 +227,9 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 slotProps={{ textField: { size: "small" } }}
               />
             </DemoContainer>
+            {errors.toTime && (
+              <span className="text-red-500">{errors.toTime}</span>
+            )}
           </LocalizationProvider>
         </div>
 
@@ -224,6 +257,9 @@ function NewPermissionRequest({ newPermissionRequest }) {
               onChange={(e) => setNotes(e.target.value)}
               inputProps={{ maxLength: 100 }}
             />
+            {errors.notes && (
+              <span className="text-red-500">{errors.notes}</span>
+            )}
           </FormControl>
         </div>
 
