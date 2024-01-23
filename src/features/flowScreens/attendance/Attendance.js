@@ -1,12 +1,3 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  TextField,
-} from "@mui/material";
 import { default as React, useEffect, useState } from "react";
 
 import Axios from "axios";
@@ -208,7 +199,7 @@ export const Attendance = () => {
               </button>
               <p className="font-bold text-lg text-right me-3 mt-2">
                 {/* <span className="font-normal text-md">CheckIn time: </span> */}
-                {checkinTime}
+                {/* {checkinTime} */}
               </p>
             </div>
           </div>
@@ -217,64 +208,5 @@ export const Attendance = () => {
     </>
   );
 };
-
-export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
-  const [values, setValues] = useState(() =>
-    columns.reduce((acc, column) => {
-      acc[column.accessorKey ?? ""] = "";
-      return acc;
-    }, {})
-  );
-
-  const handleSubmit = () => {
-    //put your validation logic here
-    onSubmit(values);
-    onClose();
-  };
-
-  return (
-    <Dialog open={open}>
-      <DialogTitle textAlign="center">Add</DialogTitle>
-      <DialogContent>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Stack
-            sx={{
-              width: "100%",
-              minWidth: { xs: "300px", sm: "360px", md: "400px" },
-              gap: "1.5rem",
-            }}
-          >
-            {columns.map((column) => (
-              <TextField
-                key={column.accessorKey}
-                label={column.header}
-                name={column.accessorKey}
-                onChange={(e) =>
-                  setValues({ ...values, [e.target.name]: e.target.value })
-                }
-              />
-            ))}
-          </Stack>
-        </form>
-      </DialogContent>
-      <DialogActions sx={{ p: "1.25rem" }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
-          Add
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
-
-const validateRequired = (value) => !!value.length;
-const validateEmail = (email) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-const validateAge = (age) => age >= 18 && age <= 50;
 
 export default Attendance;
