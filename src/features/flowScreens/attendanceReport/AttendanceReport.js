@@ -9,6 +9,8 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,6 +29,7 @@ export const AttendanceReport = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [monAttendanceReport, setMonAttendanceReport] = useState([]);
 
   const statsData = [
     {
@@ -85,24 +88,36 @@ export const AttendanceReport = () => {
     setValidationErrors({});
   };
 
+  const getAllEmpAttendanceReport = async () => {
+    const fromDate = "2022-01-01";
+    const toDate = "2022-01-31";
+    const orgId = "1";
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/employee/getEmployeeAttendanceActivity?endDate=${toDate}&orgId=${orgId}&startDate=${fromDate}`
+      );
+
+      if (response.status === 200) {
+        setMonAttendanceReport(
+          response.data.paramObjectsMap.employeeAttendanceActivity
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const exportDataAsCSV = () => {
-    // Format your data to be exported as CSV (tableData in this case)
-    // For example, transform your data into an array of arrays or objects
-    // that represents rows and columns in the CSV file format
-
-    // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
-    // You might need to modify the data structure to fit CSVLink requirements
-
     const csvData = tableData.map((row) => ({
       "S No": row.SNo,
       EmpCode: row.empCode,
       EmpName: row.empName,
-      PresentDays: row.preDays,
-      UnPaidLeaves: row.upl,
-      CasualLeaves: row.cl,
-      TotSunday: row.totsunday,
-      TotHoliday: row.totholiday,
-      EffectiveDays: row.effDays,
+      // PresentDays: row.presentDays,
+      // UnPaidLeaves: row.upl,
+      // CasualLeaves: row.cl,
+      // TotSunday: row.totsunday,
+      // TotHoliday: row.totalHolidays,
+      // EffectiveDays: row.effDays,
     }));
 
     // Define CSV headers
@@ -178,14 +193,14 @@ export const AttendanceReport = () => {
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "SNo",
-        header: "S No",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
+      // {
+      //   accessorKey: "SNo",
+      //   header: "S No",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
       {
         accessorKey: "empCode",
         header: "Emp Code",
@@ -203,39 +218,39 @@ export const AttendanceReport = () => {
         }),
       },
       {
-        accessorKey: "preDays",
-        header: "Present Days",
+        accessorKey: "workingDays",
+        header: "Working Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "upl",
-        header: "UnPaid Leaves",
+        accessorKey: "noOfWeekendDays",
+        header: "Weekend",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "cl",
-        header: "Casual Leaves",
+        accessorKey: "noOfCommonHolidays",
+        header: "Common Holidays",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "totsunday",
-        header: "Total Sundays",
+        accessorKey: "noOfDepHolidays",
+        header: "Dept Holidays",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "totholiday",
+        accessorKey: "totalHolidays",
         header: "Total Holidays",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -243,8 +258,32 @@ export const AttendanceReport = () => {
         }),
       },
       {
-        accessorKey: "effDays",
-        header: "Effective Days",
+        accessorKey: "totalDays",
+        header: "Total Days",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "compTaken",
+        header: "Comp Off",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "numberOfLeaveDays",
+        header: "Leave Days",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "presentDays",
+        header: "Present Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -296,10 +335,10 @@ export const AttendanceReport = () => {
         <div className="d-flex flex-row mt-3 ml-5">
           <button
             type="button"
-            //onClick={handleCustomer}
+            onClick={getAllEmpAttendanceReport}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Search
           </button>
           <button
             type="button"
@@ -321,7 +360,7 @@ export const AttendanceReport = () => {
                 },
               }}
               columns={columns}
-              data={tableData}
+              data={monAttendanceReport}
               editingMode="modal"
               enableColumnOrdering
               //enableEditing

@@ -5,7 +5,6 @@ import CircleStackIcon from "@heroicons/react/24/outline/CircleStackIcon";
 import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
-import UserChannels from "./components/UserChannels";
 // import LineChart from './components/LineChart'
 // import BarChart from './components/BarChart'
 // import DashboardTopBar from './components/DashboardTopBar'
@@ -39,7 +38,7 @@ const statsData = [
   },
   {
     title: "Active Users",
-    value: "5.6k",
+    value: " mx-3.6k",
     icon: <UsersIcon className="w-8 h-8" />,
     description: "↙ 300 (18%)",
   },
@@ -91,10 +90,48 @@ function Dashboard() {
         {/* <PageStats /> */}
       </div>
 
+      {/* <div className="row">
+        <div className="card col-md-3 col-sm-3">
+          <div className="d-flex flex-wrap">
+            <p>Available Leave</p>
+            <p>1</p>
+          </div>
+        </div>
+      </div> */}
+
       {/** ---------------------- User source channels table  ------------------------- */}
 
+      {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+        <div className="card w-full p-6 bg-base-100 shadow-xl">
+          <div className="row">
+            <div className="card col-md-5  col-sm-5 shadow-xl ">
+              Next Holiday
+            </div>
+
+            <div className="card col-md-3 col-sm-3 mx-2 shadow-xl">
+              <p>Available Leave</p>
+              <p className="text-center">1</p>
+            </div>
+            <div className="card col-md-3 col-sm-3 mx-2 shadow-xl ">
+              <p>Taken Leave</p>
+              <p className="text-center">1</p>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="row mt-5">
+        <div className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl">Holiday</div>
+        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl">
+          Avl Leave
+        </div>
+        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl">
+          Taken Leave
+        </div>
+      </div>
+
       <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-        <UserChannels />
+        {/* <UserChannels /> */}
         {(userRoleCheck === "HR" ||
           userRoleCheck === "MANAGEMENT" ||
           userRoleCheck === "ADMIN") && (
