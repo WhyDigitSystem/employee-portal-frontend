@@ -16,6 +16,8 @@ import TodayAttendance from "./components/TodayAttendance";
 import { default as React } from "react";
 import DashboardLeaveApproval from "./components/DashboardLeaveApproval";
 import DashboardPermissionApproval from "./components/DashboardPermissionApproval";
+//import UserChannels from "./components/UserChannels";
+import { HolidayCard } from "./components/HolidayCard";
 
 const statsData = [
   {
@@ -121,12 +123,16 @@ function Dashboard() {
       </div> */}
 
       <div className="row mt-5">
-        <div className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl">Holiday</div>
-        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl">
-          Avl Leave
+        <div className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl">
+          <HolidayCard />
         </div>
-        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl">
-          Taken Leave
+        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl d-flex justify-content-center align-items-center">
+          <div>Avl Leave </div>
+          <div>-</div>
+        </div>
+        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl d-flex justify-content-center align-items-center">
+          <div>Taken Leave </div>
+          <div>-</div>
         </div>
       </div>
 

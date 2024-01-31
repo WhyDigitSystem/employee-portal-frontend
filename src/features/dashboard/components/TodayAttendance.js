@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import { default as React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
@@ -17,10 +18,7 @@ function TodayAttendance() {
       );
 
       if (response.status === 200) {
-        settodayAttendanceList(
-          // response.data.paramObjectsMap.EmployeeStatusVO.slice(0, 5)
-          response.data.paramObjectsMap.EmployeeStatusVO
-        );
+        settodayAttendanceList(response.data.paramObjectsMap.EmployeeStatusVO);
         console.log("sts", response.data.paramObjectsMap.EmployeeStatusVO);
       }
     } catch (error) {
@@ -40,20 +38,26 @@ function TodayAttendance() {
               <th className="normal-case">Emp ID</th>
               <th className="normal-case">In Time</th>
               {/* <th className="normal-case">Out Time</th> */}
-              <th className="normal-case">status</th>
+              <th className="normal-case">Status</th>
             </tr>
           </thead>
           <tbody>
             {todayAttendanceList.map((value, key) => {
+              // Parse entrytime to get hours and minutes
+              const formattedEntryTime = value.entrytime
+                ? moment(value.entrytime, "HH:mm:ss.SSSSSS").format("hh:mm A")
+                : "-";
+              // Check if status is null or empty
+              const formattedStatus = value.status ? value.status : "-";
+
               return (
                 <tr key={key}>
                   {/* <th>{key + 1}</th> */}
 
                   <td>{value.empname}</td>
-                  <td>{value.empcode}</td>
-                  <td>{value.entrytime}</td>
-                  {/* <td>{`${value.entrytime}`}</td> */}
-                  <td>{value.status}</td>
+                  <td className="text-center">{value.empcode}</td>
+                  <td className="text-center">{formattedEntryTime}</td>
+                  <td className="text-center">{formattedStatus}</td>
                 </tr>
               );
             })}

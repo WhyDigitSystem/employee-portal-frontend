@@ -3,9 +3,8 @@ import { default as React, useEffect, useState } from "react";
 import Axios from "axios";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { data } from "./makeData";
 
-export const Attendance = () => {
+export const JpCheckinCheckout = () => {
   const buttonStyle = {
     fontSize: "20px",
   };
@@ -15,7 +14,7 @@ export const Attendance = () => {
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [checkedStatus, setCheckedStatus] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState(() => data);
+  const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
   const [formattedDate, setFormattedDate] = useState("");
   const [errors, setErrors] = useState({});
@@ -25,138 +24,53 @@ export const Attendance = () => {
   const [disableCheckOut, setDisableCheckOut] = useState("");
 
   useEffect(() => {
-    const fetchEmployeeStatus = async () => {
-      try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
-        );
-
-        if (response.data.statusFlag === "Ok") {
-          const status = response.data.paramObjectsMap.EmployeeStatus.status;
-          setCheckedStatus(status === "In");
-
-          {
-            status === "In" && setDisableCheckIn(true);
-            status === "Out" && setDisableCheckOut(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching employee status:", error);
-      }
-    };
-    const fetchEmployeeTime = async () => {
-      try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
-        );
-
-        if (response.data.statusFlag === "Ok") {
-          // Update the checkedStatus state based on the fetched status
-          setCheckinTime(
-            response.data.paramObjectsMap.EmployeeStatusVO.entrytime
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching employee status:", error);
-      }
-    };
-
-    fetchEmployeeStatus();
-    fetchEmployeeTime();
-    getAllAttendanceById();
-
+    // Run the code when the component mounts
     const intervalId = setInterval(() => {
       const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
       setFormattedDate(currentDate);
-    }, 1000);
+    }, 1000); // Update every second
 
+    // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
+  //CheckIn POST API
   const handleCheckIn = async () => {
+    const dataToSave = {
+      checkin: true,
+      empid: 12,
+      orgId: 1,
+    };
+    console.log(dataToSave);
     try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+      await Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/employee/employeeInOutAction`,
+        dataToSave
       );
-
-      if (response.data.statusFlag === "Ok") {
-        const status = response.data.paramObjectsMap.EmployeeStatus.status;
-
-        if (status === "Out" || status === "null") {
-          // Employee is already checked in, perform checkout
-          await Axios.post(
-            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-            { userid }
-          );
-        }
-        // else {
-        //   // Employee is checked out, perform checkin
-        //   await Axios.post(
-        //     `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-        //     { userid } // Replace with your request body if needed
-        //   );
-        //   // Update any UI or state to reflect the checkin action
-        // }
-
-        // // Update checkedStatus state or UI as needed after action
-        // setCheckedStatus(!checkedStatus);
-        window.location.reload();
-      }
     } catch (error) {
       console.error("Error during check:", error);
     }
   };
+
+  //CheckOut POST API
   const handleCheckOut = async () => {
+    const dataToSave = {
+      checkin: false,
+      empid: 12,
+      orgId: 1,
+    };
+    console.log(dataToSave);
     try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+      await Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/employee/employeeInOutAction`,
+        dataToSave
       );
-
-      if (response.data.statusFlag === "Ok") {
-        const status = response.data.paramObjectsMap.EmployeeStatus.status;
-
-        if (status === "In" || status === "null") {
-          // Employee is already checked in, perform checkout
-          await Axios.post(
-            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
-            { userid }
-          );
-        }
-        // else {
-        //   // Employee is checked out, perform checkin
-        //   await Axios.post(
-        //     `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-        //     { userid } // Replace with your request body if needed
-        //   );
-        //   // Update any UI or state to reflect the checkin action
-        // }
-
-        // // Update checkedStatus state or UI as needed after action
-        // setCheckedStatus(!checkedStatus);
-        window.location.reload();
-      }
     } catch (error) {
       console.error("Error during check:", error);
     }
   };
 
-  const handleCancelRowEdits = () => {
-    setValidationErrors({});
-  };
-
-  const getAllAttendanceById = async () => {
-    try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/attendance/${empcode}`
-      );
-
-      if (response.status === 200) {
-        setAttendanceList(response.data.paramObjectsMap.Attendance);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //Today Attendance Status API
 
   return (
     <>
@@ -196,7 +110,7 @@ export const Attendance = () => {
               </button>
               <p className="font-bold text-lg text-right me-3 mt-2">
                 {/* <span className="font-normal text-md">CheckIn time: </span> */}
-                {checkinTime}
+                {/* {checkinTime} */}
               </p>
             </div>
           </div>
@@ -206,4 +120,4 @@ export const Attendance = () => {
   );
 };
 
-export default Attendance;
+export default JpCheckinCheckout;

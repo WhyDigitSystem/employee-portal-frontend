@@ -1,29 +1,71 @@
-import React from "react";
+import axios from "axios";
+import { default as React, useEffect, useState } from "react";
 
 export const HolidayCard = () => {
+  const [nextHoliday, setNextHoliday] = useState([]);
+
+  useEffect(() => {
+    getNextHolidays();
+  }, []);
+
+  const getNextHolidays = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
+      );
+
+      if (response.status === 200) {
+        const allHolidays = response.data.paramObjectsMap.holidayVO;
+
+        // Sort holidays by date
+        const sortedHolidays = allHolidays.sort((a, b) => {
+          return new Date(a.holiday_date) - new Date(b.holiday_date);
+        });
+
+        // Find the next holiday from the current date
+        const currentDate = new Date();
+        const nextHoliday = sortedHolidays.find(
+          (holiday) => new Date(holiday.holiday_date) > currentDate
+        );
+
+        setNextHoliday(nextHoliday ? [nextHoliday] : []);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
+
   return (
     <>
-      <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <div className="d-flex flex-row mt-3">
-          <div className="col-md-8 mb-3 ">
-            <p className="font-semibold text-xl w-48 ml-10">{formattedDate}</p>
+      {/* <div className="card w-full p-6 bg-base-100 shadow-xl"> */}
+      <div
+        className="flex flex-col items-center"
+        // style={{
+        //   backgroundImage: `url(/happy_holiday.jpg)`,
+        // }}
+      >
+        <h2 className="text-xl font-bold mb-4">Next Holiday</h2>
+        {nextHoliday.map((holiday, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <p className="text-lg">{holiday.festival}</p>
+            <p className="text-sm text-gray-500">
+              Date: {formatDate(holiday.holiday_date)} | Day: {holiday.day}
+            </p>
+            <a
+              href="/app/holidayreport"
+              className="absolute bottom-4 right-4 text-blue-500"
+            >
+              View All
+            </a>
           </div>
-          <button
-            type="button"
-            //onClick={handleCustomer}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            CheckIN
-          </button>
-          <button
-            type="button"
-            //onClick={handleCloseNewLeave}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            CheckOut
-          </button>
-        </div>
+        ))}
       </div>
+      {/* </div> */}
     </>
   );
 };

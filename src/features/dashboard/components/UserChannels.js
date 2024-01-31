@@ -10,6 +10,20 @@ function UserChannels() {
     getAllHolidays();
   }, []);
 
+  // const getAllHolidays = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
+  //     );
+
+  //     if (response.status === 200) {
+  //       setHolidayList(response.data.paramObjectsMap.holidayVO.slice(0, 5));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const getAllHolidays = async () => {
     try {
       const response = await axios.get(
@@ -17,7 +31,20 @@ function UserChannels() {
       );
 
       if (response.status === 200) {
-        setHolidayList(response.data.paramObjectsMap.holidayVO.slice(0, 5));
+        const allHolidays = response.data.paramObjectsMap.holidayVO;
+
+        // Sort holidays by date
+        const sortedHolidays = allHolidays.sort((a, b) => {
+          return new Date(a.holiday_date) - new Date(b.holiday_date);
+        });
+
+        // Find the next holiday from the current date
+        const currentDate = new Date();
+        const nextHoliday = sortedHolidays.find(
+          (holiday) => new Date(holiday.holiday_date) > currentDate
+        );
+
+        setHolidayList(nextHoliday ? [nextHoliday] : []);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
