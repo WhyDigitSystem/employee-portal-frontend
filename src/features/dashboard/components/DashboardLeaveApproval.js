@@ -106,35 +106,42 @@ function DashboardLeaveApproval() {
                       {moment(value.todate).format("DD-MM-YY")}
                     </td>
                     <td className="dasboardPermissiontbl">{`${value.totaldays}`}</td>
-                    {/* new try */}
-                    {/* Approval symbol */}
+
                     <td className="d-flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        style={{ color: "green", cursor: "pointer" }}
+                      <button
+                        className="btn  btn-sm btn-ghost normal-case"
                         onClick={() => ApproveLeave(value.id)}
                       >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path
-                          fill="currentColor"
-                          d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        style={{ color: "red", cursor: "pointer" }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          style={{ color: "green", cursor: "pointer" }}
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            fill="currentColor"
+                            d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        className="btn  btn-sm btn-ghost normal-case"
                         onClick={() => RejectLeave(value.id)}
                       >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path
-                          fill="currentColor"
-                          d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59L5 6.41l5.59 5.59L5 17.59l1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"
-                        />
-                      </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          style={{ color: "red", cursor: "pointer" }}
+                        >
+                          <path d="M0 0h24v24H0z" fill="none" />
+                          <path
+                            fill="currentColor"
+                            d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59L5 6.41l5.59 5.59L5 17.59l1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"
+                          />
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 );

@@ -43,12 +43,7 @@ export const HolidayCard = () => {
   return (
     <>
       {/* <div className="card w-full p-6 bg-base-100 shadow-xl"> */}
-      <div
-        className="flex flex-col items-center"
-        // style={{
-        //   backgroundImage: `url(/happy_holiday.jpg)`,
-        // }}
-      >
+      <div className="flex flex-col items-center">
         <h2 className="text-xl font-bold mb-4">Next Holiday</h2>
         {nextHoliday.map((holiday, index) => (
           <div key={index} className="flex flex-col items-center">

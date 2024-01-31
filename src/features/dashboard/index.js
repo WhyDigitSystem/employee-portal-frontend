@@ -123,7 +123,15 @@ function Dashboard() {
       </div> */}
 
       <div className="row mt-5">
-        <div className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl">
+        <div
+          className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl"
+          // style={{
+          //   backgroundImage: `url(/happy_holiday.jpg)`,
+          //   backgroundSize: "cover", // or 'contain', depending on your preference
+          //   backgroundRepeat: "no-repeat",
+          //   backgroundPosition: "center",
+          // }}
+        >
           <HolidayCard />
         </div>
         <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl d-flex justify-content-center align-items-center">
