@@ -26,6 +26,36 @@ function TodayAttendance() {
     }
   };
 
+  const changeStatusColor = (status) => {
+    if (status === null || status === "") {
+      return (
+        <div
+          className="badge badge-danger"
+          style={{ backgroundColor: "#ff0000" }}
+        >
+          Absent
+        </div>
+      );
+    } else {
+      return <div className="badge badge-success center">{status}</div>;
+    }
+  };
+
+  const changeIntimeColor = (intime) => {
+    if (intime > "10:00 AM")
+      return (
+        <div
+          className="badge badge-danger"
+          style={{ backgroundColor: "#4d4dff" }}
+        >
+          {intime}
+        </div>
+      );
+    if (intime <= "10:00 AM")
+      return <div className="badge badge-success center">{intime}</div>;
+    else return <div className="badge badge-danger">N/A</div>;
+  };
+
   return (
     <TitleCard title={"Today Attendance"}>
       {/** Table Data */}
@@ -37,18 +67,16 @@ function TodayAttendance() {
               <th className="normal-case">Emp Name</th>
               <th className="normal-case">Emp ID</th>
               <th className="normal-case">In Time</th>
-              {/* <th className="normal-case">Out Time</th> */}
               <th className="normal-case">Status</th>
             </tr>
           </thead>
           <tbody>
             {todayAttendanceList.map((value, key) => {
               // Parse entrytime to get hours and minutes
+
               const formattedEntryTime = value.entrytime
                 ? moment(value.entrytime, "HH:mm:ss.SSSSSS").format("hh:mm A")
                 : "-";
-              // Check if status is null or empty
-              const formattedStatus = value.status ? value.status : "-";
 
               return (
                 <tr key={key}>
@@ -56,8 +84,12 @@ function TodayAttendance() {
 
                   <td>{value.empname}</td>
                   <td className="text-center">{value.empcode}</td>
-                  <td className="text-center">{formattedEntryTime}</td>
-                  <td className="text-center">{formattedStatus}</td>
+                  <td className="text-center">
+                    {changeIntimeColor(formattedEntryTime)}
+                  </td>
+                  <td className="text-center">
+                    {changeStatusColor(value.status)}
+                  </td>
                 </tr>
               );
             })}

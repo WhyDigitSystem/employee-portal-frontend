@@ -165,6 +165,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   }}
                   value={from}
                   onChange={handleFrom}
+                  format="DD/MM/YYYY"
                 />
 
                 {errors.from && (
@@ -183,6 +184,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   }}
                   value={to}
                   onChange={handleTo}
+                  format="DD/MM/YYYY"
                 />
                 {errors.to && <span className="text-red-500">{errors.to}</span>}
               </LocalizationProvider>

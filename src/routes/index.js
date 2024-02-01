@@ -45,6 +45,9 @@ const ChangePwd = lazy(() => import("../pages/protected/ChangePwd"));
 const JpCheckinCheckout = lazy(() =>
   import("../pages/protected/JpCheckinCheckout")
 );
+const SearchAttendance = lazy(() =>
+  import("../pages/protected/SearchAttendance")
+);
 
 const routes = [
   {
@@ -168,6 +171,10 @@ const routes = [
   {
     path: "/jpcheckincheckout",
     component: JpCheckinCheckout,
+  },
+  {
+    path: "/searchattendance",
+    component: SearchAttendance,
   },
 ];
 

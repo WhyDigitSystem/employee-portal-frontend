@@ -190,6 +190,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
                 }}
                 value={selectedDate}
                 onChange={handleDateChange}
+                format="DD/MM/YYYY"
                 //error={Boolean(errors.selectedDate)}
               />
               {errors.selectedDate && (
