@@ -9,9 +9,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
+import ToastComponent from "../../../utils/ToastComponent";
 
 const errorInputStyle = {
   border: "1px solid red",
@@ -35,7 +36,20 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [to, setTo] = React.useState(null);
   const [tot, setTot] = React.useState("");
   const [leaveType, setLeaveType] = React.useState("");
+  const [selectLeave, setSelectLeave] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const [showLeaveTypeField, setShowLeaveTypeField] = useState(false);
+  const [notification, setNotification] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [errorType, setErrorType] = React.useState("");
+
+  useEffect(() => {
+    if (from && to && from === to) {
+      setShowLeaveTypeField(true);
+    } else {
+      setShowLeaveTypeField(false);
+    }
+  }, [from, to]);
 
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
@@ -48,6 +62,22 @@ function NewLeaveRequest({ newLeaveRequest }) {
   };
   const handleLeaveType = (event) => {
     setLeaveType(event.target.value);
+  };
+
+  const handleSelectLeave = (event) => {
+    const selectedLeave = event.target.value;
+    setSelectLeave(selectedLeave);
+
+    // Update tot based on selected leave type
+    if (selectedLeave === "1st Half") {
+      setTot("0.5");
+    }
+    if (selectedLeave === "2nd Half") {
+      setTot("0.5");
+    }
+    if (selectedLeave === "Full Day") {
+      setTot("1");
+    }
   };
 
   const handleTo = (newDate) => {
@@ -131,10 +161,16 @@ function NewLeaveRequest({ newLeaveRequest }) {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
             handleNew();
-            handleCloseNewLeave();
+            //handleCloseNewLeave();
+            setMessage(response.data.paramObjectsMap.message);
+            setErrorType("success");
+            setNotification(true);
           })
           .catch((error) => {
             console.error("Error saving data:", error);
+            setMessage("Error: Leave Request not Raise");
+            setErrorType("error");
+            setNotification(true);
           });
       } else {
         console.error("User is not authenticated. Please log in.");
@@ -155,6 +191,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
         </div>
 
         <div className="row d-flex mt-3">
+          {/* FROM DATE FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -174,6 +211,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
               </LocalizationProvider>
             </FormControl>
           </div>
+          {/* TO DATE FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -190,7 +228,54 @@ function NewLeaveRequest({ newLeaveRequest }) {
               </LocalizationProvider>
             </FormControl>
           </div>
+          {/* HALF OR FULL DAY FIELD */}
 
+          {/* <div className="col-md-4 mb-3">
+            <FormControl fullWidth size="small">
+              <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Select Leave"
+                value={selectLeave}
+                onChange={handleSelectLeave}
+                //error={Boolean(errors.leaveType)}
+              >
+                <MenuItem value={"1st Half"}>1st Half</MenuItem>
+                <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
+                <MenuItem value={"Full Day"}>Full Day</MenuItem>
+              </Select>
+              {errors.selectLeave && (
+                <span className="text-red-500">{errors.selectLeave}</span>
+              )}
+            </FormControl>
+          </div> */}
+          {showLeaveTypeField && from && to && (
+            <div className="col-md-4 mb-3">
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">
+                  Select Leave
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Select Leave"
+                  value={selectLeave}
+                  onChange={handleSelectLeave}
+                  //error={Boolean(errors.leaveType)}
+                >
+                  <MenuItem value={"1st Half"}>1st Half</MenuItem>
+                  <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
+                  <MenuItem value={"Full Day"}>Full Day</MenuItem>
+                </Select>
+                {errors.selectLeave && (
+                  <span className="text-red-500">{errors.selectLeave}</span>
+                )}
+              </FormControl>
+            </div>
+          )}
+
+          {/* TOTAL DAYS FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <TextField
@@ -202,6 +287,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
               />
             </FormControl>
           </div>
+          {/* LEAVE TYPE FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
@@ -223,6 +309,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
             </FormControl>
           </div>
 
+          {/* NOTES FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <TextField
@@ -239,6 +326,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
               )}
             </FormControl>
           </div>
+          {/* NOTIFY FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <Autocomplete
@@ -286,6 +374,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </button>
         </div>
       </div>
+
+      {notification && <ToastComponent content={message} type={errorType} />}
     </>
   );
 }
