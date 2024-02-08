@@ -5,7 +5,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+//import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import Axios from "axios";
 import dayjs from "dayjs";
 import React, { useState } from "react";
@@ -51,32 +51,53 @@ function NewPermissionRequest({ newPermissionRequest }) {
   };
 
   const handleFromTime = (selectedDate) => {
-    const originalDateString = selectedDate;
-    const originalDate = new Date(originalDateString);
+    // Parse the selected date using dayjs
+    const originalDate = dayjs(selectedDate);
+
+    // Get hours and minutes
+    const hours = originalDate.hour();
+    const minutes = originalDate.minute();
+
+    // Check if the selected time is within the allowed range (9:00 AM to 7:00 PM)
+    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+      // If the selected time is outside the allowed range, display an error message
+      setErrors({
+        ...errors,
+        fromTime: "Only Allow 9AM to 7PM",
+      });
+      // Clear the fromTime state to prevent setting an invalid time
+      setFromTime(null);
+    } else {
+      // If the selected time is within the allowed range, update the state
+      const formattedTime = originalDate.format("HH:mm:ss");
+      setFromTime(formattedTime);
+      // Clear the error message for fromTime if it was previously set
+      setErrors({
+        ...errors,
+        fromTime: null,
+      });
+    }
+  };
+
+  const handleToTime = (selectedDate) => {
+    const originalDate = dayjs(selectedDate);
 
     // Get hours, minutes, and seconds
-    const hours = originalDate.getUTCHours().toString().padStart(2, "0");
-    const minutes = originalDate.getUTCMinutes().toString().padStart(2, "0");
-    const seconds = originalDate.getUTCSeconds().toString().padStart(2, "0");
+    const hours = originalDate.format("HH");
+    const minutes = originalDate.format("mm");
+    const seconds = originalDate.format("ss");
 
     // Formatted time string
     const formattedTime = `${hours}:${minutes}:${seconds}`;
 
-    console.log(formattedTime); // Output: "18:45:00"
-    setFromTime(selectedDate);
-  };
-  const handleToTime = (selectedDate) => {
-    const originalDateString = selectedDate;
-    const originalDate = new Date(originalDateString);
+    console.log("Selected to time:", formattedTime);
 
-    // Get hours, minutes, and seconds
-    const hours = originalDate.getUTCHours().toString().padStart(2, "0");
-    const minutes = originalDate.getUTCMinutes().toString().padStart(2, "0");
-    const seconds = originalDate.getUTCSeconds().toString().padStart(2, "0");
+    // Update state
+    setToTime(formattedTime);
 
     // Calculate time difference
-    const fromDateTime = dayjs(fromTime);
-    const toDateTime = dayjs(selectedDate);
+    const fromDateTime = dayjs(fromTime, "HH:mm:ss");
+    const toDateTime = dayjs(formattedTime, "HH:mm:ss");
     const duration = toDateTime.diff(fromDateTime, "minute"); // Difference in minutes
 
     // Extract hours and minutes
@@ -85,12 +106,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
     // Update totalHours state
     setTotalHours(`${durationHours}:${durationMinutes}`);
-
-    // Formatted time string
-    const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-    console.log(formattedTime); // Output: "18:45:00"
-    setToTime(selectedDate);
   };
 
   const handleNew = () => {
@@ -117,6 +132,14 @@ function NewPermissionRequest({ newPermissionRequest }) {
     if (!notes) {
       newErrors.notes = "Notes is Required";
     }
+    if (totalHours) {
+      const [hours, minutes] = totalHours.split(":").map(Number);
+      const totalMinutes = hours * 60 + minutes;
+      if (totalMinutes > 120) {
+        // 120 minutes = 2 hours
+        newErrors.totalHours = "Total Hours cannot exceed 2 hours";
+      }
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -131,7 +154,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
         totalhours: totalHours,
         notes: notes,
         remarks: searchValue,
-        totalhours: "2024-01-10T13:09:17.642+00:00",
+        totalhours: totalHours,
         createdby: empcode,
         updatedby: empcode,
         empcode: empcode,
@@ -202,36 +225,40 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
         {/* From Time Picker */}
         <div className="col-md-4 mb-3">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["TimePicker", "TimePicker"]}>
+          <FormControl fullWidth variant="filled">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {/* <DemoContainer components={["TimePicker", "TimePicker"]}> */}
               <TimePicker
                 label="From"
                 defaultValue={fromTime}
                 slotProps={{ textField: { size: "small" } }}
                 onChange={handleFromTime}
               />
-            </DemoContainer>
-            {errors.fromTime && (
-              <span className="text-red-500">{errors.fromTime}</span>
-            )}
-          </LocalizationProvider>
+              {/* </DemoContainer> */}
+              {errors.fromTime && (
+                <span className="text-red-500">{errors.fromTime}</span>
+              )}
+            </LocalizationProvider>
+          </FormControl>
         </div>
 
         {/* To Time Picker */}
         <div className="col-md-4 mb-3">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["TimePicker", "TimePicker"]}>
+          <FormControl fullWidth variant="filled">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {/* <DemoContainer components={["TimePicker", "TimePicker"]}> */}
               <TimePicker
                 label="To"
                 value={toTime}
                 onChange={handleToTime}
                 slotProps={{ textField: { size: "small" } }}
               />
-            </DemoContainer>
-            {errors.toTime && (
-              <span className="text-red-500">{errors.toTime}</span>
-            )}
-          </LocalizationProvider>
+              {/* </DemoContainer> */}
+              {errors.toTime && (
+                <span className="text-red-500">{errors.toTime}</span>
+              )}
+            </LocalizationProvider>
+          </FormControl>
         </div>
 
         {/* Total Hours TextField */}
@@ -242,7 +269,11 @@ function NewPermissionRequest({ newPermissionRequest }) {
               label="Total Hours"
               size="small"
               value={totalHours}
+              disabled
             />
+            {errors.totalHours && (
+              <span className="text-red-500">{errors.totalHours}</span>
+            )}
           </FormControl>
         </div>
 
@@ -266,29 +297,31 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
         {/* Autocomplete */}
         <div className="col-md-4 mb-3">
-          <Autocomplete
-            style={{ marginRight: 13, marginLeft: -10 }}
-            value={searchValue}
-            onChange={handleSearchChange}
-            options={options}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Notify"
-                variant="outlined"
-                size="small"
-                InputProps={{
-                  ...params.InputProps,
-                  startAdornment: (
-                    <>
-                      <AiOutlineSearch style={{ marginLeft: 8 }} />
-                      {params.InputProps.startAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
-          />
+          <FormControl fullWidth variant="filled">
+            <Autocomplete
+              // style={{ marginRight: 13, marginLeft: 0 }}
+              value={searchValue}
+              onChange={handleSearchChange}
+              options={options}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Notify"
+                  variant="outlined"
+                  size="small"
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <>
+                        <AiOutlineSearch style={{ marginLeft: 8 }} />
+                        {params.InputProps.startAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            />
+          </FormControl>
         </div>
       </div>
       <div className="d-flex flex-row mt-3">

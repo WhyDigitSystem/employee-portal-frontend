@@ -48,6 +48,10 @@ const JpCheckinCheckout = lazy(() =>
 const SearchAttendance = lazy(() =>
   import("../pages/protected/SearchAttendance")
 );
+const AllOrg = lazy(() => import("../pages/protected/AllOrg"));
+const OrganizationSetup = lazy(() =>
+  import("../pages/protected/OrganizationSetup")
+);
 
 const routes = [
   {
@@ -175,6 +179,14 @@ const routes = [
   {
     path: "/searchattendance",
     component: SearchAttendance,
+  },
+  {
+    path: "/allorg",
+    component: AllOrg,
+  },
+  {
+    path: "/organizationsetup",
+    component: OrganizationSetup,
   },
 ];
 

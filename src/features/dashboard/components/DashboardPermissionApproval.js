@@ -111,42 +111,13 @@ function DashboardPermissionApproval() {
                     <td className="dasboardPermissiontbl">
                       {moment(value.permissiondate).format("DD-MM-YY")}
                     </td>
-                    <td className="dasboardPermissiontbl">
-                      {formatedFromTime}
-                    </td>
+                    <td className="dasboardPermissiontbl">{value.fromhour}</td>
                     {/* <td className="dasboardPermissiontbl">{value.fromhour}</td> */}
-                    <td className="dasboardPermissiontbl">{formatedToTime}</td>
-                    {/* <td className="dasboardPermissiontbl">{value.tohour}</td> */}
-                    <td className="dasboardPermissiontbl">{`${formatedTotHrs}`}</td>
-                    {/* <td className="dasboardPermissiontbl">{`${value.totalhours}`}</td> */}
-                    {/* <td className="d-flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        style={{ color: "green", cursor: "pointer" }}
-                        onClick={() => approvePermission(value.id)}
-                      >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path
-                          fill="currentColor"
-                          d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"
-                        />
-                      </svg>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        style={{ color: "red", cursor: "pointer" }}
-                        onClick={() => rejectPermission(value.id)}
-                      >
-                        <path d="M0 0h24v24H0z" fill="none" />
-                        <path
-                          fill="currentColor"
-                          d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59L5 6.41l5.59 5.59L5 17.59l1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"
-                        />
-                      </svg>
-                    </td> */}
+                    {/* <td className="dasboardPermissiontbl">{formatedToTime}</td> */}
+                    <td className="dasboardPermissiontbl">{value.tohour}</td>
+                    {/* <td className="dasboardPermissiontbl">{`${formatedTotHrs}`}</td> */}
+                    <td className="dasboardPermissiontbl">{`${value.totalhours}`}</td>
+
                     <td className="d-flex flex-row">
                       <button
                         className="btn  btn-sm btn-ghost normal-case"

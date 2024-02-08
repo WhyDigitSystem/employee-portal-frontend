@@ -122,7 +122,7 @@ function Dashboard() {
         </div>
       </div> */}
 
-      <div className="row mt-5">
+      {/* <div className="row mt-5">
         <div
           className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl"
           style={{
@@ -142,10 +142,74 @@ function Dashboard() {
           <div>Taken Leave </div>
           <div>-</div>
         </div>
+      </div> */}
+
+      <div className="row d-flex justify-content-evenly mt-5 ">
+        <div
+          className="card col-md-5 shadow-xl"
+          style={{
+            backgroundImage: `url(/happy_holiday1.jpg)`,
+            backgroundSize: "cover", // or 'contain', depending on your preference
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          <HolidayCard />
+        </div>
+        <div className="card col-md-3 mt-2 shadow-xl">
+          <div className="text-center m-auto">
+            <p>Avl Leave</p>
+            <p>-</p>
+          </div>
+        </div>
+        <div className="card col-md-3 mt-2 shadow-xl">
+          <div className="text-center m-auto">
+            <p>Taken Leave</p>
+            <p>-</p>
+          </div>
+        </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-        {/* <UserChannels /> */}
+      <div className="row d-flex justify-content-between mt-3 ">
+        <div className="col-md-6">
+          {(userRoleCheck === "HR" ||
+            userRoleCheck === "MANAGEMENT" ||
+            userRoleCheck === "ADMIN") && (
+            <>
+              <TodayAttendance />
+              {/* <DashboardLeaveApproval />
+              <DashboardPermissionApproval /> */}
+            </>
+          )}
+        </div>
+
+        <div className="col-md-6">
+          {(userRoleCheck === "HR" ||
+            userRoleCheck === "MANAGEMENT" ||
+            userRoleCheck === "ADMIN") && (
+            <>
+              {/* <TodayAttendance /> */}
+              <DashboardLeaveApproval />
+              {/* <DashboardPermissionApproval /> */}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="row d-flex mt-3 ">
+        <div className="col-md-6">
+          {(userRoleCheck === "HR" ||
+            userRoleCheck === "MANAGEMENT" ||
+            userRoleCheck === "ADMIN") && (
+            <>
+              {/* <TodayAttendance />
+              <DashboardLeaveApproval /> */}
+              <DashboardPermissionApproval />
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
         {(userRoleCheck === "HR" ||
           userRoleCheck === "MANAGEMENT" ||
           userRoleCheck === "ADMIN") && (
@@ -156,8 +220,7 @@ function Dashboard() {
           </>
         )}
 
-        {/* <DoughnutChart /> */}
-      </div>
+      </div> */}
     </>
   );
 }

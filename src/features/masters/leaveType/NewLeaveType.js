@@ -7,18 +7,18 @@ import Axios from "axios";
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
+import ToastComponent from "../../../utils/ToastComponent";
 
 function NewLeaveType({ newLeaveType }) {
-  //const [tabIndex, setTabIndex] = useState(0);
-  const [leaveCode, setLeaveCode] = useState();
-  const [leaveType, setLeaveType] = useState();
-  const [totLeave, setTotLeave] = useState();
+  const [leaveCode, setLeaveCode] = useState("");
+  const [leaveType, setLeaveType] = useState("");
+  const [totLeave, setTotLeave] = useState("");
   const [errors, setErrors] = React.useState({});
   const [savedData, setSavedData] = React.useState("");
+  const [notification, setNotification] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [errorType, setErrorType] = React.useState("");
 
-  // const handleTabSelect = (index) => {
-  //   setTabIndex(index);
-  //};
   const handleLeaveCode = (event) => {
     setLeaveCode(event.target.value);
   };
@@ -65,14 +65,11 @@ function NewLeaveType({ newLeaveType }) {
 
   const handleSave = () => {
     if (handleValidation()) {
-      console.log("test");
       const dataToSave = {
         leave_code: leaveCode,
         leave_type: leaveType,
         total_leave: totLeave,
       };
-
-      console.log("test", dataToSave);
 
       const token = localStorage.getItem("token");
 
@@ -91,12 +88,20 @@ function NewLeaveType({ newLeaveType }) {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
             handleNew();
+            setMessage(response.data.paramObjectsMap.message);
+            setErrorType("success");
+            setNotification(true);
           })
           .catch((error) => {
             console.error("Error saving data:", error);
+            setMessage(error.message);
+            setErrorType("error");
+            setNotification(true);
           });
       } else {
         console.error("User is not authenticated. Please log in.");
+        //setMessage("User is not authenticated. Please log in.");
+        //setNotification(true);
       }
     }
   };
@@ -181,6 +186,8 @@ function NewLeaveType({ newLeaveType }) {
           </div>
         </div>
       </div>
+
+      {notification && <ToastComponent content={message} type={errorType} />}
     </>
   );
 }

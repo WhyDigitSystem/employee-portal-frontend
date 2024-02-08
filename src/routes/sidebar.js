@@ -35,9 +35,17 @@ const routes = [
     icon: <CalendarDaysIcon className={iconClasses} />, // icon component
     name: "Calendar", // name that appear in Sidebar
   },
-
-  // Our Changes
-
+  {
+    path: "/app/allorg", // url
+    icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    name: "Organization", // name that appear in Sidebar
+  },
+  {
+    path: "/app/organizationsetup", // url
+    icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+    name: "Organization Setup", // name that appear in Sidebar
+  },
+  //MASTERS FOLDER
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentTextIcon className={`${iconClasses} inline`} />, // icon component
@@ -67,6 +75,11 @@ const routes = [
         path: "/app/jpcheckincheckout", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "JP CheckIn CheckOut", // name that appear in Sidebar
+      },
+      {
+        path: "/app/organizationsetup", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Orginazation Setup", // name that appear in Sidebar
       },
     ],
   },
@@ -172,6 +185,17 @@ if (userRole === "ADMIN") {
   if (transactionsIndex !== -1) {
     routes.splice(transactionsIndex, 1);
   }
+}
+
+if (userRole === "PRODUCTADMIN") {
+  // Filter out routes that are not "Dashboard", "Calendar", or "Organization"
+  routes = routes.filter((route) => {
+    return (
+      route.name === "Dashboard" ||
+      route.name === "Calendar" ||
+      route.name === "Organization"
+    );
+  });
 }
 
 export default routes;
