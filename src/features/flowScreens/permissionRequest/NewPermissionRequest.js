@@ -126,35 +126,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
     setTotalHours(`${durationHours}:${durationMinutes}`);
   };
 
-  // const handleToTime = (selectedDate) => {
-  //   const originalDate = dayjs(selectedDate);
-
-  //   // Get hours, minutes, and seconds
-  //   const hours = originalDate.format("HH");
-  //   const minutes = originalDate.format("mm");
-  //   const seconds = originalDate.format("ss");
-
-  //   // Formatted time string
-  //   const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-  //   console.log("Selected to time:", formattedTime);
-
-  //   // Update state
-  //   setToTime(formattedTime);
-
-  //   // Calculate time difference
-  //   const fromDateTime = dayjs(fromTime, "HH:mm:ss");
-  //   const toDateTime = dayjs(formattedTime, "HH:mm:ss");
-  //   const duration = toDateTime.diff(fromDateTime, "minute"); // Difference in minutes
-
-  //   // Extract hours and minutes
-  //   const durationHours = Math.floor(duration / 60);
-  //   const durationMinutes = duration % 60;
-
-  //   // Update totalHours state
-  //   setTotalHours(`${durationHours}:${durationMinutes}`);
-  // };
-
   const handleNew = () => {
     setSelectedDate("");
     setFromTime("");

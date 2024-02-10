@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
+import EmailConfig from "../../../utils/SendEmail";
 import ToastComponent from "../../../utils/ToastComponent";
 
 const errorInputStyle = {
@@ -42,6 +43,10 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorType, setErrorType] = React.useState("");
+  const [sendMail, setSendMail] = React.useState(false);
+  const [mailFrom, setMailFrom] = React.useState("");
+  const [mailTo, setMailTo] = React.useState("");
+  const [mailNotes, setMailNotes] = React.useState("");
 
   useEffect(() => {
     if (from && to && from === to) {
@@ -55,6 +60,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
     setFrom(formattedDate);
+    //console.log(from);
   };
 
   const handleNotes = (event) => {
@@ -160,11 +166,15 @@ function NewLeaveRequest({ newLeaveRequest }) {
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
-            handleNew();
+            setSendMail(true);
+            setMailFrom(from);
+            setMailTo(to);
+            setMailNotes(notes);
             //handleCloseNewLeave();
             setMessage(response.data.paramObjectsMap.message);
             setErrorType("success");
             setNotification(true);
+            handleNew();
           })
           .catch((error) => {
             console.error("Error saving data:", error);
@@ -230,26 +240,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </div>
           {/* HALF OR FULL DAY FIELD */}
 
-          {/* <div className="col-md-4 mb-3">
-            <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Select Leave"
-                value={selectLeave}
-                onChange={handleSelectLeave}
-                //error={Boolean(errors.leaveType)}
-              >
-                <MenuItem value={"1st Half"}>1st Half</MenuItem>
-                <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
-                <MenuItem value={"Full Day"}>Full Day</MenuItem>
-              </Select>
-              {errors.selectLeave && (
-                <span className="text-red-500">{errors.selectLeave}</span>
-              )}
-            </FormControl>
-          </div> */}
           {showLeaveTypeField && from && to && (
             <div className="col-md-4 mb-3">
               <FormControl fullWidth size="small">
@@ -374,6 +364,10 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </button>
         </div>
       </div>
+
+      {sendMail && (
+        <EmailConfig fDate={mailFrom} tDate={mailTo} reason={mailNotes} />
+      )}
 
       {notification && <ToastComponent content={message} type={errorType} />}
     </>
