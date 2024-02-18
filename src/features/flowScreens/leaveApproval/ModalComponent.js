@@ -1,5 +1,3 @@
-// ModalComponent.jsx
-// import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { default as React, useEffect, useState } from "react";
@@ -10,14 +8,25 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import EmailConfig from "../../../utils/SendEmail";
 
-const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
+const ModalComponent = ({ isOpen, closeModal, updateData, reqId, toMail, toempName }) => {
   const [status, setStatus] = useState("");
   const [remarks, setRemarks] = useState("");
+  const [replyTo,setReplyTo] = useState(toMail); 
+  // console.log("employee email id", toMail);
+  const [sendMail, setSendMail] = React.useState(false);
+  const [mailFrom, setMailFrom] = React.useState("");
+  const [mailTo, setMailTo] = React.useState("");
+  const [mailMsg, setMailMsg] = React.useState("");
 
   const handleSave = () => {
     updateLeave();
   };
+
+  useEffect(() => {
+  // console.log("row Data", updateData)
+  }, []);
 
   const updateLeave = async () => {
     try {
@@ -37,6 +46,9 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
           closeModal();
           setStatus("");
           setRemarks("");
+          setSendMail(true)
+
+
         }
       }
     } catch (error) {
@@ -45,6 +57,7 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
   };
 
   return (
+    <>
     <div
       style={{
         display: isOpen ? "flex" : "none",
@@ -126,6 +139,10 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
         </Button>
       </div>
     </div>
+    {sendMail && (
+    <EmailConfig  approve={true} empMail={toMail} empName={toempName} />
+  )}
+  </>
   );
 };
 

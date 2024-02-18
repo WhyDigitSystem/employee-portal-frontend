@@ -5,7 +5,7 @@ import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import Axios from "axios";
 //import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 //import { IoMdClose } from "react-icons/io";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -33,13 +33,28 @@ const OrganizationSetup = () => {
   const [errorType, setErrorType] = useState("");
   const [tabValue, setTabValue] = useState(0);
   //BRANCH
-  const [orgId, setOrgId] = useState("");
+  //const [orgId, setOrgId] = useState("1");
+  // const [branchOrgCode, setBranchOrgCode] = useState("4");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [branchOrgCode, setBranchOrgCode] =  useState(""); 
+  const [branchName, setBranchName] = useState("");
   const [branchCode, setBranchCode] = useState("");
   const [branchManager, setBranchManager] = useState("");
   const [branchPhNo, setBranchPhNo] = useState("");
   const [branchAddress, setBranchAddress] = useState("");
   const [branchPan, setBranchPan] = useState("");
   const [branchGst, setBranchGst] = useState("");
+//BRANCH ADMIN CREDINCIAL STATES
+//const [brName, setBrName] = useState("");
+const [branches, setBranches] = useState([]);
+const [brCode, setBrCode] = useState("");
+const [brAdminName, setBrAdminName] = useState("");
+const [brAdminEmail, setBrAdminEmail] = useState("");
+const [brAdminPwd, setBrAdminPwd] = useState("");
+//USE EFFECT STATES
+const [branchId, setBranchId] = useState("");
+const [orgData, setOrgData] = useState([]);
+
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -47,12 +62,13 @@ const OrganizationSetup = () => {
 
   //ORGANIZATION TAB
 
-  const handleOrgName = (event) => {
-    setOrgName(event.target.value);
-  };
+  // const handleOrgName = (event) => {
+  //   setOrgName(event.target.value);
+  // };
 
   const handleFounder = (event) => {
-    setFounder(event.target.value);
+    const alphaValue = event.target.value.replace(/[^A-Za-z ]/g, "");
+    setFounder(alphaValue);
   };
   const handleCeo = (event) => {
     setCeo(event.target.value);
@@ -74,26 +90,95 @@ const OrganizationSetup = () => {
   };
 
   //BRANCH TAB
-  //ORGANIZATION TAB
+  const handleBranchName = (event) => {
+    const alphaValue = event.target.value.replace(/[^A-Za-z ]/g, "");
+    setBranchName(alphaValue);
+  };
   const handleBranchCode = (event) => {
     setBranchCode(event.target.value);
   };
   const handleBranchManager = (event) => {
-    setBranchManager(event.target.value);
+    const alphaValue = event.target.value.replace(/[^A-Za-z ]/g, "");
+    setBranchManager(alphaValue);
   };
   const handleBranchAddress = (event) => {
     setBranchAddress(event.target.value);
   };
   const handleBranchPhNo = (event) => {
-    setBranchPhNo(event.target.value);
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setBranchPhNo(numericValue);
   };
   const handleBranchGst = (event) => {
     setBranchGst(event.target.value);
   };
   const handleBranchPan = (event) => {
-    setBranchPan(event.target.value);
+    const sanitizedValue = event.target.value.replace(/[^A-Za-z0-9]/g, '');
+    setBranchPan(sanitizedValue);
   };
 
+  //BRANCH ADMIN CREDINCIALS TAB
+  const handleBrName = (event) => {
+    setBranches(event.target.value);
+  };
+  const handleBrCode = (event) => {
+    setBrCode(event.target.value);
+  };
+  const handleBrAdminName = (event) => {
+    setBrAdminName(event.target.value);
+  };
+  const handleBrAdminEmail = (event) => {
+    setBrAdminEmail(event.target.value);
+  };
+  const handleBrAdminPwd = (event) => {
+    setBrAdminPwd(event.target.value);
+  };
+  
+
+  useEffect(()=> {
+    getOrgById()
+    getBranchByOrgId()
+  },[]);
+
+  const getBranchByOrgId = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/admin/getbranch/{orgId}?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+      //   const branchData = response.data.paramObjectsMap.branchVO[0]; // Accessing the first element of branchVO
+      // console.log("BranchName:", branchData.branchName);
+        
+      //   //console.log("BranchName:",response.data.paramObjectsMap.branchVO.branchName[0])  
+      
+      const branchData = response.data.paramObjectsMap.branchVO;
+      setBranches(branchData);
+
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getOrgById = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/admin/orginization/${orgId}`
+      );
+
+      if (response.status === 200) {
+        setOrgData(response.data.paramObjectsMap.organizationVO);
+        setOrgName(response.data.paramObjectsMap.organizationVO.name); 
+        setBranchOrgCode(response.data.paramObjectsMap.organizationVO.orgCode); 
+        console.log("OrganizationName:",response.data.paramObjectsMap.organizationVO.name)       
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+
+
+  // ORGANIZATION API
   const handleNew = () => {
     setOrgCode("");
     setFounder("");
@@ -141,19 +226,18 @@ const OrganizationSetup = () => {
   const handleSave = () => {
     if (handleValidation()) {
       const dataToSaveOrg = {
-        orgName: orgName,
-      };
-      const dataToSaveUser = {
-        orgName: orgName,
-        orgId: "1",
+        name: orgName,
+        id: orgId,
         orgCode: orgCode,
-        orgFounder: founder,
-        orgCeo: ceo,
-        orgPhno: phNo,
-        orgAddress: address,
-        orgPan: pan,
-        orgGst: gst,
+        founder: founder,
+        ceo: ceo,
+        phoneNumber: phNo,
+        address: address,
+        pan: pan,
+        gst: gst,
       };
+
+      console.log("Org Setup Data:",dataToSaveOrg)
 
       const token = localStorage.getItem("token");
 
@@ -164,8 +248,8 @@ const OrganizationSetup = () => {
         };
 
         Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/signup`,
-          dataToSaveUser,
+          `${process.env.REACT_APP_API_URL}/api/admin/updateOrginization`,
+          dataToSaveOrg,
           { headers }
         )
           .then((response) => {
@@ -186,6 +270,102 @@ const OrganizationSetup = () => {
     }
   };
 
+  // BRACH API
+  const handleNewBranch = () => {
+    //setOrgCode("");
+    setBranchCode("");
+    setBranchName("");
+    setBranchManager("");
+    setBranchPhNo("");
+    setBranchAddress("");
+    setBranchPan("");
+    setBranchGst("");
+  };
+
+  const handleBranchValidation = () => {
+    const newErrors = {};
+
+    if (!branchCode) {
+      newErrors.branchCode = "Branch Code is required";
+    }
+
+    if (!branchName) {
+      newErrors.branchName = "Branch Name is required";
+    }
+
+    if (!branchManager) {
+      newErrors.branchManager = "Branch Manager is required";
+    }
+
+    if (!branchPhNo) {
+      newErrors.branchPhNo = "Phone No is required";
+    }
+    if (!branchAddress) {
+      newErrors.branchAddress = "Address is required";
+    }
+
+    if (!branchPan) {
+      newErrors.branchPan = "PAN is required";
+    }
+
+    if (!branchGst) {
+      newErrors.branchGst = "GST No is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSaveBranch = () => {
+    if (handleBranchValidation()) {
+      const dataToSaveBranch = {
+        orgId: orgId,
+        //id: orgId,
+        branchCode: branchCode,
+        branchName: branchName,
+        address: branchAddress,
+        branchManager: branchManager,
+        phoneNumber: branchPhNo,
+        address: branchAddress,
+        pan: branchPan,
+        gst: branchGst,
+      };
+
+      console.log("Branch Data:",dataToSaveBranch)
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        Axios.post(
+          `${process.env.REACT_APP_API_URL}/api/admin/craeteBranch`,
+          dataToSaveBranch,
+          { headers }
+        )
+          .then((response) => {
+            console.log("Data saved successfully:", response.data);
+            setSavedData(response.data);
+            handleNewBranch();
+            setErrorType("success");
+            setMessage("Data saved successfully!");
+            setNotification(true);
+          })
+          .catch((error) => {
+            console.error("Error saving data:", error);
+            setErrorType("error");
+            setMessage("Data Not Saved!");
+            setNotification(true);
+          });
+      }
+    }
+  };
+
+
+
   return (
     <>
       <div>
@@ -202,11 +382,13 @@ const OrganizationSetup = () => {
             <Tabs value={tabValue} onChange={handleTabChange}>
               <Tab label="Organization Info" />
               <Tab label="Branch" />
+              <Tab label="Branch Admin Credincials" />
             </Tabs>
 
+{/* ORGANIZATION TAB */}
             <Box hidden={tabValue !== 0}>
               <div className="row d-flex mt-3">
-                <div className="col-md-4 mb-3">
+                {/* <div className="col-md-4 mb-3">
                   <FormControl fullWidth size="small">
                     <InputLabel id="demo-simple-select-label">
                       Organization
@@ -223,8 +405,8 @@ const OrganizationSetup = () => {
                       <MenuItem value={"AI Packs"}>AI Packs</MenuItem>
                     </Select>
                   </FormControl>
-                </div>
-                {/* <div className="col-md-4 mb-3">
+                </div> */}
+                <div className="col-md-4 mb-3">
                   <FormControl fullWidth variant="filled">
                     <TextField
                       id="orgname"
@@ -239,7 +421,7 @@ const OrganizationSetup = () => {
                       inputProps={{ maxLength: 30 }}
                     />
                   </FormControl>
-                </div> */}
+                </div>
 
                 {/* ORG CODE FIELD */}
                 <div className="col-md-4 mb-3">
@@ -403,7 +585,9 @@ const OrganizationSetup = () => {
                 </button>
               </div>
             </Box>
-            <Box hidden={tabValue !== 1}>
+
+            {/* Branch Tab */}
+            <Box hidden={tabValue !== 1 }>
               <div className="row d-flex mt-3">
                 {/* ORG NAME FIELD */}
                 <div className="col-md-4 mb-3">
@@ -430,8 +614,8 @@ const OrganizationSetup = () => {
                       id="orgcode"
                       label="Org Code"
                       size="small"
-                      value={orgCode}
-                      onChange={handleOrgCode}
+                      value={branchOrgCode}
+                      //onChange={handleOrgCode}
                       disabled
                       // error={Boolean(errors.orgCode)}
                       //placeholder="accountcode"
@@ -455,6 +639,24 @@ const OrganizationSetup = () => {
                     />
                     {errors.branchCode && (
                       <span className="text-red-500">{errors.branchCode}</span>
+                    )}
+                  </FormControl>
+                </div>
+                {/* BRANCH CODE FIELD */}
+                <div className="col-md-4 mb-3">
+                  <FormControl fullWidth variant="filled">
+                    <TextField
+                      id="branch_name"
+                      label="Branch Name"
+                      size="small"
+                      value={branchName}
+                      onChange={handleBranchName}
+                      error={Boolean(errors.branchName)}
+                      inputProps={{ maxLength: 50 }}
+                      required
+                    />
+                    {errors.branchName && (
+                      <span className="text-red-500">{errors.branchName}</span>
                     )}
                   </FormControl>
                 </div>
@@ -551,16 +753,158 @@ const OrganizationSetup = () => {
                       size="small"
                       value={branchGst}
                       onChange={handleBranchGst}
-                      error={Boolean(errors.banchGst)}
+                      error={Boolean(errors.branchCode)}
                       required
                       //placeholder="accountcode"
                       inputProps={{ maxLength: 20 }}
                     />
-                    {errors.banchGst && (
-                      <span className="text-red-500">{errors.banchGst}</span>
+                    {errors.branchGst && (
+                      <span className="text-red-500">{errors.branchGst}</span>
                     )}
                   </FormControl>
                 </div>
+
+                <div className="col-md-4 mb-3 mb-3">
+                  <FormGroup>
+                    <FormControlLabel
+                      control={<Checkbox defaultChecked />}
+                      label="Active"
+                    />
+                  </FormGroup>
+                </div>
+              </div>
+              <div className="d-flex flex-row mt-3">
+                <button
+                  type="button"
+                  onClick={handleSaveBranch}
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNewBranch}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Clear
+                </button>
+              </div>
+            </Box>
+
+            {/* Branch Admin Credincials Tab */}
+            <Box hidden={tabValue !== 2}>
+              <div className="row d-flex mt-3">
+                {/* BRANCH NAME FIELD */}
+                {/* <div className="col-md-4 mb-3">
+                  <FormControl fullWidth size="small">
+                    <InputLabel id="demo-simple-select-label">
+                      Branch
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Organization"
+                      value={branches}
+                      onChange={handleBrName}
+                      // error={Boolean(errors.branchs)}
+                    >
+                      
+
+                    {branches.map((branch) => (
+                        <MenuItem key={branch.branchId} value={branch.branchName}>
+                          {branch.branchName}
+                        </MenuItem>
+                      ))}
+
+                    </Select>
+                  </FormControl>
+                </div> */}
+
+                {/* BRANCH CODE FIELD */}
+                {/* <div className="col-md-4 mb-3">
+                  <FormControl fullWidth variant="filled">
+                    <TextField
+                      id="branch_code"
+                      label="Branch Code"
+                      size="small"
+                      value={brCode}
+                      onChange={handleBrCode}
+                      error={Boolean(errors.brCode)}
+                      inputProps={{ maxLength: 10 }}
+                      required
+                      disabled
+                    />
+                    {errors.brCode && (
+                      <span className="text-red-500">{errors.brCode}</span>
+                    )}
+                  </FormControl>
+                </div> */}
+
+                {/* BRANCH ADMIN NAME FIELD */}
+                {/* <div className="col-md-4 mb-3">
+                  <FormControl fullWidth variant="filled">
+                    <TextField
+                      id="br_admin_name"
+                      label="Admin Name"
+                      size="small"
+                      value={brAdminName}
+                      onChange={handleBrAdminName}
+                      error={Boolean(errors.brAdminName)}
+                      required
+                      //placeholder="accountcode"
+                      inputProps={{ maxLength: 30 }}
+                    />
+                    {errors.brAdminName && (
+                      <span className="text-red-500">
+                        {errors.brAdminName}
+                      </span>
+                    )}
+                  </FormControl>
+                </div> */}
+
+                {/* BRANCH ADMIN EMAIL FIELD */}
+                {/* <div className="col-md-4 mb-3">
+                  <FormControl fullWidth variant="filled">
+                    <TextField
+                      id="admin_email"
+                      label="Email ID"
+                      size="small"
+                      value={brAdminEmail}
+                      onChange={handleBrAdminEmail}
+                      error={Boolean(errors.brAdminEmail)}
+                      required
+                      //placeholder="accountcode"
+                      inputProps={{ maxLength: 10 }}
+                    />
+                    {errors.brAdminEmail && (
+                      <span className="text-red-500">{errors.brAdminEmail}</span>
+                    )}
+                  </FormControl>
+                </div> */}
+
+                {/* BRANCH ADMIN PASSWORD FIELD */}
+                {/* <div className="col-md-4 mb-3">
+                  <FormControl fullWidth variant="filled">
+                    <TextField
+                      id="br_admin_pwd"
+                      label="Password"
+                      size="small"
+                      value={brAdminPwd}
+                      onChange={handleBrAdminPwd}
+                      error={Boolean(errors.brAdminPwd)}
+                      required
+                      //placeholder="accountcode"
+                      inputProps={{ maxLength: 100 }}
+                    />
+                    {errors.brAdminPwd && (
+                      <span className="text-red-500">
+                        {errors.brAdminPwd}
+                      </span>
+                    )}
+                  </FormControl>
+                </div> */}
+
+               
 
                 <div className="col-md-4 mb-3 mb-3">
                   <FormGroup>

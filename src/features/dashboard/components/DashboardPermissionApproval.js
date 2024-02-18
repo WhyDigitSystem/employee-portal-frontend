@@ -7,6 +7,8 @@ import TitleCard from "../../../components/Cards/TitleCard";
 function DashboardPermissionApproval() {
   const [pendingPermissionRequestList, setPendingPermissionRequestList] =
     useState([]);
+    const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     getAllPendingPermissionRequest();

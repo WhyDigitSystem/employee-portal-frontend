@@ -10,11 +10,18 @@ export const LeaveApproval = () => {
   const [selectedRowData, setSelectedRowData] = useState({});
   const [leaveRequest, setLeaveRequest] = useState([]);
   const [leaveRequestId, setLeaveRequestId] = useState({});
+  const [leaveMail, setLeaveMail] = useState();
+  const [toEmpName, setToEmpName] = useState();
+  
+
 
   const openModal = (rowData) => {
     setSelectedRowData(rowData);
     setLeaveRequestId(rowData.id);
+    setLeaveMail(rowData.empmail);
+    setToEmpName(rowData.empname);
     setIsModalOpen(true);
+    console.log("Testing:",rowData.empmail);
   };
 
   const closeModal = () => {
@@ -41,10 +48,13 @@ export const LeaveApproval = () => {
     }
   };
 
+  // console.log("Testing:",leaveMail);
+
   const columns = [
     { Header: "RequestId", accessor: "id" },
     { Header: "EmpCode", accessor: "empcode" },
     { Header: "EmpName", accessor: "empname" },
+    { Header: "Emp Email", accessor: "empmail" },
     { Header: "From Date", accessor: "fromdate" },
     { Header: "To Date", accessor: "todate" },
     { Header: "Total Days", accessor: "totaldays" },
@@ -65,13 +75,16 @@ export const LeaveApproval = () => {
 
   return (
     <div className="card w-full p-4 bg-base-100 shadow-xl">
-      <TableComponent columns={columns} data={leaveRequest} />
+      <TableComponent columns={columns} data={leaveRequest}  />
       <ModalComponent
         isOpen={isModalOpen}
         closeModal={closeModal}
         rowData={selectedRowData}
         reqId={leaveRequestId}
+        toMail={leaveMail}
+        toempName={toEmpName}
       />
+
     </div>
   );
 };

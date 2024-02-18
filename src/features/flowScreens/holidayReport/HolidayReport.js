@@ -29,6 +29,8 @@ export const HolidayReport = () => {
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
   const [holidayList, setHolidayList] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   const buttonStyle = {
     fontSize: "20px",

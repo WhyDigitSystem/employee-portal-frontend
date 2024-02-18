@@ -41,6 +41,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [reportPerson, setReportPerson] = React.useState("");
   const [savedData, setSavedData] = React.useState("");
   const [grade, setGrade] = React.useState("");
+  const [team, setTeam] = React.useState("");
+  const [branch, setBranch] = React.useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  
 
   const pwd = empCode + dob;
   const trimmedpwd = pwd.trim();
@@ -133,6 +137,12 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   };
   const handleReportPerson = (event) => {
     setReportPerson(event.target.value);
+  };
+  const handleTeam = (event) => {
+    setTeam(event.target.value);
+  };
+  const handleBranch = (event) => {
+    setBranch(event.target.value);
   };
 
   const handleNew = () => {
@@ -246,6 +256,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     if (handleValidation()) {
       // Replace this with your logic to save the data to a backend or database
       const dataToSave = {
+        orgId:orgId,
         empcode: empCode,
         empname: empName,
         gender: gender,
@@ -267,6 +278,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         reporting_person: reportPerson,
       };
       const dataToSaveUser = {
+        // orgId: orgId,
+        // branch_Id: branch,
         empcode: empCode,
         empname: empName,
         role: role,
@@ -322,6 +335,21 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               />
             </div>
             <div className="row d-flex mt-3">
+            <div className="col-md-4 mb-3">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">Branch</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Branch"
+                    value={branch}
+                    onChange={handleBranch}
+                    error={Boolean(errors.branch)}
+                  >
+                    <MenuItem value={"4"}>Bangalore</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
@@ -446,7 +474,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     error={Boolean(errors.designation)}
                   >
                     <MenuItem value={"Desktop App Developer"}>
-                      Desktop App Developer
+                      Software Developer
+                    </MenuItem>
+                    <MenuItem value={"Desktop App Developer"}>
+                      SQL Developer
                     </MenuItem>
                     <MenuItem value={"Frontend Developer"}>
                       Frontend Developer
@@ -472,10 +503,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     error={Boolean(errors.role)}
                   >
                     <MenuItem value={"USER"}>User</MenuItem>
-                    <MenuItem value={"TEAM_LEAD"}>TEAM LEAD</MenuItem>
-                    <MenuItem value={"MANAGEMENT"}>MANAGEMENT</MenuItem>
+                    <MenuItem value={"TEAM_LEAD"}>Team Lead</MenuItem>
+                    <MenuItem value={"PROJECT MANAGER"}>Project Manager</MenuItem>
+                    <MenuItem value={"MANAGEMENT"}>Management</MenuItem>
                     <MenuItem value={"HR"}>HR</MenuItem>
-                    <MenuItem value={"OWNER"}>Owner</MenuItem>
                     <MenuItem value={"ADMIN"}>Admin</MenuItem>
                   </Select>
                 </FormControl>
@@ -495,6 +526,24 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     <MenuItem value={"B"}>B</MenuItem>
                     <MenuItem value={"C"}>C</MenuItem>
                     <MenuItem value={"D"}>D</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">Team</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Team"
+                    value={team}
+                    onChange={handleTeam}
+                    //error={Boolean(errors.team)}
+                  >
+                    <MenuItem value={"Core"}>Core</MenuItem>
+                    <MenuItem value={"Product"}>Product</MenuItem>
+                    <MenuItem value={"Accounts"}>Accounts</MenuItem>
+                    <MenuItem value={"Office"}>Office</MenuItem>
                   </Select>
                 </FormControl>
               </div>

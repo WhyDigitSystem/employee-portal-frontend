@@ -6,6 +6,8 @@ import TitleCard from "../../../components/Cards/TitleCard";
 
 function DashboardLeaveApproval() {
   const [pendingLeaveRequestList, setPendingLeaveRequestList] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     getAllPendingLeaveRequest();

@@ -30,6 +30,8 @@ export const AttendanceReport = () => {
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
   const [monAttendanceReport, setMonAttendanceReport] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   const statsData = [
     {

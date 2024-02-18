@@ -23,6 +23,8 @@ export const Attendance = () => {
   const [checkinTime, setCheckinTime] = React.useState("");
   const [disableCheckIn, setDisableCheckIn] = useState("");
   const [disableCheckOut, setDisableCheckOut] = useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     const fetchEmployeeStatus = async () => {

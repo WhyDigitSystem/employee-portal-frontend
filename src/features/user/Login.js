@@ -84,7 +84,7 @@ function Login() {
 
       try {
         const response = await Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/login`,
+          `${process.env.REACT_APP_API_URL}/api/auth/login`,
           requestBody,
           {
             headers: {
@@ -118,6 +118,18 @@ function Login() {
           localStorage.setItem(
             "empcode",
             response.data.paramObjectsMap.user.empcode
+          );
+          localStorage.setItem(
+            "orgId",
+            response.data.paramObjectsMap.user.orgId
+          );
+          localStorage.setItem(
+            "branchId",
+            response.data.paramObjectsMap.user.branchId
+          );
+          localStorage.setItem(
+            "empId",
+            response.data.paramObjectsMap.user.empId
           );
           // Redirect the user to the welcome page
           console.log("token", response.data);

@@ -148,54 +148,54 @@ const routes = [
   },
 ];
 
-if (userRole !== "HR") {
-  // Find the index of the Masters section in the routes array
-  const mastersIndex = routes.findIndex((route) => route.name === "Masters");
 
-  // Remove the Masters section if found
-  if (mastersIndex !== -1) {
-    routes.splice(mastersIndex, 1);
-  }
-}
-
+//USER ROLE CONTROL
 if (userRole === "USER") {
-  const transactionsIndex = routes.findIndex((route) => route.name === "Me");
+  const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Team"];
 
-  if (transactionsIndex !== -1) {
-    routes[transactionsIndex].submenu = routes[transactionsIndex].submenu.slice(
-      0,
-      3
-    );
-  }
-
-  if (userRole === "USER") {
-    // Remove the "Team" section
-    const teamIndex = routes.findIndex((route) => route.name === "Team");
-
-    if (teamIndex !== -1) {
-      routes.splice(teamIndex, 1);
+  sectionsToRemove.forEach(sectionName => {
+    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+    if (sectionIndex !== -1) {
+      routes.splice(sectionIndex, 1);
     }
-  }
-}
-
-if (userRole === "ADMIN") {
-  // Remove the "Team" section
-  const transactionsIndex = routes.findIndex((route) => route.name === "Me");
-
-  if (transactionsIndex !== -1) {
-    routes.splice(transactionsIndex, 1);
-  }
-}
-
-if (userRole === "PRODUCTADMIN") {
-  // Filter out routes that are not "Dashboard", "Calendar", or "Organization"
-  routes = routes.filter((route) => {
-    return (
-      route.name === "Dashboard" ||
-      route.name === "Calendar" ||
-      route.name === "Organization"
-    );
   });
 }
+
+//HR ROLE CONTROL
+if (userRole === "HR") {
+  const sectionsToRemove = ["Organization", "Organization Setup", "Masters"];
+
+  sectionsToRemove.forEach(sectionName => {
+    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+    if (sectionIndex !== -1) {
+      routes.splice(sectionIndex, 1);
+    }
+  });
+}
+
+//ADMIN ROLE CONTROL
+if (userRole === "ADMIN") {
+  const sectionsToRemove = ["Organization", "Me"];
+
+  sectionsToRemove.forEach(sectionName => {
+    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+    if (sectionIndex !== -1) {
+      routes.splice(sectionIndex, 1);
+    }
+  });
+}
+
+//OWNER ROLE CONTROL
+if (userRole === "OWNER") {
+  const sectionsToRemove = ["Organization Setup", "Me", "Team", "Masters"];
+
+  sectionsToRemove.forEach(sectionName => {
+    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+    if (sectionIndex !== -1) {
+      routes.splice(sectionIndex, 1);
+    }
+  });
+}
+
 
 export default routes;

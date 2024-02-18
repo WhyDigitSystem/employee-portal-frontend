@@ -8,7 +8,7 @@ import Axios from "axios";
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
-// import { encryptPassword } from "../../user/components/utils";
+import { encryptPassword } from "../user/components/utils";
 import ToastComponent from "../../utils/ToastComponent";
 
 const OrgCreation = ({ newOrg }) => {
@@ -21,6 +21,9 @@ const OrgCreation = ({ newOrg }) => {
   const [notification, setNotification] = useState(false);
   const [message, setMessage] = useState("");
   const [errorType, setErrorType] = useState("");
+  //const encPwd = encryptPassword(encPwd);
+    //encPwd = encryptPassword(encPwd);
+    //setPwd(encPwd);
 
   const handleOrgName = (event) => {
     setOrgName(event.target.value);
@@ -77,19 +80,21 @@ const OrgCreation = ({ newOrg }) => {
   };
 
   const handleSave = () => {
-    // Create an object with the form data
     console.log("hai");
     if (handleValidation()) {
-      // Replace this with your logic to save the data to a backend or database
       const dataToSaveOrg = {
         orgName: orgName,
-      };
-      console.log("hai");
-      const dataToSaveUser = {
-        orgName: orgName,
         email: email,
-        password: pwd,
+        password: encryptPassword(pwd),
+        noOfLicence: licCount
       };
+      console.log("Data to Save Org:", dataToSaveOrg);
+      // const dataToSaveUser = {
+      //   orgName: orgName,
+      //   email: email,
+      //   password: pwd,
+      //   noOfLicence: licCount
+      // };
 
       const token = localStorage.getItem("token");
 
@@ -100,17 +105,17 @@ const OrgCreation = ({ newOrg }) => {
         };
         // Employee_details Table Post
         Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
+          `${process.env.REACT_APP_API_URL}/api/admin/createOrginization`,
           dataToSaveOrg,
           { headers }
-        );
+        )
 
         //user Table post
-        Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/signup`,
-          dataToSaveUser,
-          { headers }
-        )
+        // Axios.post(
+        //   `${process.env.REACT_APP_API_URL}/api/user/signup`,
+        //   dataToSaveUser,
+        //   { headers }
+        // )
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);

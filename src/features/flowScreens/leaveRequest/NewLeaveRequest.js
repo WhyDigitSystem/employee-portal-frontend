@@ -23,6 +23,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [savedData, setSavedData] = React.useState();
   const [empName, setEmpName] = React.useState(localStorage.getItem("empname"));
   const [empCode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
+  const [empMail, setEmpMail] = React.useState(localStorage.getItem("userName"));
 
   const [options, setOptions] = useState([
     "Karupu",
@@ -139,6 +140,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
       const dataToSave = {
         empcode: empCode,
         empname: empName,
+        empmail: empMail,
         fromdate: from,
         todate: to,
         totaldays: tot,

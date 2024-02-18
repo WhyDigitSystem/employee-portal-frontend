@@ -3,6 +3,8 @@ import { default as React, useEffect, useState } from "react";
 
 export const HolidayCard = () => {
   const [nextHoliday, setNextHoliday] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     getNextHolidays();
@@ -44,7 +46,7 @@ export const HolidayCard = () => {
     <>
       {/* <div className="card w-full p-6 bg-base-100 shadow-xl"> */}
       <div className="flex flex-col items-center">
-        <h2 className="text-xl font-bold mb-4">Next Holiday</h2>
+        <h2 className="text-xl font-bold mb-4">Upcoming Holiday</h2>
         {nextHoliday.map((holiday, index) => (
           <div key={index} className="flex flex-col items-center">
             <p className="text-lg">{holiday.festival}</p>

@@ -5,25 +5,14 @@ import TitleCard from "../../../components/Cards/TitleCard";
 
 function UserChannels() {
   const [holidayList, setHolidayList] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     getAllHolidays();
   }, []);
 
-  // const getAllHolidays = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/holiday`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setHolidayList(response.data.paramObjectsMap.holidayVO.slice(0, 5));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
+  
   const getAllHolidays = async () => {
     try {
       const response = await axios.get(
