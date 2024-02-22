@@ -76,9 +76,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
       const formattedFromTime = originalDate.format("HH:mm:ss");
       setFromTime(formattedFromTime);
 
-      // console.log(" from date formattedTime is :", formattedFromTime)
-      // console.log(" Set From is :", fromTime)
-
       // Clear the error message for fromTime if it was previously set
       setErrors({
         ...errors,
@@ -89,93 +86,9 @@ function NewPermissionRequest({ newPermissionRequest }) {
     }
   };
 
-  // const handleToTime = (selectedDate) => {
-  //   const originalDate = dayjs(selectedDate);
-  //   //console.log(" from date orginalDate is :", originalDate)
-  //   const hours = originalDate.hour();
-  //   const minutes = originalDate.minute();
-  //   if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
-  //     setErrors({
-  //       ...errors,
-  //       toTime: "Only Allow 9AM to 7PM",
-  //     });
-  //     setToTime("");
-  //   }
-  //   else {
-  //     const formattedFromTime = originalDate.format("HH:mm:ss");
-  //     setToTime(formattedFromTime);
-
-  //     console.log(" from date formattedTime is :", formattedFromTime)
-
-  //     // Clear the error message for fromTime if it was previously set
-  //     setErrors({
-  //       ...errors,
-  //       toTime: null,
-  //     });
-
-  //     //setFromTime(originalDate);
-  //   }
-
-
-  // };
-
-
-
-  // const handleToTime = (selectedDate) => {
-  //   const originalDate = dayjs(selectedDate);
-  //   const fromDateTime = dayjs(fromTime);
-  //   const toDateTime = dayjs(selectedDate);
-  //   const hours = originalDate.hour();
-
-  //   // Check if the selected time is between 9 AM and 7 PM
-  //   // if (hours < 9 || hours >= 19) {
-  //   //   setErrors({
-  //   //     ...errors,
-  //   //     toTime: "Only allow times between 9 AM and 7 PM",
-  //   //   });
-  //   //   setToTime("");
-  //   //   return;
-  //   // }
-
-  //   // Check if the selected time is before the fromTime
-  //   if (toDateTime.isBefore(fromDateTime)) {
-  //     setErrors({
-  //       ...errors,
-  //       toTime: "To time cannot be before From time",
-  //     });
-  //     //setToTime("");
-  //     return;
-  //   }
-
-  //   // Calculate the difference in hours between fromTime and toTime
-  //   const diffInHours = toDateTime.diff(fromDateTime, "hours");
-
-  //   // Check if the duration exceeds 2 hours
-  //   if (diffInHours > 2) {
-  //     setErrors({
-  //       ...errors,
-  //       toTime: "Duration cannot exceed 2 hours",
-  //     });
-  //     setToTime("");
-  //     return;
-  //   }
-
-  //   // Clear any existing errors for the toTime field
-  //   setErrors({
-  //     ...errors,
-  //     toTime: "",
-  //   });
-
-  //   // Set the toTime
-  //   const formattedFromTime = originalDate.format("HH:mm:ss");
-  //   setToTime(formattedFromTime);
-  // };
-
 
   const handleToTime = (selectedDate) => {
     console.log("From Time Before Parsing:", fromTime);
-
-    //const fromDateTime = dayjs(fromTime);
     const fromDateTime = dayjs().set('hour', parseInt(fromTime.split(':')[0])).set('minute', parseInt(fromTime.split(':')[1])).set('second', parseInt(fromTime.split(':')[2]));
 
 
@@ -245,8 +158,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
   const handleNew = () => {
     setSelectedDate(null);
-    setFromTime(null);
-    setToTime(null);
+    setFromTime("");
+    setToTime("");
     setTotalHours("");
     setNotes("");
     setSearchValue("");
@@ -409,23 +322,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
               </LocalizationProvider>
             </FormControl>
           </div>
-
-          {/* To Time Picker */}
-          {/* <div className="col-md-4 mb-3">
-            <FormControl fullWidth variant="filled">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <TimePicker
-                  label="To"
-                  value={toTime}
-                  slotProps={{ textField: { size: "small" } }}
-                  onChange={handleToTime}
-                />
-                {errors.toTime && (
-                  <span className="text-red-500">{errors.toTime}</span>
-                )}
-              </LocalizationProvider>
-            </FormControl>
-          </div> */}
 
           {/* Total Hours TextField */}
           <div className="col-md-4 mb-3">
