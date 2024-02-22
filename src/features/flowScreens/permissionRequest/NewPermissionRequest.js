@@ -28,8 +28,8 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [savedData, setSavedData] = React.useState();
   const [errors, setErrors] = React.useState({});
   const [selectedDate, setSelectedDate] = useState(null);
-  const [fromTime, setFromTime] = useState(null);
-  const [toTime, setToTime] = useState(null);
+  const [fromTime, setFromTime] = useState();
+  const [toTime, setToTime] = useState();
   const [totalHours, setTotalHours] = useState("");
   const [notes, setNotes] = useState("");
   const [searchValue, setSearchValue] = useState(null);
@@ -38,7 +38,13 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorType, setErrorType] = React.useState("");
-  
+
+  useEffect(() => {
+    console.log("From Time:", fromTime);
+    console.log("TO Time:", toTime);
+  }, [fromTime, toTime]);
+
+
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -54,102 +60,188 @@ function NewPermissionRequest({ newPermissionRequest }) {
     setSelectedDate(formattedDate);
   };
 
-const handleFromTime = (selectedDate) => {
-  const originalDate = dayjs(selectedDate);
-  const hours = originalDate.hour();
-  const minutes = originalDate.minute();
+  const handleFromTime = (selectedDate) => {
+    const originalDate = dayjs(selectedDate);
+    console.log(" from date orginalDate is :", originalDate)
+    const hours = originalDate.hour();
+    const minutes = originalDate.minute();
+    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+      setErrors({
+        ...errors,
+        fromTime: "Only Allow 9AM to 7PM",
+      });
+      setFromTime("");
+    }
+    else {
+      const formattedFromTime = originalDate.format("HH:mm:ss");
+      setFromTime(formattedFromTime);
 
-  if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
-    setErrors({
-              ...errors,
-              fromTime: "Only Allow 9AM to 7PM",
-            });
-      setFromTime(null);
-  } 
-  else {
-    const formattedTime = originalDate.format("HH:mm:ss");
-          setFromTime(formattedTime);
-          // Clear the error message for fromTime if it was previously set
-          setErrors({
-            ...errors,
-            fromTime: null,
-          });
+      // console.log(" from date formattedTime is :", formattedFromTime)
+      // console.log(" Set From is :", fromTime)
+
+      // Clear the error message for fromTime if it was previously set
+      setErrors({
+        ...errors,
+        fromTime: null,
+      });
 
       //setFromTime(originalDate);
-  }
-};
+    }
+  };
 
-// const handleToTime = (selectedDate) => {
-//   const originalDate = dayjs(selectedDate);
-//   //const fromDateTime = dayjs(fromTime);
-//   const fromDateTime = dayjs(fromTime, "HH:mm:ss");
-//   const durationMinutes = originalDate.diff(fromDateTime, "minute");
+  // const handleToTime = (selectedDate) => {
+  //   const originalDate = dayjs(selectedDate);
+  //   //console.log(" from date orginalDate is :", originalDate)
+  //   const hours = originalDate.hour();
+  //   const minutes = originalDate.minute();
+  //   if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+  //     setErrors({
+  //       ...errors,
+  //       toTime: "Only Allow 9AM to 7PM",
+  //     });
+  //     setToTime("");
+  //   }
+  //   else {
+  //     const formattedFromTime = originalDate.format("HH:mm:ss");
+  //     setToTime(formattedFromTime);
 
-//   if (durationMinutes > 120) {
-//     setErrors({
-//                 ...errors,
-//                 toTime: "Total duration cannot exceed 2 hours",
-//             });
-//             setToTime(null);
-//   } else if(originalDate.isBefore(fromDateTime)) {
-//     setErrors({
-//                 ...errors,
-//                 toTime: "must select after time of from time",
-//             });
-//       setToTime(null);
-//   } else {
-//     setToTime(originalDate);  
-//     setErrors({
-//       ...errors,
-//       fromTime: null,
-//     });
-      
-//       const durationHours = Math.floor(durationMinutes / 60);
-//       const durationMinutesRemainder = durationMinutes % 60;
-//       setTotalHours(`${durationHours}:${durationMinutesRemainder}`);
-      
+  //     console.log(" from date formattedTime is :", formattedFromTime)
 
-//   }
-// };
+  //     // Clear the error message for fromTime if it was previously set
+  //     setErrors({
+  //       ...errors,
+  //       toTime: null,
+  //     });
+
+  //     //setFromTime(originalDate);
+  //   }
 
 
-const handleToTime = (selectedDate) => {
-  const originalDate = dayjs(selectedDate);
-  const fromDateTime = dayjs(fromTime, "HH:mm:ss");
-  console.log("originalDate is",originalDate)
-  console.log("fromDateTime is",fromDateTime)
-
-  // Calculate the duration between "From" and "To" times in minutes
-  const durationMinutes = originalDate.diff(fromDateTime, "minute");
-
-  // Check if the selected time is at least 2 hours after the "From" time and is not before it
-  if (durationMinutes >= 120 && originalDate.isAfter(fromDateTime)) {
-    // Update the "To" time and clear any previous error messages
-    setToTime(originalDate);
-    setErrors({
-      ...errors,
-      toTime: null,
-    });
-
-    // Calculate total hours and update the state
-    const durationHours = Math.floor(durationMinutes / 60);
-    const durationMinutesRemainder = durationMinutes % 60;
-    setTotalHours(`${durationHours}:${durationMinutesRemainder}`);
-  } else {
-    // Display an error message if the conditions are not met
-    setErrors({
-      ...errors,
-      toTime: durationMinutes < 120 ? "Total duration must be at least 2 hours" : "To Time cannot be before From Time",
-    });
-
-    // Reset the "To" time and total hours
-    setToTime(null);
-    setTotalHours("");
-  }
-};
+  // };
 
 
 
+  // const handleToTime = (selectedDate) => {
+  //   const originalDate = dayjs(selectedDate);
+  //   const fromDateTime = dayjs(fromTime);
+  //   const toDateTime = dayjs(selectedDate);
+  //   const hours = originalDate.hour();
+
+  //   // Check if the selected time is between 9 AM and 7 PM
+  //   // if (hours < 9 || hours >= 19) {
+  //   //   setErrors({
+  //   //     ...errors,
+  //   //     toTime: "Only allow times between 9 AM and 7 PM",
+  //   //   });
+  //   //   setToTime("");
+  //   //   return;
+  //   // }
+
+  //   // Check if the selected time is before the fromTime
+  //   if (toDateTime.isBefore(fromDateTime)) {
+  //     setErrors({
+  //       ...errors,
+  //       toTime: "To time cannot be before From time",
+  //     });
+  //     //setToTime("");
+  //     return;
+  //   }
+
+  //   // Calculate the difference in hours between fromTime and toTime
+  //   const diffInHours = toDateTime.diff(fromDateTime, "hours");
+
+  //   // Check if the duration exceeds 2 hours
+  //   if (diffInHours > 2) {
+  //     setErrors({
+  //       ...errors,
+  //       toTime: "Duration cannot exceed 2 hours",
+  //     });
+  //     setToTime("");
+  //     return;
+  //   }
+
+  //   // Clear any existing errors for the toTime field
+  //   setErrors({
+  //     ...errors,
+  //     toTime: "",
+  //   });
+
+  //   // Set the toTime
+  //   const formattedFromTime = originalDate.format("HH:mm:ss");
+  //   setToTime(formattedFromTime);
+  // };
+
+
+  const handleToTime = (selectedDate) => {
+    console.log("From Time Before Parsing:", fromTime);
+
+    //const fromDateTime = dayjs(fromTime);
+    const fromDateTime = dayjs().set('hour', parseInt(fromTime.split(':')[0])).set('minute', parseInt(fromTime.split(':')[1])).set('second', parseInt(fromTime.split(':')[2]));
+
+
+    console.log("From Time After Parsing:", fromDateTime);
+    const originalDate = dayjs(selectedDate);
+    const toDateTime = dayjs(selectedDate);
+    const hours = originalDate.hour();
+    const minutes = originalDate.minute();
+
+
+    const formattedToTime = originalDate.format("HH:mm:ss");
+    const durationMinutes = originalDate.diff(fromDateTime, "minute") + 1;
+
+    console.log("Duration in Minutes:", durationMinutes)
+
+
+
+    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+      setErrors({
+        ...errors,
+        toTime: "Only Allow 9AM to 7PM",
+      });
+      setToTime("");
+    }
+
+    // Check if the selected time is before the fromTime
+    else if (formattedToTime <= fromTime) {
+
+      console.log("test:", formattedToTime);
+      setErrors({
+        ...errors,
+        toTime: "To time must be after From time",
+      });
+
+      setToTime("");
+    }
+    // Check if the selected time is exceed 2 Hrs from the fromTime
+    else if (durationMinutes > 120) {
+      console.log("time exceed if condition testing:", durationMinutes);
+      setErrors({
+        ...errors,
+        toTime: "Duration cannot exceed 2 hours",
+      });
+      setToTime("");
+    }
+
+    else {
+      const formattedFromTime = originalDate.format("HH:mm:ss");
+      setToTime(formattedFromTime);
+
+      // Clear the error message for fromTime if it was previously set
+      setErrors({
+        ...errors,
+        toTime: null,
+      });
+
+      // Calculate total hours and minutes
+      const hours = Math.floor(durationMinutes / 60);
+      const minutes = durationMinutes % 60;
+      const totalHours = `${hours}:${minutes}`;
+      setTotalHours(totalHours);
+
+    }
+
+
+  };
 
   const handleNew = () => {
     setSelectedDate(null);
@@ -158,7 +250,7 @@ const handleToTime = (selectedDate) => {
     setTotalHours("");
     setNotes("");
     setSearchValue("");
-    
+
   };
 
   const handleValidation = () => {
@@ -176,14 +268,17 @@ const handleToTime = (selectedDate) => {
     if (!notes) {
       newErrors.notes = "Notes is Required";
     }
-    if (totalHours) {
-      const [hours, minutes] = totalHours.split(":").map(Number);
-      const totalMinutes = hours * 60 + minutes;
-      if (totalMinutes > 120) {
-        // 120 minutes = 2 hours
-        newErrors.totalHours = "Total Hours cannot exceed 2 hours";
-      }
+    if (!totalHours) {
+      newErrors.totalHours = "Total Hours is Required";
     }
+    // if (totalHours) {
+    //   const [hours, minutes] = totalHours.split(":").map(Number);
+    //   const totalMinutes = hours * 60 + minutes;
+    //   if (totalMinutes > 120) {
+    //     // 120 minutes = 2 hours
+    //     newErrors.totalHours = "Total Hours cannot exceed 2 hours";
+    //   }
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -195,16 +290,18 @@ const handleToTime = (selectedDate) => {
         permissiondate: selectedDate,
         fromhour: fromTime,
         tohour: toTime,
+        //tohour: "2024-02-21T15:32:24.063Z",
         totalhours: totalHours,
         notes: notes,
         remarks: searchValue,
-        totalhours: totalHours,
+        //totalhours: "10:0",
         createdby: empcode,
         updatedby: empcode,
         empcode: empcode,
         empname: empname,
         status: "Pending",
       };
+      console.log("Data will Pass to API:", dataToSave)
       const token = localStorage.getItem("token");
 
       if (token) {
@@ -221,7 +318,7 @@ const handleToTime = (selectedDate) => {
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
-            
+
             handleNew();
             //handleClosePermission();
             setMessage(response.data.paramObjectsMap.message);
@@ -266,7 +363,7 @@ const handleToTime = (selectedDate) => {
                   value={selectedDate}
                   onChange={handleDateChange}
                   format="DD/MM/YYYY"
-                  //error={Boolean(errors.selectedDate)}
+                //error={Boolean(errors.selectedDate)}
                 />
                 {errors.selectedDate && (
                   <span className="text-red-500">{errors.selectedDate}</span>
@@ -301,9 +398,9 @@ const handleToTime = (selectedDate) => {
                 {/* <DemoContainer components={["TimePicker", "TimePicker"]}> */}
                 <TimePicker
                   label="To"
-                  value={toTime}
-                  onChange={handleToTime}
+                  defaultValue={toTime}
                   slotProps={{ textField: { size: "small" } }}
+                  onChange={handleToTime}
                 />
                 {/* </DemoContainer> */}
                 {errors.toTime && (
@@ -312,6 +409,23 @@ const handleToTime = (selectedDate) => {
               </LocalizationProvider>
             </FormControl>
           </div>
+
+          {/* To Time Picker */}
+          {/* <div className="col-md-4 mb-3">
+            <FormControl fullWidth variant="filled">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TimePicker
+                  label="To"
+                  value={toTime}
+                  slotProps={{ textField: { size: "small" } }}
+                  onChange={handleToTime}
+                />
+                {errors.toTime && (
+                  <span className="text-red-500">{errors.toTime}</span>
+                )}
+              </LocalizationProvider>
+            </FormControl>
+          </div> */}
 
           {/* Total Hours TextField */}
           <div className="col-md-4 mb-3">
@@ -394,7 +508,7 @@ const handleToTime = (selectedDate) => {
         </div>
       </div>
       {notification && <ToastComponent content={message} type={errorType} />}
-      
+
     </>
   );
 }
