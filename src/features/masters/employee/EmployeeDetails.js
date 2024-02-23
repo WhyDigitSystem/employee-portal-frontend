@@ -106,6 +106,7 @@ export const EmployeeDetails = () => {
       "Account Number": row.accountNumber,
       "IFSC Code": row.ifscCode,
       "Reporting Person": row.reportingPerson,
+      // "Reporting Person Role": row.rreporting_person_role
     }));
 
     // Define CSV headers
@@ -174,8 +175,8 @@ export const EmployeeDetails = () => {
             cell.column.id === "email"
               ? validateEmail(event.target.value)
               : cell.column.id === "age"
-              ? validateAge(+event.target.value)
-              : validateRequired(event.target.value);
+                ? validateAge(+event.target.value)
+                : validateRequired(event.target.value);
           if (!isValid) {
             //set validation error for cell if invalid
             setValidationErrors({
@@ -358,6 +359,14 @@ export const EmployeeDetails = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
+      {
+        accessorKey: "reporting_person_role",
+        header: "Reporting Person Role",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
     ],
     [getCommonEditTextFieldProps]
   );
@@ -451,7 +460,7 @@ export const EmployeeDetails = () => {
         </button> */}
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
-              //onClick={getAllCompanyFields}
+            //onClick={getAllCompanyFields}
             >
               <BsListTask style={buttonStyle} />
               <span className="ml-1">List View</span>

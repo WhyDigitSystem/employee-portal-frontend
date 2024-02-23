@@ -11,7 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
@@ -44,10 +44,35 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [team, setTeam] = React.useState("");
   const [branch, setBranch] = React.useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  
+  const [loginEmpName, setLoginEmpName] = React.useState(localStorage.getItem("empname"));
+  const [reportingPersonRole, setReportingPersonRole] = React.useState("");
+  const [reportPersonOptions, setReportPersonOptions] = useState([]);
+
+
 
   const pwd = empCode + dob;
   const trimmedpwd = pwd.trim();
+
+  useEffect(() => {
+    // Fetch reporting persons when reporting person role is selected
+    const fetchReportingPersons = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=1&role=${reportingPersonRole}`
+        );
+        if (response.data.statusFlag === "Ok") {
+          // Update the report person options
+          setReportPersonOptions(response.data.paramObjectsMap.Employee);
+        }
+      } catch (error) {
+        console.error("Error fetching reporting persons:", error);
+      }
+    };
+
+    if (reportingPersonRole) {
+      fetchReportingPersons();
+    }
+  }, [reportingPersonRole]);
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
@@ -135,7 +160,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const handleIfsc = (event) => {
     setIfsc(event.target.value);
   };
-  const handleReportPerson = (event) => {
+  const handleReportPersonChange = (event) => {
     setReportPerson(event.target.value);
   };
   const handleTeam = (event) => {
@@ -143,6 +168,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   };
   const handleBranch = (event) => {
     setBranch(event.target.value);
+  };
+  const handleReportingPersonRoleChange = (event) => {
+    setReportingPersonRole(event.target.value);
+
   };
 
   const handleNew = () => {
@@ -256,7 +285,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     if (handleValidation()) {
       // Replace this with your logic to save the data to a backend or database
       const dataToSave = {
-        orgId:orgId,
+        orgId: orgId,
         empcode: empCode,
         empname: empName,
         gender: gender,
@@ -276,14 +305,19 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         account_no: accNo,
         ifsc_code: ifsc,
         reporting_person: reportPerson,
+        updatedby: loginEmpName,
+        createdby: loginEmpName,
+        branchId: branch,
       };
       const dataToSaveUser = {
-        // orgId: orgId,
-        // branch_Id: branch,
+        //orgId: orgId,
+        branchId: branch,
         empcode: empCode,
         empname: empName,
         role: role,
         email: email,
+        updatedby: loginEmpName,
+        createdby: loginEmpName,
         password: encryptPassword(trimmedpwd),
       };
       const token = localStorage.getItem("token");
@@ -335,7 +369,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               />
             </div>
             <div className="row d-flex mt-3">
-            <div className="col-md-4 mb-3">
+              <div className="col-md-4 mb-3">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">Branch</InputLabel>
                   <Select
@@ -408,7 +442,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       }}
                       value={dob}
                       onChange={handleDob}
-                      // error={Boolean(errors.dob)}
+                    // error={Boolean(errors.dob)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -538,7 +572,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     label="Team"
                     value={team}
                     onChange={handleTeam}
-                    //error={Boolean(errors.team)}
+                  //error={Boolean(errors.team)}
                   >
                     <MenuItem value={"Core"}>Core</MenuItem>
                     <MenuItem value={"Product"}>Product</MenuItem>
@@ -573,7 +607,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       value={joinDate}
                       onChange={handleJoinDate}
 
-                      // error={Boolean(errors.joinDate)}
+                    // error={Boolean(errors.joinDate)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -721,6 +755,30 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   <div className="col-md-4">
                     <FormControl fullWidth size="small">
                       <InputLabel id="demo-simple-select-label">
+                        Reporting Person Role
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        //multiple
+
+                        label="Reporting Person Role"
+                        value={reportingPersonRole}
+                        onChange={handleReportingPersonRoleChange}
+                        error={Boolean(errors.reportingPersonRole)}
+                      >
+                        <MenuItem value={"TEAM_LEAD"}>Team Lead</MenuItem>
+                        <MenuItem value={"MANAGER"}>Manager</MenuItem>
+                        <MenuItem value={"MANAGEMENT"}>Management</MenuItem>
+                        <MenuItem value={"HR"}>HR</MenuItem>
+                        {/* <MenuItem value={"ADMIN"}>Admin</MenuItem> */}
+                      </Select>
+                    </FormControl>
+                  </div>
+
+                  <div className="col-md-4">
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="demo-simple-select-label">
                         Reporting Person
                       </InputLabel>
                       <Select
@@ -730,12 +788,14 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
 
                         label="Reporting Person"
                         value={reportPerson}
-                        onChange={handleReportPerson}
+                        onChange={handleReportPersonChange}
                         error={Boolean(errors.reportPerson)}
                       >
-                        <MenuItem value={"Manager"}>Manager</MenuItem>
-                        <MenuItem value={"Team Lead"}>Team Lead</MenuItem>
-                        <MenuItem value={"HR"}>HR</MenuItem>
+                        {reportPersonOptions.map((person) => (
+                          <MenuItem key={person.Id} value={person.Id}>
+                            {person.Empname}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </div>

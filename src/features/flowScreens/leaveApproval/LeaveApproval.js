@@ -12,7 +12,10 @@ export const LeaveApproval = () => {
   const [leaveRequestId, setLeaveRequestId] = useState({});
   const [leaveMail, setLeaveMail] = useState();
   const [toEmpName, setToEmpName] = useState();
-  
+  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
+
 
 
   const openModal = (rowData) => {
@@ -21,7 +24,7 @@ export const LeaveApproval = () => {
     setLeaveMail(rowData.empmail);
     setToEmpName(rowData.empname);
     setIsModalOpen(true);
-    console.log("Testing:",rowData.empmail);
+    console.log("Testing:", rowData.empmail);
   };
 
   const closeModal = () => {
@@ -31,13 +34,34 @@ export const LeaveApproval = () => {
   };
 
   useEffect(() => {
-    getAllLeaveRequest();
+    if (loginUserRole === "HR") {
+      getAllLeaveRequest();
+    }
+    else {
+      getAllLeaveRequestByRole();
+    }
+
   }, []);
 
   const getAllLeaveRequest = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest`
+      );
+
+      if (response.status === 200) {
+        setLeaveRequest(response.data.paramObjectsMap.leaveRequestVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+
+  const getAllLeaveRequestByRole = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -75,7 +99,7 @@ export const LeaveApproval = () => {
 
   return (
     <div className="card w-full p-4 bg-base-100 shadow-xl">
-      <TableComponent columns={columns} data={leaveRequest}  />
+      <TableComponent columns={columns} data={leaveRequest} />
       <ModalComponent
         isOpen={isModalOpen}
         closeModal={closeModal}

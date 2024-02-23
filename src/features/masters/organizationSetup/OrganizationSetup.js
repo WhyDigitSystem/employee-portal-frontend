@@ -15,6 +15,22 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import "react-tabs/style/react-tabs.css";
 import ToastComponent from "../../../utils/ToastComponent";
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const OrganizationSetup = () => {
   //ORGANIZATION
@@ -36,7 +52,7 @@ const OrganizationSetup = () => {
   //const [orgId, setOrgId] = useState("1");
   // const [branchOrgCode, setBranchOrgCode] = useState("4");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [branchOrgCode, setBranchOrgCode] =  useState(""); 
+  const [branchOrgCode, setBranchOrgCode] = useState("");
   const [branchName, setBranchName] = useState("");
   const [branchCode, setBranchCode] = useState("");
   const [branchManager, setBranchManager] = useState("");
@@ -44,16 +60,16 @@ const OrganizationSetup = () => {
   const [branchAddress, setBranchAddress] = useState("");
   const [branchPan, setBranchPan] = useState("");
   const [branchGst, setBranchGst] = useState("");
-//BRANCH ADMIN CREDINCIAL STATES
-//const [brName, setBrName] = useState("");
-const [branches, setBranches] = useState([]);
-const [brCode, setBrCode] = useState("");
-const [brAdminName, setBrAdminName] = useState("");
-const [brAdminEmail, setBrAdminEmail] = useState("");
-const [brAdminPwd, setBrAdminPwd] = useState("");
-//USE EFFECT STATES
-const [branchId, setBranchId] = useState("");
-const [orgData, setOrgData] = useState([]);
+  //BRANCH ADMIN CREDINCIAL STATES
+  //const [brName, setBrName] = useState("");
+  const [branches, setBranches] = useState([]);
+  const [brCode, setBrCode] = useState("");
+  const [brAdminName, setBrAdminName] = useState("");
+  const [brAdminEmail, setBrAdminEmail] = useState("");
+  const [brAdminPwd, setBrAdminPwd] = useState("");
+  //USE EFFECT STATES
+  const [branchId, setBranchId] = useState("");
+  const [orgData, setOrgData] = useState([]);
 
 
   const handleTabChange = (event, newValue) => {
@@ -132,12 +148,12 @@ const [orgData, setOrgData] = useState([]);
   const handleBrAdminPwd = (event) => {
     setBrAdminPwd(event.target.value);
   };
-  
 
-  useEffect(()=> {
+
+  useEffect(() => {
     getOrgById()
     getBranchByOrgId()
-  },[]);
+  }, []);
 
   const getBranchByOrgId = async () => {
     try {
@@ -146,13 +162,8 @@ const [orgData, setOrgData] = useState([]);
       );
 
       if (response.status === 200) {
-      //   const branchData = response.data.paramObjectsMap.branchVO[0]; // Accessing the first element of branchVO
-      // console.log("BranchName:", branchData.branchName);
-        
-      //   //console.log("BranchName:",response.data.paramObjectsMap.branchVO.branchName[0])  
-      
-      const branchData = response.data.paramObjectsMap.branchVO;
-      setBranches(branchData);
+        const branchData = response.data.paramObjectsMap.branchVO;
+        setBranches(branchData);
 
       }
     } catch (error) {
@@ -167,9 +178,9 @@ const [orgData, setOrgData] = useState([]);
 
       if (response.status === 200) {
         setOrgData(response.data.paramObjectsMap.organizationVO);
-        setOrgName(response.data.paramObjectsMap.organizationVO.name); 
-        setBranchOrgCode(response.data.paramObjectsMap.organizationVO.orgCode); 
-        console.log("OrganizationName:",response.data.paramObjectsMap.organizationVO.name)       
+        setOrgName(response.data.paramObjectsMap.organizationVO.name);
+        setBranchOrgCode(response.data.paramObjectsMap.organizationVO.orgCode);
+        console.log("OrganizationName:", response.data.paramObjectsMap.organizationVO.name)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -237,7 +248,7 @@ const [orgData, setOrgData] = useState([]);
         gst: gst,
       };
 
-      console.log("Org Setup Data:",dataToSaveOrg)
+      console.log("Org Setup Data:", dataToSaveOrg)
 
       const token = localStorage.getItem("token");
 
@@ -331,7 +342,7 @@ const [orgData, setOrgData] = useState([]);
         gst: branchGst,
       };
 
-      console.log("Branch Data:",dataToSaveBranch)
+      console.log("Branch Data:", dataToSaveBranch)
 
       const token = localStorage.getItem("token");
 
@@ -382,10 +393,10 @@ const [orgData, setOrgData] = useState([]);
             <Tabs value={tabValue} onChange={handleTabChange}>
               <Tab label="Organization Info" />
               <Tab label="Branch" />
-              <Tab label="Branch Admin Credincials" />
+              {/* <Tab label="Branch Admin Credincials" /> */}
             </Tabs>
 
-{/* ORGANIZATION TAB */}
+            {/* ORGANIZATION TAB */}
             <Box hidden={tabValue !== 0}>
               <div className="row d-flex mt-3">
                 {/* <div className="col-md-4 mb-3">
@@ -539,6 +550,7 @@ const [orgData, setOrgData] = useState([]);
                     )}
                   </FormControl>
                 </div>
+
                 {/* GST FIELD */}
                 <div className="col-md-4 mb-3">
                   <FormControl fullWidth variant="filled">
@@ -557,6 +569,20 @@ const [orgData, setOrgData] = useState([]);
                       <span className="text-red-500">{errors.gst}</span>
                     )}
                   </FormControl>
+                </div>
+
+                {/* Org Logo  FIELD */}
+                <div className="col-md-4 mb-3">
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                  >
+                    Upload file
+                    <VisuallyHiddenInput type="file" />
+                  </Button>
                 </div>
 
                 <div className="col-md-4 mb-3 mb-3">
@@ -587,7 +613,7 @@ const [orgData, setOrgData] = useState([]);
             </Box>
 
             {/* Branch Tab */}
-            <Box hidden={tabValue !== 1 }>
+            <Box hidden={tabValue !== 1}>
               <div className="row d-flex mt-3">
                 {/* ORG NAME FIELD */}
                 <div className="col-md-4 mb-3">
@@ -617,9 +643,9 @@ const [orgData, setOrgData] = useState([]);
                       value={branchOrgCode}
                       //onChange={handleOrgCode}
                       disabled
-                      // error={Boolean(errors.orgCode)}
-                      //placeholder="accountcode"
-                      // inputProps={{ maxLength: 10 }}
+                    // error={Boolean(errors.orgCode)}
+                    //placeholder="accountcode"
+                    // inputProps={{ maxLength: 10 }}
                     />
                   </FormControl>
                 </div>
@@ -904,7 +930,7 @@ const [orgData, setOrgData] = useState([]);
                   </FormControl>
                 </div> */}
 
-               
+
 
                 <div className="col-md-4 mb-3 mb-3">
                   <FormGroup>
