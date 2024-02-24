@@ -156,16 +156,31 @@ function Dashboard() {
         >
           <HolidayCard />
         </div>
-        <div className="card col-md-3 mt-2 shadow-xl">
-          <div className="text-center m-auto">
-            <p>Avl Leave</p>
-            <p>-</p>
-          </div>
-        </div>
-        <div className="card col-md-3 mt-2 shadow-xl">
-          <div className="text-center m-auto">
-            <p>Taken Leave</p>
-            <p>-</p>
+        <div className="col-md-6">
+          <div
+            className="w-full p-3 bg-base-100 shadow-xl"
+            style={{ borderRadius: 16 }}
+          >
+            <div className="text-xl font-semibold p-2">Leave Balance</div>
+            <div className="divider mt-0 mb-0"></div>
+            <div className="overflow-x-auto w-full ">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th className="text-center">Leave Type</th>
+                    <th className="text-center">Leave Allocated</th>
+                    <th className="text-center">Leave Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="text-center">Earned Leave</td>
+                    <td className="text-center">1</td>
+                    <td className="text-center">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -176,7 +191,7 @@ function Dashboard() {
             userRoleCheck === "MANAGEMENT" ||
             userRoleCheck === "ADMIN") && (
             <>
-              <TodayAttendance />
+              {/* <TodayAttendance /> */}
               {/* <DashboardLeaveApproval />
               <DashboardPermissionApproval /> */}
             </>

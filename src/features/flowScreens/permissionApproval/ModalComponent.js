@@ -43,7 +43,7 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
           setRemarks("");
           setSendMail(true);
           setEmpName(localStorage.getItem("empname"));
-          setMailTo("cesilantony@whydigit.com");
+          setMailTo(localStorage.getItem("userName"));
           setMessage("Your Permission Request has been Approved..!!");
         }
       }

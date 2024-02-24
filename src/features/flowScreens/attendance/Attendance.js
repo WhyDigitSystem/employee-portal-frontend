@@ -24,7 +24,9 @@ export const Attendance = () => {
   const [disableCheckIn, setDisableCheckIn] = useState("");
   const [disableCheckOut, setDisableCheckOut] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
+  const [branchId, setBranchId] = React.useState(
+    localStorage.getItem("branchId")
+  );
 
   useEffect(() => {
     const fetchEmployeeStatus = async () => {
@@ -46,25 +48,25 @@ export const Attendance = () => {
         console.error("Error fetching employee status:", error);
       }
     };
-    const fetchEmployeeTime = async () => {
-      try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
-        );
+    // const fetchEmployeeTime = async () => {
+    //   try {
+    //     const response = await Axios.get(
+    //       `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
+    //     );
 
-        if (response.data.statusFlag === "Ok") {
-          // Update the checkedStatus state based on the fetched status
-          setCheckinTime(
-            response.data.paramObjectsMap.EmployeeStatusVO.entrytime
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching employee status:", error);
-      }
-    };
+    //     if (response.data.statusFlag === "Ok") {
+    //       // Update the checkedStatus state based on the fetched status
+    //       setCheckinTime(
+    //         response.data.paramObjectsMap.EmployeeStatusVO.entrytime
+    //       );
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching employee status:", error);
+    //   }
+    // };
 
     fetchEmployeeStatus();
-    fetchEmployeeTime();
+    // fetchEmployeeTime();
     getAllAttendanceById();
 
     const intervalId = setInterval(() => {
