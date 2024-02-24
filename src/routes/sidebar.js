@@ -13,6 +13,7 @@ import DocumentTextIcon from "@heroicons/react/24/outline/DocumentTextIcon";
 // import InboxArrowDownIcon from "@heroicons/react/24/outline/InboxArrowDownIcon";
 // import KeyIcon from "@heroicons/react/24/outline/KeyIcon";
 import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
+import AttendanceReport from "../features/flowScreens/attendanceReport/AttendanceReport";
 // import TableCellsIcon from "@heroicons/react/24/outline/TableCellsIcon";
 // import UserIcon from "@heroicons/react/24/outline/UserIcon";
 // import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
@@ -172,6 +173,31 @@ if (userRole === "HR") {
     }
   });
 }
+
+//MANAGER ROLE CONTROL
+// if (userRole === "MANAGER") {
+//   const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Attendance Report"];
+
+//   sectionsToRemove.forEach(sectionName => {
+//     const sectionIndex = routes.findIndex(route => route.name === sectionName);
+//     if (sectionIndex !== -1) {
+//       routes.splice(sectionIndex, 1);
+//     }
+//   });
+// }
+
+// MANAGER ROLE CONTROL
+if (userRole === "MANAGER") {
+  const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Attendance Report"];
+
+  sectionsToRemove.forEach(sectionName => {
+    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+    if (sectionIndex !== -1) {
+      routes.splice(sectionIndex, 1);
+    }
+  });
+}
+
 
 //ADMIN ROLE CONTROL
 if (userRole === "ADMIN") {

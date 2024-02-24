@@ -5,7 +5,9 @@ import routes from '../routes/sidebar';
 import SidebarSubmenu from './SidebarSubmenu';
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-import logoImage from '../assets/profile.png';
+import wdsLogo from '../assets/wds_logo.png';
+import mkLogo from '../assets/Mindskart_logo.jpeg';
+
 
 
 
@@ -66,11 +68,12 @@ function LeftSidebar() {
                 <li className="mb-2 font-semibold text-xl">
 
                     <Link to={'/app/welcome'}>
-                        <img className="mask mask-squircle w-10" src={logoImage} alt="DashWind Logo" />
-                        {/* <div>{orgName} &nbsp;<span style={{fontSize:"12px"}}>{branchName}</span></div> */}
-                        {/* <img className="w-10" src={logoImage} alt="Logo" /> */}
-
-
+                        {orgId === '1' ? (
+                            <img className="mask mask-squircle w-20" src={wdsLogo} alt="Whydigit Logo" />
+                        ) : orgId === '4' ? (
+                            <img className="mask mask-squircle w-20" src={mkLogo} alt="Mindskart Logo" />
+                        ) : null}
+                        {/* You can adjust the conditions based on your requirements */}
                     </Link> </li>
                 {
                     routes.map((route, k) => {
