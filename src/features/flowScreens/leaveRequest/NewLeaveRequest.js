@@ -48,14 +48,34 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [mailFrom, setMailFrom] = React.useState("");
   const [mailTo, setMailTo] = React.useState("");
   const [mailNotes, setMailNotes] = React.useState("");
+  const [leaveTypeOptions, setleaveTypeOptions] = useState([]);
+
 
   useEffect(() => {
+    //getAllLeaveType();
     if (from && to && from === to) {
       setShowLeaveTypeField(true);
     } else {
       setShowLeaveTypeField(false);
     }
   }, [from, to]);
+
+
+  // const getAllLeaveType = async () => {
+  //   try {
+  //     const response = await Axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=1&role=${reportingPersonRole}`
+  //     );
+  //     if (response.data.statusFlag === "Ok") {
+  //       // Update the report person options
+  //       setleaveTypeOptions(response.data.paramObjectsMap.Employee);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching reporting persons:", error);
+  //   }
+  // };
+
+
 
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
@@ -203,6 +223,29 @@ function NewLeaveRequest({ newLeaveRequest }) {
         </div>
 
         <div className="row d-flex mt-3">
+
+          {/* LEAVE TYPE FIELD */}
+          <div className="col-md-4 mb-3">
+            <FormControl fullWidth size="small">
+              <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Leave Type"
+                value={leaveType}
+                onChange={handleLeaveType}
+              //error={Boolean(errors.leaveType)}
+              >
+                <MenuItem value={"CL"}>CL</MenuItem>
+                <MenuItem value={"PL"}>PL</MenuItem>
+                {/* <MenuItem value={"Others"}>Others</MenuItem> */}
+              </Select>
+              {errors.leaveType && (
+                <span className="text-red-500">{errors.leaveType}</span>
+              )}
+            </FormControl>
+          </div>
+
           {/* FROM DATE FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
@@ -240,8 +283,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
               </LocalizationProvider>
             </FormControl>
           </div>
-          {/* HALF OR FULL DAY FIELD */}
 
+          {/* HALF OR FULL DAY FIELD */}
           {showLeaveTypeField && from && to && (
             <div className="col-md-4 mb-3">
               <FormControl fullWidth size="small">
@@ -254,7 +297,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   label="Select Leave"
                   value={selectLeave}
                   onChange={handleSelectLeave}
-                  //error={Boolean(errors.leaveType)}
+                //error={Boolean(errors.leaveType)}
                 >
                   <MenuItem value={"1st Half"}>1st Half</MenuItem>
                   <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
@@ -279,8 +322,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
               />
             </FormControl>
           </div>
+
           {/* LEAVE TYPE FIELD */}
-          <div className="col-md-4 mb-3">
+          {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
               <Select
@@ -289,17 +333,20 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 label="Leave Type"
                 value={leaveType}
                 onChange={handleLeaveType}
-                //error={Boolean(errors.leaveType)}
+              
               >
-                <MenuItem value={"CL"}>CL</MenuItem>
-                <MenuItem value={"PL"}>PL</MenuItem>
-                {/* <MenuItem value={"Others"}>Others</MenuItem> */}
+                {leaveTypeOptions.map((leave) => (
+                  <MenuItem key={leave.leaveCode} value={leave.leaveCode}>
+                    {leaveCode.leaveType}
+                  </MenuItem>
+                ))}
               </Select>
               {errors.leaveType && (
                 <span className="text-red-500">{errors.leaveType}</span>
               )}
             </FormControl>
-          </div>
+          </div> */}
+
 
           {/* NOTES FIELD */}
           <div className="col-md-4 mb-3">
@@ -311,7 +358,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 multiline
                 value={notes}
                 onChange={handleNotes}
-                //error={Boolean(errors.notes)}
+              //error={Boolean(errors.notes)}
               />
               {errors.notes && (
                 <span className="text-red-500">{errors.notes}</span>
@@ -319,7 +366,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
             </FormControl>
           </div>
           {/* NOTIFY FIELD */}
-          <div className="col-md-4 mb-3">
+          {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <Autocomplete
                 //size="small"
@@ -346,7 +393,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 )}
               />
             </FormControl>
-          </div>
+          </div> */}
         </div>
 
         <div className="d-flex flex-row mt-3">
@@ -355,14 +402,14 @@ function NewLeaveRequest({ newLeaveRequest }) {
             onClick={handleSave}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Apply
           </button>
           <button
             type="button"
             onClick={handleCloseNewLeave}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Cancel
+            Reset
           </button>
         </div>
       </div>

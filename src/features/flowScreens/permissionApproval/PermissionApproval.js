@@ -10,6 +10,9 @@ export const PermissionApproval = () => {
   const [selectedRowData, setSelectedRowData] = useState({});
   const [permissionRequest, setPermissionRequest] = useState([]);
   const [permissionRequestId, setPermissionRequestId] = useState([]);
+  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
 
   const openModal = (rowData) => {
     setSelectedRowData(rowData);
@@ -47,7 +50,13 @@ export const PermissionApproval = () => {
   ];
 
   useEffect(() => {
-    getPermissionApproval();
+    if (loginUserRole === "HR") {
+      getPermissionApproval();
+    }
+    else {
+      getAllPermissionRequestByRole();
+    }
+    //getPermissionApproval();
   }, []);
 
   const getPermissionApproval = () => {
@@ -59,6 +68,30 @@ export const PermissionApproval = () => {
       };
       Axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
+        {
+          headers,
+        }
+      )
+        .then((response) => {
+          console.log("Data saved successfully:", response.data);
+          setPermissionRequest(
+            response.data.paramObjectsMap.PermissionRequestVO
+          );
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+        });
+    }
+  };
+  const getAllPermissionRequestByRole = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`,
         {
           headers,
         }

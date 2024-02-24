@@ -209,10 +209,18 @@ function Login() {
               >
                 Login
               </button>
+
+
             </form>
+            {/* Displaying "Powered by Whydigit" in the bottom right corner */}
+            <div className="absolute bottom-4 right-4 text-sm text-gray-400">Powered by Whydigit</div>
           </div>
+
         </div>
+
       </div>
+
+
     </div>
   );
 }
