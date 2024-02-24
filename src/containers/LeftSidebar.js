@@ -74,7 +74,10 @@ function LeftSidebar() {
                             <img className="mask mask-squircle w-20" src={mkLogo} alt="Mindskart Logo" />
                         ) : null}
                         {/* You can adjust the conditions based on your requirements */}
-                    </Link> </li>
+                    </Link>
+                    <div>{orgName} &nbsp;<span style={{ fontSize: "12px" }}>{branchName}</span></div>
+                    {/* <img className="w-10" src={logoImage} alt="Logo" /> */}
+                </li>
                 {
                     routes.map((route, k) => {
                         return (
