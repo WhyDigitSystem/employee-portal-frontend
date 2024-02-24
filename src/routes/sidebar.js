@@ -186,17 +186,44 @@ if (userRole === "HR") {
 //   });
 // }
 
+// // MANAGER ROLE CONTROL
+// if (userRole === "MANAGER") {
+//   const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Attendance Report"];
+
+//   sectionsToRemove.forEach(sectionName => {
+//     const sectionIndex = routes.findIndex(route => route.name === sectionName);
+//     if (sectionIndex !== -1) {
+//       routes.splice(sectionIndex, 1);
+//     }
+//   });
+// }
+
+
 // MANAGER ROLE CONTROL
 if (userRole === "MANAGER") {
-  const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Attendance Report"];
-
+  // Remove top-level sections
+  const sectionsToRemove = ["Organization", "Organization Setup", "Masters"];
   sectionsToRemove.forEach(sectionName => {
     const sectionIndex = routes.findIndex(route => route.name === sectionName);
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
   });
+
+  // Remove nested routes within the "Team" section
+  const teamSectionIndex = routes.findIndex(route => route.name === "Team");
+  if (teamSectionIndex !== -1) {
+    const nestedRoutesToRemove = ["Attendance Report", "Today Attendance", "Search Attendance"];
+    nestedRoutesToRemove.forEach(routeName => {
+      const nestedRouteIndex = routes[teamSectionIndex].submenu.findIndex(route => route.name === routeName);
+      if (nestedRouteIndex !== -1) {
+        routes[teamSectionIndex].submenu.splice(nestedRouteIndex, 1);
+      }
+    });
+  }
 }
+
+
 
 
 //ADMIN ROLE CONTROL

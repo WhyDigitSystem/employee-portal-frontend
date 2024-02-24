@@ -22,7 +22,7 @@ export const PermissionApproval = () => {
 
   const closeModal = () => {
     setSelectedRowData({});
-    getPermissionApproval();
+    getAllPermissionRequest();
     setIsModalOpen(false);
   };
 
@@ -50,16 +50,15 @@ export const PermissionApproval = () => {
   ];
 
   useEffect(() => {
-    if (loginUserRole === "HR") {
-      getPermissionApproval();
-    }
-    else {
+    if (loginUserRole === "MANAGER") {
       getAllPermissionRequestByRole();
     }
-    //getPermissionApproval();
+    else {
+      getAllPermissionRequest();
+    }
   }, []);
 
-  const getPermissionApproval = () => {
+  const getAllPermissionRequest = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -99,7 +98,7 @@ export const PermissionApproval = () => {
         .then((response) => {
           console.log("Data saved successfully:", response.data);
           setPermissionRequest(
-            response.data.paramObjectsMap.PermissionRequestVO
+            response.data.paramObjectsMap.permissionRequestVO
           );
         })
         .catch((error) => {

@@ -34,11 +34,11 @@ export const LeaveApproval = () => {
   };
 
   useEffect(() => {
-    if (loginUserRole === "HR") {
-      getAllLeaveRequest();
+    if (loginUserRole === "MANAGER") {
+      getAllLeaveRequestByRole();
     }
     else {
-      getAllLeaveRequestByRole();
+      getAllLeaveRequest();
     }
 
   }, []);

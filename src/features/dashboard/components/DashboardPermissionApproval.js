@@ -16,9 +16,16 @@ function DashboardPermissionApproval() {
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
   const [sendMail, setSendMail] = React.useState(false);
+  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
+  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
+
 
   useEffect(() => {
-    getAllPendingPermissionRequest();
+    {
+      loginUserRole === 'MANAGER' ? (
+        getAllPendingPermissionRequestByRole()
+      ) : getAllPendingPermissionRequest()
+    }
   }, []);
 
   const getAllPendingPermissionRequest = async () => {
@@ -30,6 +37,21 @@ function DashboardPermissionApproval() {
       if (response.status === 200) {
         setPendingPermissionRequestList(
           response.data.paramObjectsMap.PermissionRequestVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getAllPendingPermissionRequestByRole = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`,
+      );
+
+      if (response.status === 200) {
+        setPendingPermissionRequestList(
+          response.data.paramObjectsMap.permissionRequestVO
         );
       }
     } catch (error) {

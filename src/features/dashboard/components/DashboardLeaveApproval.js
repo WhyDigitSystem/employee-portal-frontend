@@ -15,15 +15,36 @@ function DashboardLeaveApproval() {
   const [message, setMessage] = React.useState("");
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
+  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
+  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
 
   useEffect(() => {
-    getAllPendingLeaveRequest();
+    {
+      loginUserRole === 'MANAGER' ? (
+        getAllPendingLeaveRequestByRole()
+      ) : getAllPendingLeaveRequest()
+    }
   }, []);
 
   const getAllPendingLeaveRequest = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest`
+      );
+
+      if (response.status === 200) {
+        setPendingLeaveRequestList(
+          response.data.paramObjectsMap.leaveRequestVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getAllPendingLeaveRequestByRole = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=WDS012&orgId=1`
       );
 
       if (response.status === 200) {
@@ -52,7 +73,12 @@ function DashboardLeaveApproval() {
         );
 
         if (response.status === 200) {
-          getAllPendingLeaveRequest();
+          {
+            loginUserRole === 'MANAGER' ? (
+              getAllPendingLeaveRequestByRole()
+            ) : getAllPendingLeaveRequest()
+          }
+          //getAllPendingLeaveRequest();
           setSendMail(true);
           setEmpName(localStorage.getItem("empname"));
           setMailTo(localStorage.getItem("userName"));
@@ -78,7 +104,12 @@ function DashboardLeaveApproval() {
         );
 
         if (response.status === 200) {
-          getAllPendingLeaveRequest();
+          {
+            loginUserRole === 'MANAGER' ? (
+              getAllPendingLeaveRequestByRole()
+            ) : getAllPendingLeaveRequest()
+          }
+          //getAllPendingLeaveRequest();
           setSendMail(true);
           setEmpName(localStorage.getItem("empname"));
           setMailTo(localStorage.getItem("userName"));

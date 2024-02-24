@@ -87,62 +87,14 @@ function Dashboard() {
       {/** ---------------------- Different stats content 2 ------------------------- */}
 
       <div className="grid lg:grid-cols-1 grid-cols-1 gap-6">
-        {(userRoleCheck === "USER" || userRoleCheck === "HR") && <Attendance />}
+        {(userRoleCheck === "USER" || userRoleCheck === "MANAGER" || userRoleCheck === "HR") && <Attendance />}
 
         {/* <PageStats /> */}
       </div>
 
-      {/* <div className="row">
-        <div className="card col-md-3 col-sm-3">
-          <div className="d-flex flex-wrap">
-            <p>Available Leave</p>
-            <p>1</p>
-          </div>
-        </div>
-      </div> */}
 
       {/** ---------------------- User source channels table  ------------------------- */}
 
-      {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="row">
-            <div className="card col-md-5  col-sm-5 shadow-xl ">
-              Next Holiday
-            </div>
-
-            <div className="card col-md-3 col-sm-3 mx-2 shadow-xl">
-              <p>Available Leave</p>
-              <p className="text-center">1</p>
-            </div>
-            <div className="card col-md-3 col-sm-3 mx-2 shadow-xl ">
-              <p>Taken Leave</p>
-              <p className="text-center">1</p>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* <div className="row mt-5">
-        <div
-          className="card col-md-6 col-sm-6 mx-3 p-6 shadow-xl"
-          style={{
-            backgroundImage: `url(/happy_holiday1.jpg)`,
-            backgroundSize: "cover", // or 'contain', depending on your preference
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        >
-          <HolidayCard />
-        </div>
-        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl d-flex justify-content-center align-items-center">
-          <div>Avl Leave </div>
-          <div>-</div>
-        </div>
-        <div className="card col-md-2 col-sm-2 mx-3 p-6 shadow-xl d-flex justify-content-center align-items-center">
-          <div>Taken Leave </div>
-          <div>-</div>
-        </div>
-      </div> */}
 
       <div className="row d-flex justify-content-evenly mt-5 ">
         <div
@@ -186,56 +138,38 @@ function Dashboard() {
       </div>
 
       <div className="row d-flex justify-content-between mt-3 ">
-        <div className="col-md-6">
-          {(userRoleCheck === "HR" ||
-            userRoleCheck === "MANAGEMENT" ||
-            userRoleCheck === "ADMIN") && (
-            <>
-              {/* <TodayAttendance /> */}
-              {/* <DashboardLeaveApproval />
-              <DashboardPermissionApproval /> */}
-            </>
-          )}
-        </div>
-
-        <div className="col-md-6">
-          {(userRoleCheck === "HR" ||
-            userRoleCheck === "MANAGEMENT" ||
-            userRoleCheck === "ADMIN") && (
-            <>
-              {/* <TodayAttendance /> */}
-              <DashboardLeaveApproval />
-              {/* <DashboardPermissionApproval /> */}
-            </>
-          )}
-        </div>
-      </div>
-      <div className="row d-flex mt-3 ">
-        <div className="col-md-6">
-          {(userRoleCheck === "HR" ||
-            userRoleCheck === "MANAGEMENT" ||
-            userRoleCheck === "ADMIN") && (
-            <>
-              {/* <TodayAttendance />
-              <DashboardLeaveApproval /> */}
-              <DashboardPermissionApproval />
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
         {(userRoleCheck === "HR" ||
           userRoleCheck === "MANAGEMENT" ||
           userRoleCheck === "ADMIN") && (
-          <>
-            <TodayAttendance />
-            <DashboardLeaveApproval />
-            <DashboardPermissionApproval />
-          </>
-        )}
+            <>
+              <div className="col-md-6">
+                <TodayAttendance />
+              </div>
 
-      </div> */}
+            </>
+          )}
+
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "ADMIN" ||
+          userRoleCheck === "MANAGER") && (
+            <>
+              <div className="col-md-6">
+                <DashboardLeaveApproval />
+              </div>
+            </>
+          )}
+        {/* </div>
+      <div className="row d-flex mt-3 "> */}
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "MANAGER" ||
+          userRoleCheck === "ADMIN") && (
+            <>
+              <div className="col-md-6"><DashboardPermissionApproval /></div>
+            </>
+          )}
+      </div>
     </>
   );
 }
