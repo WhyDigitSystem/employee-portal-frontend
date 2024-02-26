@@ -45,8 +45,8 @@ const ChangePwd = lazy(() => import("../pages/protected/ChangePwd"));
 const JpCheckinCheckout = lazy(() =>
   import("../pages/protected/JpCheckinCheckout")
 );
-const SearchAttendance = lazy(() =>
-  import("../pages/protected/SearchAttendance")
+const SwipeINSwipeOUT = lazy(() =>
+  import("../pages/protected/SwipeINSwipeOUT")
 );
 const AllOrg = lazy(() => import("../pages/protected/AllOrg"));
 const OrganizationSetup = lazy(() =>
@@ -177,8 +177,8 @@ const routes = [
     component: JpCheckinCheckout,
   },
   {
-    path: "/searchattendance",
-    component: SearchAttendance,
+    path: "/swipeinswipeout",
+    component: SwipeINSwipeOUT,
   },
   {
     path: "/allorg",

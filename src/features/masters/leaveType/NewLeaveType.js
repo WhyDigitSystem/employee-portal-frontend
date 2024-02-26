@@ -8,22 +8,32 @@ import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
 import ToastComponent from "../../../utils/ToastComponent";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 function NewLeaveType({ newLeaveType }) {
   const [leaveCode, setLeaveCode] = useState("");
   const [leaveType, setLeaveType] = useState("");
+  const [leaveapplicable, setLeaveapplicable] = useState("");
   const [totLeave, setTotLeave] = useState("");
   const [errors, setErrors] = React.useState({});
   const [savedData, setSavedData] = React.useState("");
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorType, setErrorType] = React.useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginEmpName, setLoginEmpName] = React.useState(localStorage.getItem("empname"));
+
 
   const handleLeaveCode = (event) => {
     setLeaveCode(event.target.value);
   };
   const handleLeaveType = (event) => {
     setLeaveType(event.target.value);
+  };
+  const handleLeaveapplicable = (event) => {
+    setLeaveapplicable(event.target.value);
   };
   const handleTotLeave = (event) => {
     setTotLeave(event.target.value);
@@ -40,6 +50,7 @@ function NewLeaveType({ newLeaveType }) {
   const handleNew = () => {
     setLeaveCode("");
     setLeaveType("");
+    setLeaveapplicable("");
     setTotLeave("");
   };
 
@@ -47,15 +58,19 @@ function NewLeaveType({ newLeaveType }) {
     const newErrors = {};
 
     if (leaveCode === "") {
-      newErrors.leaveCode = "Date is required";
+      newErrors.leaveCode = "Leave Code is required";
     }
 
     if (leaveType === "") {
-      newErrors.leaveType = "Day is required";
+      newErrors.leaveType = "Leave Type is required";
+    }
+
+    if (leaveapplicable === "") {
+      newErrors.leaveapplicable = "Leave Applicable is required";
     }
 
     if (totLeave === "") {
-      newErrors.totLeave = "Festival is required";
+      newErrors.totLeave = "Total Leave is required";
     }
 
     setErrors(newErrors);
@@ -64,12 +79,18 @@ function NewLeaveType({ newLeaveType }) {
   };
 
   const handleSave = () => {
+    handleValidation()
     if (handleValidation()) {
       const dataToSave = {
+        orgId: orgId,
         leave_code: leaveCode,
         leave_type: leaveType,
+        applicable: leaveapplicable,
         total_leave: totLeave,
+        createdby: loginEmpName,
+        updatedby: loginEmpName,
       };
+      console.log("tesasdlkjfdsa", dataToSave)
 
       const token = localStorage.getItem("token");
 
@@ -100,7 +121,6 @@ function NewLeaveType({ newLeaveType }) {
           });
       } else {
         console.error("User is not authenticated. Please log in.");
-        //setMessage("User is not authenticated. Please log in.");
         //setNotification(true);
       }
     }
@@ -127,9 +147,13 @@ function NewLeaveType({ newLeaveType }) {
                   size="small"
                   value={leaveCode}
                   onChange={handleLeaveCode}
-                  error={Boolean(errors.leaveCode)}
+                  // error={Boolean(errors.leaveCode)}
                   inputProps={{ maxLength: 30 }}
+
                 />
+                {errors.leaveCode && (
+                  <span className="text-red-500">{errors.leaveCode}</span>
+                )}
               </FormControl>
             </div>
             <div className="col-md-4">
@@ -140,11 +164,37 @@ function NewLeaveType({ newLeaveType }) {
                   size="small"
                   value={leaveType}
                   onChange={handleLeaveType}
-                  error={Boolean(errors.leaveType)}
+                  //error={Boolean(errors.leaveType)}
                   inputProps={{ maxLength: 30 }}
                 />
+                {errors.leaveType && (
+                  <span className="text-red-500">{errors.leaveType}</span>
+                )}
               </FormControl>
             </div>
+
+            {/* LEAVE TYPE FIELD */}
+            <div className="col-md-4 mb-3">
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Leave Applicable</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Leave Applicable"
+                  value={leaveapplicable}
+                  onChange={handleLeaveapplicable}
+
+                >
+                  <MenuItem value={"ALL"}>All</MenuItem>
+                  <MenuItem value={"Male"}>Male</MenuItem>
+                  <MenuItem value={"Female"}>Female</MenuItem>
+                </Select>
+                {errors.leaveapplicable && (
+                  <span className="text-red-500">{errors.leaveapplicable}</span>
+                )}
+              </FormControl>
+            </div>
+
             <div className="col-md-4">
               <FormControl fullWidth variant="filled">
                 <TextField
@@ -153,9 +203,12 @@ function NewLeaveType({ newLeaveType }) {
                   size="small"
                   value={totLeave}
                   onChange={handleTotLeave}
-                  error={Boolean(errors.totLeave)}
+                  //error={Boolean(errors.totLeave)}
                   inputProps={{ maxLength: 30 }}
                 />
+                {errors.totLeave && (
+                  <span className="text-red-500">{errors.totLeave}</span>
+                )}
               </FormControl>
             </div>
             <div className="col-md-4 mb-3">

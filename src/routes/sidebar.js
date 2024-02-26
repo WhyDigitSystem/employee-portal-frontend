@@ -106,6 +106,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Holiday Report", // name that appear in Sidebar
       },
+      {
+        path: "/app/swipeinswipeout", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "SwipeIN & SwipeOUT", // name that appear in Sidebar
+      },
     ],
   },
   // transaction folder end
@@ -134,11 +139,7 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Today Attendance", // name that appear in Sidebar
       },
-      {
-        path: "/app/searchattendance", // url
-        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
-        name: "Search Attendance", // name that appear in Sidebar
-      },
+
 
       // {
       //      path: "/app/attendance", // url

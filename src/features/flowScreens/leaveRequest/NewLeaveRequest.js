@@ -23,9 +23,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [savedData, setSavedData] = React.useState();
   const [empName, setEmpName] = React.useState(localStorage.getItem("empname"));
   const [empCode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
-  const [empMail, setEmpMail] = React.useState(
-    localStorage.getItem("userName")
-  );
+  const [empMail, setEmpMail] = React.useState(localStorage.getItem("userName"));
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginEmpId, setLoginEmpId] = React.useState(localStorage.getItem("empId"));
 
   const [options, setOptions] = useState([
     "Karupu",
@@ -55,7 +55,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [leaveTypeOptions, setleaveTypeOptions] = useState([]);
 
   useEffect(() => {
-    //getAllLeaveType();
+    getAllLeaveTypeByGender();
     if (from && to && from === to) {
       setShowLeaveTypeField(true);
     } else {
@@ -63,19 +63,19 @@ function NewLeaveRequest({ newLeaveRequest }) {
     }
   }, [from, to]);
 
-  // const getAllLeaveType = async () => {
-  //   try {
-  //     const response = await Axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=1&role=${reportingPersonRole}`
-  //     );
-  //     if (response.data.statusFlag === "Ok") {
-  //       // Update the report person options
-  //       setleaveTypeOptions(response.data.paramObjectsMap.Employee);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching reporting persons:", error);
-  //   }
-  // };
+  const getAllLeaveTypeByGender = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leavetype/leaveRequest?id=${loginEmpId}&orgId=${orgId}`
+      );
+      if (response.data.statusFlag === "Ok") {
+        setleaveTypeOptions(response.data.paramObjectsMap.leaveType);
+      }
+    } catch (error) {
+      console.error("Error fetching reporting persons:", error);
+    }
+  };
+
 
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
@@ -226,7 +226,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
 
         <div className="row d-flex mt-3">
           {/* LEAVE TYPE FIELD */}
-          <div className="col-md-4 mb-3">
+          {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
               <Select
@@ -239,13 +239,12 @@ function NewLeaveRequest({ newLeaveRequest }) {
               >
                 <MenuItem value={"CL"}>CL</MenuItem>
                 <MenuItem value={"PL"}>PL</MenuItem>
-                {/* <MenuItem value={"Others"}>Others</MenuItem> */}
               </Select>
               {errors.leaveType && (
                 <span className="text-red-500">{errors.leaveType}</span>
               )}
             </FormControl>
-          </div>
+          </div> */}
 
           {/* FROM DATE FIELD */}
           <div className="col-md-4 mb-3">
@@ -298,7 +297,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   label="Select Leave"
                   value={selectLeave}
                   onChange={handleSelectLeave}
-                  //error={Boolean(errors.leaveType)}
                 >
                   <MenuItem value={"1st Half"}>1st Half</MenuItem>
                   <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
@@ -325,7 +323,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </div>
 
           {/* LEAVE TYPE FIELD */}
-          {/* <div className="col-md-4 mb-3">
+          <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
               <Select
@@ -334,11 +332,11 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 label="Leave Type"
                 value={leaveType}
                 onChange={handleLeaveType}
-              
+
               >
                 {leaveTypeOptions.map((leave) => (
-                  <MenuItem key={leave.leaveCode} value={leave.leaveCode}>
-                    {leaveCode.leaveType}
+                  <MenuItem key={leave.LeaveTypeCode} value={leave.LeaveTypeCode}>
+                    {leave.LeaveType}
                   </MenuItem>
                 ))}
               </Select>
@@ -346,7 +344,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 <span className="text-red-500">{errors.leaveType}</span>
               )}
             </FormControl>
-          </div> */}
+          </div>
 
           {/* NOTES FIELD */}
           <div className="col-md-4 mb-3">
@@ -358,7 +356,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 multiline
                 value={notes}
                 onChange={handleNotes}
-                //error={Boolean(errors.notes)}
               />
               {errors.notes && (
                 <span className="text-red-500">{errors.notes}</span>
