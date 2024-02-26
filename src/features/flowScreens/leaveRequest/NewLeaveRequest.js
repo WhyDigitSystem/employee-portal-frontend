@@ -23,7 +23,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [savedData, setSavedData] = React.useState();
   const [empName, setEmpName] = React.useState(localStorage.getItem("empname"));
   const [empCode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
-  const [empMail, setEmpMail] = React.useState(localStorage.getItem("userName"));
+  const [empMail, setEmpMail] = React.useState(
+    localStorage.getItem("userName")
+  );
 
   const [options, setOptions] = useState([
     "Karupu",
@@ -48,8 +50,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [mailFrom, setMailFrom] = React.useState("");
   const [mailTo, setMailTo] = React.useState("");
   const [mailNotes, setMailNotes] = React.useState("");
+  const [mailMessage, setMailMessage] = React.useState("");
+  const [mailMessageTwo, setMailMessageTwo] = React.useState("");
   const [leaveTypeOptions, setleaveTypeOptions] = useState([]);
-
 
   useEffect(() => {
     //getAllLeaveType();
@@ -59,7 +62,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
       setShowLeaveTypeField(false);
     }
   }, [from, to]);
-
 
   // const getAllLeaveType = async () => {
   //   try {
@@ -74,8 +76,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
   //     console.error("Error fetching reporting persons:", error);
   //   }
   // };
-
-
 
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
@@ -192,6 +192,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
             setMailFrom(from);
             setMailTo(to);
             setMailNotes(notes);
+            setMailMessage("You have a new Leave Request from ");
+            setMailMessageTwo("is requesting Leave");
             //handleCloseNewLeave();
             setMessage(response.data.paramObjectsMap.message);
             setErrorType("success");
@@ -223,7 +225,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
         </div>
 
         <div className="row d-flex mt-3">
-
           {/* LEAVE TYPE FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
@@ -234,7 +235,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 label="Leave Type"
                 value={leaveType}
                 onChange={handleLeaveType}
-              //error={Boolean(errors.leaveType)}
+                //error={Boolean(errors.leaveType)}
               >
                 <MenuItem value={"CL"}>CL</MenuItem>
                 <MenuItem value={"PL"}>PL</MenuItem>
@@ -297,7 +298,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   label="Select Leave"
                   value={selectLeave}
                   onChange={handleSelectLeave}
-                //error={Boolean(errors.leaveType)}
+                  //error={Boolean(errors.leaveType)}
                 >
                   <MenuItem value={"1st Half"}>1st Half</MenuItem>
                   <MenuItem value={"2nd Half"}>2nd Half</MenuItem>
@@ -347,7 +348,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
             </FormControl>
           </div> */}
 
-
           {/* NOTES FIELD */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
@@ -358,7 +358,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 multiline
                 value={notes}
                 onChange={handleNotes}
-              //error={Boolean(errors.notes)}
+                //error={Boolean(errors.notes)}
               />
               {errors.notes && (
                 <span className="text-red-500">{errors.notes}</span>
@@ -415,7 +415,13 @@ function NewLeaveRequest({ newLeaveRequest }) {
       </div>
 
       {sendMail && (
-        <EmailConfig fDate={mailFrom} tDate={mailTo} reason={mailNotes} />
+        <EmailConfig
+          fDate={mailFrom}
+          tDate={mailTo}
+          reason={mailNotes}
+          message={mailMessage}
+          message2={mailMessageTwo}
+        />
       )}
 
       {notification && <ToastComponent content={message} type={errorType} />}

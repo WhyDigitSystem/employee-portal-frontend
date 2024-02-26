@@ -15,6 +15,7 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
   const [remarks, setRemarks] = useState("");
   const [sendMail, setSendMail] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [mailStatus, setMailStatus] = React.useState("");
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
 
@@ -45,9 +46,10 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
           setStatus("");
           setRemarks("");
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Leave Request has been Approved..!!");
+          setEmpName(response.data.paramObjectsMap.LeaveRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.LeaveRequestVO.empmail);
+          setMailStatus(response.data.paramObjectsMap.LeaveRequestVO.status);
+          setMessage("Your Leave Request has been ");
         }
       }
     } catch (error) {
@@ -139,7 +141,12 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
         </div>
       </div>
       {sendMail && (
-        <ApprovalEmail to_email={mailTo} to_name={empName} message={message} />
+        <ApprovalEmail
+          to_email={mailTo}
+          to_name={empName}
+          message={message}
+          status={mailStatus}
+        />
       )}
     </>
   );

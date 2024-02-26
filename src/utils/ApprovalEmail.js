@@ -1,9 +1,9 @@
 import emailjs from "@emailjs/browser";
 import { useEffect } from "react";
-const SendEmail = async (message, to_email, to_name) => {
+const SendEmail = async (message, to_email, to_name, status) => {
   try {
     const templateParams = {
-      message: message,
+      message: `${message}${status}..!!`,
       to_name: to_name,
       to_email: to_email,
     };
@@ -19,11 +19,11 @@ const SendEmail = async (message, to_email, to_name) => {
     console.error("Error sending email:", error);
   }
 };
-const ApprovalEmail = ({ message, to_email, to_name }) => {
+const ApprovalEmail = ({ message, to_email, to_name, status }) => {
   useEffect(() => {
-    console.log("abcd: ", message, to_email, to_name);
-    SendEmail(message, to_email, to_name);
-  }, [message, to_email, to_name]);
+    console.log("abcd: ", message, to_email, to_name, status);
+    SendEmail(message, to_email, to_name, status);
+  }, [message, to_email, to_name, status]);
   return null;
 };
 export default ApprovalEmail;

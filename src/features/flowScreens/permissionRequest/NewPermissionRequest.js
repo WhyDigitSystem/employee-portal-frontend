@@ -11,7 +11,7 @@ import React, { useState, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
 import ToastComponent from "../../../utils/ToastComponent";
-
+import EmailConfig from "../../../utils/SendEmail";
 
 function NewPermissionRequest({ newPermissionRequest }) {
   const [options, setOptions] = useState([
@@ -30,11 +30,21 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [fromTime, setFromTime] = useState();
   const [toTime, setToTime] = useState();
+  const [mailFrom, setMailFrom] = React.useState("");
+  const [mailTo, setMailTo] = React.useState("");
+  const [mailNotes, setMailNotes] = React.useState("");
+  const [mailMessage, setMailMessage] = React.useState("");
+  const [mailMessageTwo, setMailMessageTwo] = React.useState("");
+  const [mailDate, setMailDate] = React.useState("");
+  const [sendMail, setSendMail] = React.useState(false);
   const [totalHours, setTotalHours] = useState("");
   const [notes, setNotes] = useState("");
   const [searchValue, setSearchValue] = useState(null);
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [empname, setEmpName] = React.useState(localStorage.getItem("empname"));
+  const [empMail, setEmpMail] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorType, setErrorType] = React.useState("");
@@ -43,8 +53,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
     console.log("From Time:", fromTime);
     console.log("TO Time:", toTime);
   }, [fromTime, toTime]);
-
-
 
   const handleSearchChange = (event, newValue) => {
     setSearchValue(newValue);
@@ -62,7 +70,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
   const handleFromTime = (selectedDate) => {
     const originalDate = dayjs(selectedDate);
-    console.log(" from date orginalDate is :", originalDate)
+    console.log(" from date orginalDate is :", originalDate);
     const hours = originalDate.hour();
     const minutes = originalDate.minute();
     if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
@@ -71,8 +79,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
         fromTime: "Only Allow 9AM to 7PM",
       });
       setFromTime("");
-    }
-    else {
+    } else {
       const formattedFromTime = originalDate.format("HH:mm:ss");
       setFromTime(formattedFromTime);
 
@@ -86,11 +93,12 @@ function NewPermissionRequest({ newPermissionRequest }) {
     }
   };
 
-
   const handleToTime = (selectedDate) => {
     console.log("From Time Before Parsing:", fromTime);
-    const fromDateTime = dayjs().set('hour', parseInt(fromTime.split(':')[0])).set('minute', parseInt(fromTime.split(':')[1])).set('second', parseInt(fromTime.split(':')[2]));
-
+    const fromDateTime = dayjs()
+      .set("hour", parseInt(fromTime.split(":")[0]))
+      .set("minute", parseInt(fromTime.split(":")[1]))
+      .set("second", parseInt(fromTime.split(":")[2]));
 
     console.log("From Time After Parsing:", fromDateTime);
     const originalDate = dayjs(selectedDate);
@@ -98,13 +106,10 @@ function NewPermissionRequest({ newPermissionRequest }) {
     const hours = originalDate.hour();
     const minutes = originalDate.minute();
 
-
     const formattedToTime = originalDate.format("HH:mm:ss");
     const durationMinutes = originalDate.diff(fromDateTime, "minute") + 1;
 
-    console.log("Duration in Minutes:", durationMinutes)
-
-
+    console.log("Duration in Minutes:", durationMinutes);
 
     if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
       setErrors({
@@ -116,7 +121,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
     // Check if the selected time is before the fromTime
     else if (formattedToTime <= fromTime) {
-
       console.log("test:", formattedToTime);
       setErrors({
         ...errors,
@@ -133,9 +137,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
         toTime: "Duration cannot exceed 2 hours",
       });
       setToTime("");
-    }
-
-    else {
+    } else {
       const formattedFromTime = originalDate.format("HH:mm:ss");
       setToTime(formattedFromTime);
 
@@ -150,10 +152,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
       const minutes = durationMinutes % 60;
       const totalHours = `${hours}:${minutes}`;
       setTotalHours(totalHours);
-
     }
-
-
   };
 
   const handleNew = () => {
@@ -163,7 +162,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
     setTotalHours("");
     setNotes("");
     setSearchValue("");
-
   };
 
   const handleValidation = () => {
@@ -212,9 +210,10 @@ function NewPermissionRequest({ newPermissionRequest }) {
         updatedby: empcode,
         empcode: empcode,
         empname: empname,
+        empMail: empMail,
         status: "Pending",
       };
-      console.log("Data will Pass to API:", dataToSave)
+      console.log("Data will Pass to API:", dataToSave);
       const token = localStorage.getItem("token");
 
       if (token) {
@@ -231,9 +230,15 @@ function NewPermissionRequest({ newPermissionRequest }) {
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
-
+            setSendMail(true);
+            setMailFrom(fromTime);
+            setMailTo(toTime);
+            setMailNotes(notes);
+            setMailDate(selectedDate);
             handleNew();
             //handleClosePermission();
+            setMailMessage("You have a new Permission Request from ");
+            setMailMessageTwo("is requesting Permission on");
             setMessage(response.data.paramObjectsMap.message);
             setErrorType("success");
             setNotification(true);
@@ -276,7 +281,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
                   value={selectedDate}
                   onChange={handleDateChange}
                   format="DD/MM/YYYY"
-                //error={Boolean(errors.selectedDate)}
+                  //error={Boolean(errors.selectedDate)}
                 />
                 {errors.selectedDate && (
                   <span className="text-red-500">{errors.selectedDate}</span>
@@ -404,7 +409,16 @@ function NewPermissionRequest({ newPermissionRequest }) {
         </div>
       </div>
       {notification && <ToastComponent content={message} type={errorType} />}
-
+      {sendMail && (
+        <EmailConfig
+          fDate={mailFrom}
+          tDate={mailTo}
+          reason={mailNotes}
+          message={mailMessage}
+          message2={mailMessageTwo}
+          date={mailDate}
+        />
+      )}
     </>
   );
 }

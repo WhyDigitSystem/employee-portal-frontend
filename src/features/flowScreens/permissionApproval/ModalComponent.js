@@ -42,9 +42,9 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
           setStatus("");
           setRemarks("");
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Permission Request has been Approved..!!");
+          setEmpName(response.data.paramObjectsMap.permissionRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.permissionRequestVO.empmail);
+          setMessage("Your Permission Request has been ");
         }
       }
     } catch (error) {

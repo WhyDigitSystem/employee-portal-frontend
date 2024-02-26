@@ -1,17 +1,23 @@
 import emailjs from "@emailjs/browser";
 import { useEffect } from "react";
 
-const SendEmail = async (fDate, tDate, reason) => {
+const SendEmail = async (fDate, tDate, reason, message, message2, date) => {
   try {
-    const templateParams = {
-      message: `You have a new Leave Approval Request from ${localStorage.getItem(
+    let message2Template;
+    if (date) {
+      message2Template = `${localStorage.getItem(
         "empname"
-      )}`,
+      )} ${message2} ${date} from ${fDate} to ${tDate}.`;
+    } else {
+      message2Template = `${localStorage.getItem(
+        "empname"
+      )} ${message2} from ${fDate} to ${tDate}.`;
+    }
+    const templateParams = {
+      message: `${message}${localStorage.getItem("empname")}..!!`,
       to_name: "Kavitha",
       from_name: localStorage.getItem("empname"),
-      message2: `${localStorage.getItem(
-        "empname"
-      )} is requesting leave from: ${fDate} to ${tDate}`,
+      message2: message2Template,
       reason: reason,
     };
 
@@ -30,10 +36,10 @@ const SendEmail = async (fDate, tDate, reason) => {
   }
 };
 
-const EmailConfig = ({ fDate, tDate, reason }) => {
+const EmailConfig = ({ fDate, tDate, reason, message, message2, date }) => {
   useEffect(() => {
-    SendEmail(fDate, tDate, reason);
-  }, [fDate, tDate, reason]);
+    SendEmail(fDate, tDate, reason, message, message2, date);
+  }, [fDate, tDate, reason, message, message2, date]);
 
   return null;
 };
