@@ -16,15 +16,19 @@ function DashboardPermissionApproval() {
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
   const [sendMail, setSendMail] = React.useState(false);
-  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
-  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
-
+  const [mailStatus, setMailStatus] = React.useState("");
+  const [loginUserRole, setloginUserRole] = React.useState(
+    localStorage.getItem("userDetails")
+  );
+  const [loginEmpCode, setLoginEmpCode] = React.useState(
+    localStorage.getItem("empcode")
+  );
 
   useEffect(() => {
     {
-      loginUserRole === 'MANAGER' ? (
-        getAllPendingPermissionRequestByRole()
-      ) : getAllPendingPermissionRequest()
+      loginUserRole === "MANAGER"
+        ? getAllPendingPermissionRequestByRole()
+        : getAllPendingPermissionRequest();
     }
   }, []);
 
@@ -46,7 +50,7 @@ function DashboardPermissionApproval() {
   const getAllPendingPermissionRequestByRole = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`,
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -76,9 +80,12 @@ function DashboardPermissionApproval() {
         if (response.status === 200) {
           getAllPendingPermissionRequest();
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Permission Request has been Approved..!!");
+          setEmpName(response.data.paramObjectsMap.PermissionRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.PermissionRequestVO.empmail);
+          setMailStatus(
+            response.data.paramObjectsMap.PermissionRequestVO.status
+          );
+          setMessage("Your Permission Request has been ");
         }
       }
     } catch (error) {
@@ -102,9 +109,12 @@ function DashboardPermissionApproval() {
         if (response.status === 200) {
           getAllPendingPermissionRequest();
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Permission Request has been Rejected..!!");
+          setEmpName(response.data.paramObjectsMap.PermissionRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.PermissionRequestVO.empmail);
+          setMailStatus(
+            response.data.paramObjectsMap.PermissionRequestVO.status
+          );
+          setMessage("Your Permission Request has been ");
         }
       }
     } catch (error) {
@@ -214,7 +224,12 @@ function DashboardPermissionApproval() {
         </div>
       </TitleCard>
       {sendMail && (
-        <ApprovalEmail to_email={mailTo} to_name={empName} message={message} />
+        <ApprovalEmail
+          to_email={mailTo}
+          to_name={empName}
+          message={message}
+          status={mailStatus}
+        />
       )}
     </>
   );

@@ -42,7 +42,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [searchValue, setSearchValue] = useState(null);
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [empname, setEmpName] = React.useState(localStorage.getItem("empname"));
-  const [empMail, setEmpMail] = React.useState(
+  const [empmail, setEmpMail] = React.useState(
     localStorage.getItem("userName")
   );
   const [notification, setNotification] = React.useState(false);
@@ -210,7 +210,7 @@ function NewPermissionRequest({ newPermissionRequest }) {
         updatedby: empcode,
         empcode: empcode,
         empname: empname,
-        empMail: empMail,
+        empmail: empmail,
         status: "Pending",
       };
       console.log("Data will Pass to API:", dataToSave);

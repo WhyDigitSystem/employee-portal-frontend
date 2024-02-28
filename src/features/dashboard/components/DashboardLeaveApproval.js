@@ -13,16 +13,21 @@ function DashboardLeaveApproval() {
   );
   const [sendMail, setSendMail] = React.useState(false);
   const [message, setMessage] = React.useState("");
+  const [mailStatus, setMailStatus] = React.useState("");
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
-  const [loginEmpCode, setLoginEmpCode] = React.useState(localStorage.getItem("empcode"));
-  const [loginUserRole, setloginUserRole] = React.useState(localStorage.getItem("userDetails"));
+  const [loginEmpCode, setLoginEmpCode] = React.useState(
+    localStorage.getItem("empcode")
+  );
+  const [loginUserRole, setloginUserRole] = React.useState(
+    localStorage.getItem("userDetails")
+  );
 
   useEffect(() => {
     {
-      loginUserRole === 'MANAGER' ? (
-        getAllPendingLeaveRequestByRole()
-      ) : getAllPendingLeaveRequest()
+      loginUserRole === "MANAGER"
+        ? getAllPendingLeaveRequestByRole()
+        : getAllPendingLeaveRequest();
     }
   }, []);
 
@@ -74,15 +79,16 @@ function DashboardLeaveApproval() {
 
         if (response.status === 200) {
           {
-            loginUserRole === 'MANAGER' ? (
-              getAllPendingLeaveRequestByRole()
-            ) : getAllPendingLeaveRequest()
+            loginUserRole === "MANAGER"
+              ? getAllPendingLeaveRequestByRole()
+              : getAllPendingLeaveRequest();
           }
           //getAllPendingLeaveRequest();
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Leave Request has been Approved..!!");
+          setEmpName(response.data.paramObjectsMap.LeaveRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.LeaveRequestVO.empmail);
+          setMailStatus(response.data.paramObjectsMap.LeaveRequestVO.status);
+          setMessage("Your Leave Request has been ");
         }
       }
     } catch (error) {
@@ -105,15 +111,16 @@ function DashboardLeaveApproval() {
 
         if (response.status === 200) {
           {
-            loginUserRole === 'MANAGER' ? (
-              getAllPendingLeaveRequestByRole()
-            ) : getAllPendingLeaveRequest()
+            loginUserRole === "MANAGER"
+              ? getAllPendingLeaveRequestByRole()
+              : getAllPendingLeaveRequest();
           }
           //getAllPendingLeaveRequest();
           setSendMail(true);
-          setEmpName(localStorage.getItem("empname"));
-          setMailTo(localStorage.getItem("userName"));
-          setMessage("Your Leave Request has been Rejected..!!");
+          setEmpName(response.data.paramObjectsMap.LeaveRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.LeaveRequestVO.empmail);
+          setMailStatus(response.data.paramObjectsMap.LeaveRequestVO.status);
+          setMessage("Your Leave Request has been ");
         }
       }
     } catch (error) {
@@ -210,7 +217,12 @@ function DashboardLeaveApproval() {
         </div>
       </TitleCard>
       {sendMail && (
-        <ApprovalEmail to_email={mailTo} to_name={empName} message={message} />
+        <ApprovalEmail
+          to_email={mailTo}
+          to_name={empName}
+          message={message}
+          status={mailStatus}
+        />
       )}
     </>
   );

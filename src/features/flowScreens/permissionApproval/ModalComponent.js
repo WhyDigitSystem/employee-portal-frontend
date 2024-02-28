@@ -17,6 +17,7 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
   const [mailTo, setMailTo] = React.useState("");
   const [empName, setEmpName] = React.useState("");
   const [sendMail, setSendMail] = React.useState(false);
+  const [mailStatus, setMailStatus] = React.useState("");
 
   const handleSave = () => {
     updatePermission();
@@ -38,13 +39,16 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
         );
 
         if (response.status === 200) {
-          closeModal();
           setStatus("");
           setRemarks("");
           setSendMail(true);
-          setEmpName(response.data.paramObjectsMap.permissionRequestVO.empname);
-          setMailTo(response.data.paramObjectsMap.permissionRequestVO.empmail);
+          setEmpName(response.data.paramObjectsMap.PermissionRequestVO.empname);
+          setMailTo(response.data.paramObjectsMap.PermissionRequestVO.empmail);
+          setMailStatus(
+            response.data.paramObjectsMap.PermissionRequestVO.status
+          );
           setMessage("Your Permission Request has been ");
+          closeModal();
         }
       }
     } catch (error) {
@@ -136,7 +140,12 @@ const ModalComponent = ({ isOpen, closeModal, updateData, reqId }) => {
         </div>
       </div>
       {sendMail && (
-        <ApprovalEmail to_email={mailTo} to_name={empName} message={message} />
+        <ApprovalEmail
+          to_email={mailTo}
+          to_name={empName}
+          message={message}
+          status={mailStatus}
+        />
       )}
     </>
   );

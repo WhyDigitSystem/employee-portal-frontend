@@ -7,7 +7,7 @@ const SendEmail = async (fDate, tDate, reason, message, message2, date) => {
     if (date) {
       message2Template = `${localStorage.getItem(
         "empname"
-      )} ${message2} ${date} from ${fDate} to ${tDate}.`;
+      )} ${message2} ${date} from ${fDate} to ${tDate}`;
     } else {
       message2Template = `${localStorage.getItem(
         "empname"

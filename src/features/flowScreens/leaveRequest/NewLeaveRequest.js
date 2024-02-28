@@ -23,9 +23,13 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [savedData, setSavedData] = React.useState();
   const [empName, setEmpName] = React.useState(localStorage.getItem("empname"));
   const [empCode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
-  const [empMail, setEmpMail] = React.useState(localStorage.getItem("userName"));
+  const [empmail, setEmpMail] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [loginEmpId, setLoginEmpId] = React.useState(localStorage.getItem("empId"));
+  const [loginEmpId, setLoginEmpId] = React.useState(
+    localStorage.getItem("empId")
+  );
 
   const [options, setOptions] = useState([
     "Karupu",
@@ -75,7 +79,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
       console.error("Error fetching reporting persons:", error);
     }
   };
-
 
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
@@ -160,7 +163,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
       const dataToSave = {
         empcode: empCode,
         empname: empName,
-        empmail: empMail,
+        empmail: empmail,
         fromdate: from,
         todate: to,
         totaldays: tot,
@@ -332,10 +335,12 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 label="Leave Type"
                 value={leaveType}
                 onChange={handleLeaveType}
-
               >
                 {leaveTypeOptions.map((leave) => (
-                  <MenuItem key={leave.LeaveTypeCode} value={leave.LeaveTypeCode}>
+                  <MenuItem
+                    key={leave.LeaveTypeCode}
+                    value={leave.LeaveTypeCode}
+                  >
                     {leave.LeaveType}
                   </MenuItem>
                 ))}
