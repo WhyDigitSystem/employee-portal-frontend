@@ -77,71 +77,45 @@ export const Attendance = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+
   const handleCheckIn = async () => {
-    try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
-      );
-
-      if (response.data.statusFlag === "Ok") {
-        const status = response.data.paramObjectsMap.EmployeeStatus.status;
-
-        if (status === "Out" || status === "null") {
-          // Employee is already checked in, perform checkout
-          await Axios.post(
-            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-            { userid }
-          );
-        }
-        // else {
-        //   // Employee is checked out, perform checkin
-        //   await Axios.post(
-        //     `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-        //     { userid } // Replace with your request body if needed
-        //   );
-        //   // Update any UI or state to reflect the checkin action
-        // }
-
-        // // Update checkedStatus state or UI as needed after action
-        // setCheckedStatus(!checkedStatus);
+    // const dataToSaveCheckIn = {
+    //   // orgId: orgId,
+    //   // branchId: branchId,
+    //   userId: userid,
+    // };
+    await Axios.post(
+      `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
+      { userid }
+      //dataToSaveCheckIn
+    )
+      .then((response) => {
+        console.log("Data saved successfully:", response.data);
         window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error during check:", error);
-    }
-  };
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+      });
+
+  }
+
   const handleCheckOut = async () => {
-    try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
-      );
-
-      if (response.data.statusFlag === "Ok") {
-        const status = response.data.paramObjectsMap.EmployeeStatus.status;
-
-        if (status === "In" || status === "null") {
-          // Employee is already checked in, perform checkout
-          await Axios.post(
-            `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
-            { userid }
-          );
-        }
-        // else {
-        //   // Employee is checked out, perform checkin
-        //   await Axios.post(
-        //     `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-        //     { userid } // Replace with your request body if needed
-        //   );
-        //   // Update any UI or state to reflect the checkin action
-        // }
-
-        // // Update checkedStatus state or UI as needed after action
-        // setCheckedStatus(!checkedStatus);
+    // const dataToSaveCheckIn = {
+    //   orgId: orgId,
+    //   branchId: branchId,
+    //   userId: userid,
+    // };
+    await Axios.post(
+      `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
+      { userid }
+    )
+      .then((response) => {
+        console.log("Data saved successfully:", response.data);
         window.location.reload();
-      }
-    } catch (error) {
-      console.error("Error during check:", error);
-    }
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+      });
   };
 
   const handleCancelRowEdits = () => {
@@ -176,10 +150,9 @@ export const Attendance = () => {
                 onClick={handleCheckIn}
                 disabled={disableCheckIn}
                 className={`inline-block rounded h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white
-                  ${
-                    disableCheckIn
-                      ? "opacity-50 cursor-not-allowed bg-gray-400"
-                      : "bg-green-500"
+                  ${disableCheckIn
+                    ? "opacity-50 cursor-not-allowed bg-gray-400"
+                    : "bg-green-500"
                   }
                   shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out
                   hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]
@@ -206,10 +179,9 @@ export const Attendance = () => {
                 onClick={handleCheckOut}
                 disabled={disableCheckOut}
                 className={`inline-block rounded h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white
-                  ${
-                    disableCheckOut
-                      ? "opacity-50 cursor-not-allowed bg-gray-400"
-                      : "bg-red-500"
+                  ${disableCheckOut
+                    ? "opacity-50 cursor-not-allowed bg-gray-400"
+                    : "bg-red-500"
                   }
                   shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out
                   hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]
