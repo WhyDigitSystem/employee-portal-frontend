@@ -42,9 +42,9 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const [searchValue, setSearchValue] = useState(null);
   const [empcode, setEmpCode] = React.useState(localStorage.getItem("empcode"));
   const [empname, setEmpName] = React.useState(localStorage.getItem("empname"));
-  const [empmail, setEmpMail] = React.useState(
-    localStorage.getItem("userName")
-  );
+  const [empmail, setEmpMail] = React.useState(localStorage.getItem("userName"));
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [errorType, setErrorType] = React.useState("");
@@ -182,15 +182,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
     if (!totalHours) {
       newErrors.totalHours = "Total Hours is Required";
     }
-    // if (totalHours) {
-    //   const [hours, minutes] = totalHours.split(":").map(Number);
-    //   const totalMinutes = hours * 60 + minutes;
-    //   if (totalMinutes > 120) {
-    //     // 120 minutes = 2 hours
-    //     newErrors.totalHours = "Total Hours cannot exceed 2 hours";
-    //   }
-    // }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -198,14 +189,14 @@ function NewPermissionRequest({ newPermissionRequest }) {
   const handleSave = () => {
     if (handleValidation()) {
       const dataToSave = {
+        orgId: orgId,
+        branchId: branchId,
         permissiondate: selectedDate,
         fromhour: fromTime,
         tohour: toTime,
-        //tohour: "2024-02-21T15:32:24.063Z",
         totalhours: totalHours,
         notes: notes,
         remarks: searchValue,
-        //totalhours: "10:0",
         createdby: empcode,
         updatedby: empcode,
         empcode: empcode,
@@ -221,7 +212,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         };
-        // Make a POST request to your API endpoint to save the data
         Axios.post(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/permissionRequest`,
           dataToSave,
@@ -244,7 +234,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
             setNotification(true);
           })
           .catch((error) => {
-            // Handle errors here
             console.error("Error saving data:", error);
             setMessage("Error: Permission cannot Raised");
             setErrorType("error");
@@ -281,7 +270,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
                   value={selectedDate}
                   onChange={handleDateChange}
                   format="DD/MM/YYYY"
-                  //error={Boolean(errors.selectedDate)}
                 />
                 {errors.selectedDate && (
                   <span className="text-red-500">{errors.selectedDate}</span>
@@ -294,14 +282,12 @@ function NewPermissionRequest({ newPermissionRequest }) {
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                {/* <DemoContainer components={["TimePicker", "TimePicker"]}> */}
                 <TimePicker
                   label="From"
                   defaultValue={fromTime}
                   slotProps={{ textField: { size: "small" } }}
                   onChange={handleFromTime}
                 />
-                {/* </DemoContainer> */}
                 {errors.fromTime && (
                   <span className="text-red-500">{errors.fromTime}</span>
                 )}
@@ -313,14 +299,12 @@ function NewPermissionRequest({ newPermissionRequest }) {
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                {/* <DemoContainer components={["TimePicker", "TimePicker"]}> */}
                 <TimePicker
                   label="To"
                   defaultValue={toTime}
                   slotProps={{ textField: { size: "small" } }}
                   onChange={handleToTime}
                 />
-                {/* </DemoContainer> */}
                 {errors.toTime && (
                   <span className="text-red-500">{errors.toTime}</span>
                 )}
@@ -366,7 +350,6 @@ function NewPermissionRequest({ newPermissionRequest }) {
           <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
               <Autocomplete
-                // style={{ marginRight: 13, marginLeft: 0 }}
                 value={searchValue}
                 onChange={handleSearchChange}
                 options={options}
