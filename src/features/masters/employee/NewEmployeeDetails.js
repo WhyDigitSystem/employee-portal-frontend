@@ -47,6 +47,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [loginEmpName, setLoginEmpName] = React.useState(localStorage.getItem("empname"));
   const [reportingPersonRole, setReportingPersonRole] = React.useState("");
   const [reportPersonOptions, setReportPersonOptions] = useState([]);
+  const [branchOptions, setBranchOptions] = useState([]);
 
 
 
@@ -54,14 +55,13 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const trimmedpwd = pwd.trim();
 
   useEffect(() => {
-    // Fetch reporting persons when reporting person role is selected
+    fetchBranchName();
     const fetchReportingPersons = async () => {
       try {
         const response = await Axios.get(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=1&role=${reportingPersonRole}`
         );
         if (response.data.statusFlag === "Ok") {
-          // Update the report person options
           setReportPersonOptions(response.data.paramObjectsMap.Employee);
         }
       } catch (error) {
@@ -73,6 +73,19 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       fetchReportingPersons();
     }
   }, [reportingPersonRole]);
+
+  const fetchBranchName = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/admin/getbranch/{orgId}?orgId=${orgId}`
+      );
+      if (response.data.statusFlag === "Ok") {
+        setBranchOptions(response.data.paramObjectsMap.branchVO);
+      }
+    } catch (error) {
+      console.error("Error fetching reporting persons:", error);
+    }
+  };
 
   const handleTabSelect = (index) => {
     setTabIndex(index);
@@ -94,9 +107,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const handleGrade = (event) => {
     setGrade(event.target.value);
   };
-  //   const handleDob = (event) => {
-  //     setDob(event.target.value);
-  //   };
   const handleDob = (newDate) => {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
@@ -129,9 +139,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setAadharNo(numericValue);
   };
-  //   const handleUserType = (event) => {
-  //     setUserType(event.target.value);
-  //   };
   const handleResigningDate = (newDate) => {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
@@ -140,22 +147,18 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const handleMobNo = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setMobNo(numericValue);
-    //setMobNo(event.target.value);
   };
   const handleAltMobNo = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setAltMobNo(numericValue);
-    //setAltMobNo(event.target.value);
   };
   const handleBank = (event) => {
     const alphaValue = event.target.value.replace(/[^A-Za-z]/g, "");
     setBank(alphaValue);
-    //setBank(event.target.value);
   };
   const handleAccNo = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setAccNo(numericValue);
-    //setAccNo(event.target.value);
   };
   const handleIfsc = (event) => {
     setIfsc(event.target.value);
@@ -171,7 +174,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   };
   const handleReportingPersonRoleChange = (event) => {
     setReportingPersonRole(event.target.value);
-
   };
 
   const handleNew = () => {
@@ -200,78 +202,60 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
 
   const handleValidation = () => {
     const newErrors = {};
-
     if (empCode.trim() === "") {
       newErrors.empCode = "Branch is required";
     }
-
     if (empName.trim() === "") {
       newErrors.empName = "BranchCode is required";
     }
-
     if (gender.trim() === "") {
       newErrors.gender = "Company is required";
     }
     if (grade.trim() === "") {
       newErrors.grade = "Company is required";
     }
-
     // if (dob.trim() === "") {
     //   newErrors.dob = "Address is required";
     // }
-
     if (bloodGroup === "") {
       newErrors.bloodGroup = "City is required";
     }
-
     if (dept === "") {
       newErrors.dept = "State is required";
     }
-
     if (designation === "") {
       newErrors.designation = "Please select a valid country";
     }
-
     if (role.trim() === "") {
       newErrors.role = "Zipcode is required";
     }
-
     if (email.trim() === "") {
       newErrors.email = "Phone Number is required";
     }
-
     // if (joinDate.trim() === "") {
     //   newErrors.joinDate = "Email is required";
     // }
-
     if (mobNo.trim() === "") {
       newErrors.mobNo = "Address is required";
     }
-
     // if (altMobNo === "") {
     //   newErrors.altMobNo = "City is required";
     // }
-
     // if (pan === "") {
     //   newErrors.pan = "State is required";
     // }
-
     // if (aadharNo === "") {
     //   newErrors.aadharNo = "Please select a valid country";
     // }
-
     if (bank.trim() === "") {
       newErrors.bank = "Zipcode is required";
     }
-
     // if (accNo.trim() === "") {
     //   newErrors.accNo = "Phone Number is required";
     // }
-
     // if (ifsc.trim() === "") {
     //   newErrors.ifsc = "Email is required";
     // }
-
     if (reportPerson.trim() === "") {
       newErrors.reportPerson = "Gst is required";
     }
@@ -281,11 +265,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   };
 
   const handleSave = () => {
-    // Create an object with the form data
     if (handleValidation()) {
-      // Replace this with your logic to save the data to a backend or database
       const dataToSave = {
         orgId: orgId,
+        branchId: branch,
         empcode: empCode,
         empname: empName,
         gender: gender,
@@ -307,7 +290,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         reporting_person: reportPerson,
         updatedby: loginEmpName,
         createdby: loginEmpName,
-        branchId: branch,
       };
       const dataToSaveUser = {
         //orgId: orgId,
@@ -320,6 +302,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         createdby: loginEmpName,
         password: encryptPassword(trimmedpwd),
       };
+
+      console.log("DataToSave:", dataToSave);
+      console.log("DataToSaveUser:", dataToSaveUser);
       const token = localStorage.getItem("token");
 
       if (token) {
@@ -327,7 +312,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         };
-        // Make a POST request to your API endpoint to save the data
         Axios.post(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
           dataToSave,
@@ -344,7 +328,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
             handleNew();
           })
           .catch((error) => {
-            // Handle errors here
             console.error("Error saving data:", error);
           });
       }
@@ -369,18 +352,26 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               />
             </div>
             <div className="row d-flex mt-3">
-              <div className="col-md-4 mb-3">
+              <div className="col-md-4">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="demo-simple-select-label">Branch</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    Branch
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
+                    //multiple
+
                     label="Branch"
                     value={branch}
                     onChange={handleBranch}
                     error={Boolean(errors.branch)}
                   >
-                    <MenuItem value={"4"}>Bangalore</MenuItem>
+                    {branchOptions.map((branchData) => (
+                      <MenuItem key={branchData.id} value={branchData.id}>
+                        {branchData.branchName}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>

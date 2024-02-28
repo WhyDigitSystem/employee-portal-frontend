@@ -95,7 +95,7 @@ export const ChangePwd = () => {
       const trimmedNewPwd = newPwd.trim();
       //console.log("test");
       const dataToSave = {
-        email: empMail,
+        userName: empMail,
         newPassword: encryptPassword(trimmedNewPwd),
         oldPassword: encryptPassword(trimmedCurPwd),
       };
@@ -174,7 +174,7 @@ export const ChangePwd = () => {
                   value={newPwd}
                   onChange={handleNewPwd}
                   error={Boolean(errors.newPwd)}
-                  //inputProps={{ maxLength: 30 }}
+                //inputProps={{ maxLength: 30 }}
                 />
               </FormControl>
             </div>

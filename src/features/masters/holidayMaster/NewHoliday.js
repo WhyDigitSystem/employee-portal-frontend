@@ -46,7 +46,20 @@ function NewHoliday({ newHoliday }) {
       const dayOfWeek = daysOfWeek[new Date(formattedDate).getDay()];
       setDay(dayOfWeek);
     }
+    else {
+      // If date is cleared, reset the day field
+      setSelectedDate(null);
+      setDay("");
+    }
   };
+
+  const handleClearDate = () => {
+    console.log("testing ok")
+    setSelectedDate(null);
+    setDay("");
+    // setFestival("");
+  };
+
 
   const buttonStyle = {
     fontSize: "20px", // Adjust the font size as needed save
@@ -124,11 +137,11 @@ function NewHoliday({ newHoliday }) {
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row d-flex justify-content-center align-items-center">
           <div className="d-flex justify-content-between">
-            <h1 className="text-xl font-semibold mb-3">New Holiday</h1>
+            {/* <h1 className="text-xl font-semibold mb-3">New Holiday</h1> */}
             <IoMdClose
               onClick={handleCloseNewHoliday}
               type="button"
-              className="cursor-pointer w-8 h-8 mb-3"
+              className="cursor-pointer w-8 h-8 ml-auto"
             />
           </div>
           <div className="row d-flex mt-3">
@@ -142,11 +155,15 @@ function NewHoliday({ newHoliday }) {
                     }}
                     value={selectedDate}
                     onChange={handleDateChange}
+                    onClear={handleClearDate}
                     error={Boolean(errors.selectedDate)}
+                    format="DD-MM-YYYY"
                   />
                 </LocalizationProvider>
               </FormControl>
             </div>
+
+
             <div className="col-md-4 mb-3">
               <FormControl fullWidth variant="filled">
                 <TextField

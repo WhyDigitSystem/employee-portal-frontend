@@ -90,7 +90,6 @@ function NewLeaveType({ newLeaveType }) {
         createdby: loginEmpName,
         updatedby: loginEmpName,
       };
-      console.log("tesasdlkjfdsa", dataToSave)
 
       const token = localStorage.getItem("token");
 
@@ -131,11 +130,11 @@ function NewLeaveType({ newLeaveType }) {
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row d-flex justify-content-center align-items-center">
           <div className="d-flex justify-content-between">
-            <h1 className="text-xl font-semibold mb-3">New Leave Request</h1>
+            <h1 className="text-xl font-semibold mb-3">New Leave Type</h1>
             <IoMdClose
               onClick={handleCloseNewLeaveType}
               type="button"
-              className="cursor-pointer w-8 h-8 mb-3"
+              className="cursor-pointer w-8 h-8 ml-auto"
             />
           </div>
           <div className="row d-flex mt-3">
