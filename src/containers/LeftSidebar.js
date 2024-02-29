@@ -5,7 +5,7 @@ import routes from '../routes/sidebar';
 import SidebarSubmenu from './SidebarSubmenu';
 import Axios from "axios";
 import React, { useState, useEffect } from "react";
-import wdsLogo from '../assets/wds_logo_new.png';
+import wdsLogo from '../assets/new_wds_logo-removebg.png';
 import mkLogo from '../assets/Mindskart_logo.jpeg';
 
 
@@ -69,7 +69,7 @@ function LeftSidebar() {
 
                     <Link to={'/app/welcome'}>
                         {orgId === '1' ? (
-                            <img className="mask  w-28" src={wdsLogo} alt="Whydigit Logo" />
+                            <img className="mask  w-20" src={wdsLogo} alt="Whydigit Logo" />
                         ) : orgId === '4' ? (
                             <img className="mask mask-squircle w-20" src={mkLogo} alt="Mindskart Logo" />
                         ) : null}
