@@ -67,7 +67,7 @@ export const Attendance = () => {
 
     fetchEmployeeStatus();
     // fetchEmployeeTime();
-    getAllAttendanceById();
+    // getAllAttendanceById();
 
     const intervalId = setInterval(() => {
       const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
