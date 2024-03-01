@@ -3,11 +3,13 @@ import moment from "moment";
 import { default as React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TitleCard from "../../../components/Cards/TitleCard";
+import inLogo from '../../../assets/CheckIn.png';
+import outLogo from '../../../assets/CheckOut.png';
 
 function TodayAttendance() {
   const [todayAttendanceList, settodayAttendanceList] = useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
+  const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   useEffect(() => {
     getTodayAttendance();
@@ -38,8 +40,18 @@ function TodayAttendance() {
           Absent
         </div>
       );
-    } else {
-      return <div className="badge badge-success center">{status}</div>;
+    } else if (status === "In") {
+      return (
+        <div> <img className="mask mask-squircle w-6" src={inLogo} alt="Small Image" />
+        </div>
+      )
+    }
+    //} 
+    else {
+      return (
+        <div> <img className="mask mask-squircle w-5" src={outLogo} alt="Small Image" />
+        </div>
+      )
     }
   };
 
