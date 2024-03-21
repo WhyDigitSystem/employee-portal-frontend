@@ -52,6 +52,9 @@ const AllOrg = lazy(() => import("../pages/protected/AllOrg"));
 const OrganizationSetup = lazy(() =>
   import("../pages/protected/OrganizationSetup")
 );
+const LeaveCreditControl = lazy(() =>
+  import("../pages/protected/LeaveCreditControl")
+);
 
 const routes = [
   {
@@ -187,6 +190,10 @@ const routes = [
   {
     path: "/organizationsetup",
     component: OrganizationSetup,
+  },
+  {
+    path: "/leavecreditcontrol",
+    component: LeaveCreditControl,
   },
 ];
 

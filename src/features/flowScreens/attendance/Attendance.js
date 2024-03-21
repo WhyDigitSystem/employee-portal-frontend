@@ -29,42 +29,6 @@ export const Attendance = () => {
   );
 
   useEffect(() => {
-    const fetchEmployeeStatus = async () => {
-      try {
-        const response = await Axios.get(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
-        );
-
-        if (response.data.statusFlag === "Ok") {
-          const status = response.data.paramObjectsMap.EmployeeStatus.status;
-          setCheckedStatus(status === "In");
-
-          {
-            status === "In" && setDisableCheckIn(true);
-            status === "Out" && setDisableCheckOut(true);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching employee status:", error);
-      }
-    };
-    // const fetchEmployeeTime = async () => {
-    //   try {
-    //     const response = await Axios.get(
-    //       `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
-    //     );
-
-    //     if (response.data.statusFlag === "Ok") {
-    //       // Update the checkedStatus state based on the fetched status
-    //       setCheckinTime(
-    //         response.data.paramObjectsMap.EmployeeStatusVO.entrytime
-    //       );
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching employee status:", error);
-    //   }
-    // };
-
     fetchEmployeeStatus();
     // fetchEmployeeTime();
     // getAllAttendanceById();
@@ -73,21 +37,64 @@ export const Attendance = () => {
       const currentDate = moment().format("MMMM Do YYYY, h:mm:ss a");
       setFormattedDate(currentDate);
     }, 1000);
-
     return () => clearInterval(intervalId);
   }, []);
 
+  // GET CURRENT CHECKIN & CHECKOUT STATUS 
+  const fetchEmployeeStatus = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/chkStatus/${empcode}`
+      );
 
+      if (response.data.statusFlag === "Ok") {
+        const status = response.data.paramObjectsMap.EmployeeStatus.status;
+
+        console.log("Employee Currenct Status", status);
+        setCheckedStatus(status === "In");
+
+        {
+          status === "In" && setDisableCheckIn(true);
+          status === "Out" && setDisableCheckOut(true);
+          status === "null" && setDisableCheckOut(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching employee status:", error);
+    }
+  };
+
+  // GET LAST CHECKIN TIME AND CHECKOUT TIME
+  // const fetchEmployeeTime = async () => {
+  //     try {
+  //       const response = await Axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/daily/time/${empcode}`
+  //       );
+
+  //       if (response.data.statusFlag === "Ok") {
+  //         // Update the checkedStatus state based on the fetched status
+  //         setCheckinTime(
+  //           response.data.paramObjectsMap.EmployeeStatusVO.entrytime
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching employee status:", error);
+  //     }
+  //   };
+
+
+  // CREATE CHECKIN
   const handleCheckIn = async () => {
-    // const dataToSaveCheckIn = {
-    //   // orgId: orgId,
-    //   // branchId: branchId,
-    //   userId: userid,
-    // };
+    const dataToSaveCheckIn = {
+      orgId: orgId,
+      branchId: branchId,
+      empcode: userid,
+    };
+    console.log("CHECKIN PAYLOAD", dataToSaveCheckIn)
+
     await Axios.post(
       `${process.env.REACT_APP_API_URL}/api/basicMaster/checkin`,
-      { userid }
-      //dataToSaveCheckIn
+      dataToSaveCheckIn
     )
       .then((response) => {
         console.log("Data saved successfully:", response.data);
@@ -99,15 +106,18 @@ export const Attendance = () => {
 
   }
 
+  // CREATE CHECKOUT
   const handleCheckOut = async () => {
-    // const dataToSaveCheckIn = {
-    //   orgId: orgId,
-    //   branchId: branchId,
-    //   userId: userid,
-    // };
+    const dataToSaveCheckIn = {
+      orgId: orgId,
+      branchId: branchId,
+      empcode: userid,
+    };
+
+    console.log("CHECKOUT PAYLOAD", dataToSaveCheckIn)
     await Axios.post(
       `${process.env.REACT_APP_API_URL}/api/basicMaster/checkout`,
-      { userid }
+      dataToSaveCheckIn
     )
       .then((response) => {
         console.log("Data saved successfully:", response.data);

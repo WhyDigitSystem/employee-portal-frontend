@@ -72,6 +72,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Process", // name that appear in Sidebar
       },
+      {
+        path: "/app/leavecreditcontrol", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Leave Credit Control", // name that appear in Sidebar
+      },
       // {
       //   path: "/app/jpcheckincheckout", // url
       //   icon: <CalendarDaysIcon className={iconClasses} />, // icon component

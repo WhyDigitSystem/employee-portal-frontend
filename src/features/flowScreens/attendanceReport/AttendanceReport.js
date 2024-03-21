@@ -29,9 +29,11 @@ export const AttendanceReport = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
   const [monAttendanceReport, setMonAttendanceReport] = useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-    const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
+  const [branchId, setBranchId] = React.useState(localStorage.getItem("branchId"));
 
   const statsData = [
     {
@@ -90,18 +92,57 @@ export const AttendanceReport = () => {
     setValidationErrors({});
   };
 
+  const handleNew = () => {
+    setFromDate(null);
+    setToDate(null);
+    window.location.reload();
+  }
+
+
+
+  // const getAllEmpAttendanceReport = async () => {
+  //   const dataToSave = {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //     orgId: "1",
+  //   }
+
+  //   console.log("Data To Save Payload:", dataToSave)
+
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/employee/getEmployeeAttendanceActivity?endDate=${toDate}&orgId=${orgId}&startDate=${fromDate}`
+  //     );
+
+  //     if (response.status === 200) {
+  //       setMonAttendanceReport(
+  //         response.data.paramObjectsMap.employeeAttendanceActivity
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+
   const getAllEmpAttendanceReport = async () => {
-    const fromDate = "2022-01-01";
-    const toDate = "2022-01-31";
-    const orgId = "1";
+    const dataToSave = {
+      fromDate: fromDate,
+      toDate: toDate,
+      branch: "Bangalore",
+
+    }
+
+    console.log("Data To Save Payload:", dataToSave)
+
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/employee/getEmployeeAttendanceActivity?endDate=${toDate}&orgId=${orgId}&startDate=${fromDate}`
+        `${process.env.REACT_APP_API_URL}/api/employee/monthlyReport?branch=bangalore&fromdt=${fromDate}&todt=${toDate}`,
       );
 
       if (response.status === 200) {
         setMonAttendanceReport(
-          response.data.paramObjectsMap.employeeAttendanceActivity
+          response.data.paramObjectsMap.MonthlyReports
         );
       }
     } catch (error) {
@@ -172,8 +213,8 @@ export const AttendanceReport = () => {
             cell.column.id === "email"
               ? validateEmail(event.target.value)
               : cell.column.id === "age"
-              ? validateAge(+event.target.value)
-              : validateRequired(event.target.value);
+                ? validateAge(+event.target.value)
+                : validateRequired(event.target.value);
           if (!isValid) {
             //set validation error for cell if invalid
             setValidationErrors({
@@ -204,7 +245,7 @@ export const AttendanceReport = () => {
       //   }),
       // },
       {
-        accessorKey: "empCode",
+        accessorKey: "EmployeeCode",
         header: "Emp Code",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -212,55 +253,47 @@ export const AttendanceReport = () => {
         }),
       },
       {
-        accessorKey: "empName",
-        header: "Emp Name",
+        accessorKey: "EmployeeName",
+        header: "Employee",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "workingDays",
-        header: "Working Days",
+        accessorKey: "PresentDays",
+        header: "Present Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "noOfWeekendDays",
-        header: "Weekend",
+        accessorKey: "LeaveCount",
+        header: "Leave Count",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "noOfCommonHolidays",
-        header: "Common Holidays",
+        accessorKey: "Sundays",
+        header: "Sundays",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "noOfDepHolidays",
-        header: "Dept Holidays",
+        accessorKey: "Holidays",
+        header: "Holidays",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "totalHolidays",
-        header: "Total Holidays",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "totalDays",
+        accessorKey: "TotalDays",
         header: "Total Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
@@ -268,32 +301,44 @@ export const AttendanceReport = () => {
         }),
       },
       {
-        accessorKey: "compTaken",
-        header: "Comp Off",
+        accessorKey: "OfficeWorkingDays",
+        header: "Office Working Days",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      {
-        accessorKey: "numberOfLeaveDays",
-        header: "Leave Days",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "presentDays",
-        header: "Present Days",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
+      // {
+      //   accessorKey: "numberOfLeaveDays",
+      //   header: "Leave Days",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
+      // {
+      //   accessorKey: "presentDays",
+      //   header: "Present Days",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
     ],
     [getCommonEditTextFieldProps]
   );
+
+  const handleFromDateChange = (newDate) => {
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setFromDate(formattedDate);
+  };
+
+  const handleToDateChange = (newDate) => {
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setToDate(formattedDate);
+  };
 
   return (
     <>
@@ -313,8 +358,8 @@ export const AttendanceReport = () => {
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  //value={boDate}
-                  //onChange={(newValue) => setBoDate(newValue)}
+                  value={fromDate}
+                  onChange={handleFromDateChange}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -327,8 +372,8 @@ export const AttendanceReport = () => {
                   slotProps={{
                     textField: { size: "small", clearable: true },
                   }}
-                  //value={boDate}
-                  //onChange={(newValue) => setBoDate(newValue)}
+                  value={toDate}
+                  onChange={handleToDateChange}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -344,7 +389,7 @@ export const AttendanceReport = () => {
           </button>
           <button
             type="button"
-            //onClick={handleCloseNewLeave}
+            onClick={handleNew}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Clear

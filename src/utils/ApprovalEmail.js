@@ -7,11 +7,19 @@ const SendEmail = async (message, to_email, to_name, status) => {
       to_name: to_name,
       to_email: to_email,
     };
+
+    // const response = await emailjs.send(
+    //   "service_a6yjejr",
+    //   "template_2gahkp4",
+    //   templateParams,
+    //   "Gm0fxripLOTNeLMpg"
+    // );
+
     const response = await emailjs.send(
-      "service_a6yjejr",
-      "template_2gahkp4",
+      "service_xrgab0o",
+      "template_erwdu6v",
       templateParams,
-      "Gm0fxripLOTNeLMpg"
+      "941V7bNnHzPNaTlXP"
     );
     console.log("test", message, to_email, to_name);
     console.log("Email sent successfully:", response);

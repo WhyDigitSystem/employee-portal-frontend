@@ -21,11 +21,17 @@ const SendEmail = async (fDate, tDate, reason, message, message2, date) => {
       reason: reason,
     };
 
+    // const response = await emailjs.send(
+    //   "service_wq3zl7a",
+    //   "template_jsenrs8",
+    //   templateParams,
+    //   "FQM7O8vHxDdSIW6Kq"
+    // );
     const response = await emailjs.send(
-      "service_wq3zl7a",
-      "template_jsenrs8",
+      "service_xrgab0o",
+      "template_x98cnav",
       templateParams,
-      "FQM7O8vHxDdSIW6Kq"
+      "941V7bNnHzPNaTlXP"
     );
 
     console.log("test", fDate, tDate, reason);
