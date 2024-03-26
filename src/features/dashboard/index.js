@@ -1,46 +1,74 @@
-import DashboardStats from './components/DashboardStats'
-import AmountStats from './components/AmountStats'
-import PageStats from './components/PageStats'
+// import DashboardStats from './components/DashboardStats'
+// import PageStats from "./components/PageStats";
 
-import UserGroupIcon  from '@heroicons/react/24/outline/UserGroupIcon'
-import UsersIcon  from '@heroicons/react/24/outline/UsersIcon'
-import CircleStackIcon  from '@heroicons/react/24/outline/CircleStackIcon'
-import CreditCardIcon  from '@heroicons/react/24/outline/CreditCardIcon'
-import UserChannels from './components/UserChannels'
-import LineChart from './components/LineChart'
-import BarChart from './components/BarChart'
-import DashboardTopBar from './components/DashboardTopBar'
-import { useDispatch } from 'react-redux'
-import {showNotification} from '../common/headerSlice'
-import DoughnutChart from './components/DoughnutChart'
-import { useState } from 'react'
+import CircleStackIcon from "@heroicons/react/24/outline/CircleStackIcon";
+import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
+import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
+import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
+// import LineChart from './components/LineChart'
+// import BarChart from './components/BarChart'
+// import DashboardTopBar from './components/DashboardTopBar'
+import { useDispatch } from "react-redux";
+import { showNotification } from "../common/headerSlice";
+import Attendance from "../flowScreens/attendance/Attendance";
+import TodayAttendance from "./components/TodayAttendance";
+// import DoughnutChart from './components/DoughnutChart'
+import { default as React } from "react";
+import DashboardLeaveApproval from "./components/DashboardLeaveApproval";
+import DashboardPermissionApproval from "./components/DashboardPermissionApproval";
+//import UserChannels from "./components/UserChannels";
+import { HolidayCard } from "./components/HolidayCard";
 
 const statsData = [
-    {title : "New Users", value : "34.7k", icon : <UserGroupIcon className='w-8 h-8'/>, description : "↗︎ 2300 (22%)"},
-    {title : "Total Sales", value : "$34,545", icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current month"},
-    {title : "Pending Leads", value : "450", icon : <CircleStackIcon className='w-8 h-8'/>, description : "50 in hot leads"},
-    {title : "Active Users", value : "5.6k", icon : <UsersIcon className='w-8 h-8'/>, description : "↙ 300 (18%)"},
-]
+  {
+    title: "New Users",
+    value: "34.7k",
+    icon: <UserGroupIcon className="w-8 h-8" />,
+    description: "↗︎ 2300 (22%)",
+  },
+  {
+    title: "Total Sales",
+    value: "$34,545",
+    icon: <CreditCardIcon className="w-8 h-8" />,
+    description: "Current month",
+  },
+  {
+    title: "Pending Leads",
+    value: "450",
+    icon: <CircleStackIcon className="w-8 h-8" />,
+    description: "50 in hot leads",
+  },
+  {
+    title: "Active Users",
+    value: " mx-3.6k",
+    icon: <UsersIcon className="w-8 h-8" />,
+    description: "↙ 300 (18%)",
+  },
+];
 
+function Dashboard() {
+  const dispatch = useDispatch();
+  const [userRoleCheck, setUserRoleCheck] = React.useState(
+    localStorage.getItem("userDetails")
+  );
 
+  const updateDashboardPeriod = (newRange) => {
+    // Dashboard range changed, write code to refresh your values
+    dispatch(
+      showNotification({
+        message: `Period updated to ${newRange.startDate} to ${newRange.endDate}`,
+        status: 1,
+      })
+    );
+  };
 
-function Dashboard(){
+  return (
+    <>
+      {/** ---------------------- Select Period Content ------------------------- */}
+      {/* <DashboardTopBar updateDashboardPeriod={updateDashboardPeriod}/> */}
 
-    const dispatch = useDispatch()
- 
-
-    const updateDashboardPeriod = (newRange) => {
-        // Dashboard range changed, write code to refresh your values
-        dispatch(showNotification({message : `Period updated to ${newRange.startDate} to ${newRange.endDate}`, status : 1}))
-    }
-
-    return(
-        <>
-        {/** ---------------------- Select Period Content ------------------------- */}
-            <DashboardTopBar updateDashboardPeriod={updateDashboardPeriod}/>
-        
-        {/** ---------------------- Different stats content 1 ------------------------- */}
-            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+      {/** ---------------------- Different stats content 1 ------------------------- */}
+      {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
                 {
                     statsData.map((d, k) => {
                         return (
@@ -48,31 +76,104 @@ function Dashboard(){
                         )
                     })
                 }
-            </div>
+            </div> */}
 
-
-
-        {/** ---------------------- Different charts ------------------------- */}
-            <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+      {/** ---------------------- Different charts ------------------------- */}
+      {/* <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
                 <LineChart />
                 <BarChart />
-            </div>
-            
-        {/** ---------------------- Different stats content 2 ------------------------- */}
-        
-            <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
-                <AmountStats />
-                <PageStats />
-            </div>
+            </div> */}
 
-        {/** ---------------------- User source channels table  ------------------------- */}
-        
-            <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
-                <UserChannels />
-                <DoughnutChart />
+      {/** ---------------------- Different stats content 2 ------------------------- */}
+
+      <div className="grid lg:grid-cols-1 grid-cols-1 gap-6">
+        {(userRoleCheck === "USER" || userRoleCheck === "MANAGER" || userRoleCheck === "HR") && <Attendance />}
+
+        {/* <PageStats /> */}
+      </div>
+
+
+      {/** ---------------------- User source channels table  ------------------------- */}
+
+
+      <div className="row d-flex justify-content-evenly mt-5 ">
+        <div
+          className="card col-md-5 shadow-xl"
+          style={{
+            backgroundImage: `url(/happy_holiday1.jpg)`,
+            backgroundSize: "cover", // or 'contain', depending on your preference
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        >
+          <HolidayCard />
+        </div>
+        <div className="col-md-6">
+          <div
+            className="w-full p-3 bg-base-100 shadow-xl"
+            style={{ borderRadius: 16 }}
+          >
+            <div className="text-xl font-semibold p-2">Leave Balance</div>
+            <div className="divider mt-0 mb-0"></div>
+            <div className="overflow-x-auto w-full ">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th className="text-center">Leave Type</th>
+                    <th className="text-center">Leave Allocated</th>
+                    <th className="text-center">Leave Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="text-center">Earned Leave</td>
+                    <td className="text-center">1</td>
+                    <td className="text-center">1</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-        </>
-    )
+          </div>
+        </div>
+      </div>
+
+      <div className="row d-flex justify-content-between mt-3 ">
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "ADMIN") && (
+            <>
+              <div className="col-md-6">
+                <TodayAttendance />
+              </div>
+
+            </>
+          )}
+
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "ADMIN" ||
+          userRoleCheck === "MANAGER") && (
+            <>
+              <div className="col-md-6">
+                <DashboardLeaveApproval />
+              </div>
+            </>
+          )}
+
+
+        {/* </div>
+      <div className="row d-flex mt-3 "> */}
+        {(userRoleCheck === "HR" ||
+          userRoleCheck === "MANAGEMENT" ||
+          userRoleCheck === "MANAGER" ||
+          userRoleCheck === "ADMIN") && (
+            <>
+              <div className="col-md-6"><DashboardPermissionApproval /></div>
+            </>
+          )}
+      </div>
+    </>
+  );
 }
 
-export default Dashboard
+export default Dashboard;

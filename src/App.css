@@ -36,3 +36,73 @@
     transform: rotate(360deg);
   }
 }
+
+.signin-btn {
+  background-color: white;
+  padding: 5px;
+  margin: 5px 0px 5px 5px;
+  width: 50%;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.signin-btn:hover {
+  cursor: pointer;
+}
+
+.signup-btn {
+  background-color: white;
+  padding: 5px;
+  margin: 5px 5px 5px 0px;
+  width: 50%;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.signup-btn:hover {
+  cursor: pointer;
+}
+
+.signin-hide {
+  background-color: transparent;
+  font-weight: normal !important;
+}
+
+.login-border {
+  border-radius: 10px !important;
+  height: 50px;
+}
+
+.rounded-left-border {
+  border-top-left-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
+}
+
+.login-head {
+  font-size: 40px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-para {
+  font-size: 20px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.border-bg {
+  --bs-bg-opacity: 1;
+  background-color: #e9ecef !important;
+}
+
+.dasboardPermissiontbl {
+  width: 50px !important;
+
+
+}
