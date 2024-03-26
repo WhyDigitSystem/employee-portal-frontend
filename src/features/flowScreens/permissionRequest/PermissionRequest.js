@@ -79,43 +79,43 @@ export const PermissionRequest = () => {
     setValidationErrors({});
   };
 
-  const exportDataAsCSV = () => {
-   
+  // const exportDataAsCSV = () => {
 
-    const csvData = tableData.map((row) => ({
-      "S No": row.id,
-      Date: row.permissiondate,
-      FromTime: row.fromhour,
-      ToTime: row.tohour,
-      TotalHrs: row.totalhours,
-      Notes: row.notes,
-      Status: row.status,
-      //Notify: row.remarks,
-    }));
 
-    // Define CSV headers
-    const headers = [
-      { label: "S No", key: "id" },
-      { label: "Date", key: "permissiondate" },
-      { label: "FromTime", key: "fromhour" },
-      { label: "ToTime", key: "tohour" },
-      { label: "TotalHrs", key: "totalhours" },
-      { label: "Notes", key: "notes" },
-      { label: "Status", key: "Status" },
-      //{ label: "Notify", key: "remarks" },
-    ];
+  //   const csvData = tableData.map((row) => ({
+  //     "S No": row.id,
+  //     Date: row.permissiondate,
+  //     FromTime: row.fromhour,
+  //     ToTime: row.tohour,
+  //     TotalHrs: row.totalhours,
+  //     Notes: row.notes,
+  //     Status: row.status,
+  //     //Notify: row.remarks,
+  //   }));
 
-    return (
-      <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
-        <p>
-          <img
-            src={process.env.REACT_APP_EXPORT_ICON}
-            style={{ width: "30px" }}
-          />
-        </p>
-      </CSVLink>
-    );
-  };
+  //   // Define CSV headers
+  //   const headers = [
+  //     { label: "S No", key: "id" },
+  //     { label: "Date", key: "permissiondate" },
+  //     { label: "FromTime", key: "fromhour" },
+  //     { label: "ToTime", key: "tohour" },
+  //     { label: "TotalHrs", key: "totalhours" },
+  //     { label: "Notes", key: "notes" },
+  //     { label: "Status", key: "Status" },
+  //     //{ label: "Notify", key: "remarks" },
+  //   ];
+
+  //   return (
+  //     <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
+  //       <p>
+  //         <img
+  //           src={process.env.REACT_APP_EXPORT_ICON}
+  //           style={{ width: "30px" }}
+  //         />
+  //       </p>
+  //     </CSVLink>
+  //   );
+  // };
 
   useEffect(() => {
     // 👆 daisy UI themes initialization
@@ -147,8 +147,8 @@ export const PermissionRequest = () => {
             cell.column.id === "email"
               ? validateEmail(event.target.value)
               : cell.column.id === "age"
-              ? validateAge(+event.target.value)
-              : validateRequired(event.target.value);
+                ? validateAge(+event.target.value)
+                : validateRequired(event.target.value);
           if (!isValid) {
             //set validation error for cell if invalid
             setValidationErrors({
@@ -295,7 +295,7 @@ export const PermissionRequest = () => {
         </button> */}
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
-              //onClick={getAllCompanyFields}
+            //onClick={getAllCompanyFields}
             >
               <BsListTask style={buttonStyle} />
               <span className="ml-1">List View</span>
@@ -352,7 +352,7 @@ export const PermissionRequest = () => {
                     </div>
                   </Tooltip> */}
                   <Tooltip title="Export Data as CSV">
-                    <span>{exportDataAsCSV()}</span>
+                    {/* <span>{exportDataAsCSV()}</span> */}
                   </Tooltip>
                 </Stack>
               )}
