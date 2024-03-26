@@ -141,9 +141,7 @@ export const AttendanceReport = () => {
       );
 
       if (response.status === 200) {
-        setMonAttendanceReport(
-          response.data.paramObjectsMap.MonthlyReports
-        );
+        setMonAttendanceReport(response.data.paramObjectsMap.MonthlyReports);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -261,6 +259,14 @@ export const AttendanceReport = () => {
         }),
       },
       {
+        accessorKey: "OfficeWorkingDays",
+        header: "Office Working Days",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
         accessorKey: "PresentDays",
         header: "Present Days",
         size: 140,
@@ -269,61 +275,61 @@ export const AttendanceReport = () => {
         }),
       },
       {
-        accessorKey: "LeaveCount",
-        header: "Leave Count",
+        accessorKey: "TotalLeaveCount",
+        header: "Total Leave",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "Sundays",
-        header: "Sundays",
+        accessorKey: "CLLeave",
+        header: "CL",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "Holidays",
-        header: "Holidays",
+        accessorKey: "PLLeave",
+        header: "PL",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "TotalDays",
-        header: "Total Days",
+        accessorKey: "MLLeave",
+        header: "ML",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "OfficeWorkingDays",
-        header: "Office Working Days",
+        accessorKey: "PTLLeave",
+        header: "PTL",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
-      // {
-      //   accessorKey: "numberOfLeaveDays",
-      //   header: "Leave Days",
-      //   size: 140,
-      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-      //     ...getCommonEditTextFieldProps(cell),
-      //   }),
-      // },
       // {
       //   accessorKey: "presentDays",
-      //   header: "Present Days",
+      //   header: "LOP",
       //   size: 140,
       //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
       //     ...getCommonEditTextFieldProps(cell),
       //   }),
       // },
+      {
+        accessorKey: "SalaryDays",
+        header: "Salary Days",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
     ],
     [getCommonEditTextFieldProps]
   );

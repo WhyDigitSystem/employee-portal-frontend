@@ -73,10 +73,10 @@ function NewPermissionRequest({ newPermissionRequest }) {
     console.log(" from date orginalDate is :", originalDate);
     const hours = originalDate.hour();
     const minutes = originalDate.minute();
-    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 22) {
       setErrors({
         ...errors,
-        fromTime: "Only Allow 9AM to 7PM",
+        fromTime: "Only Allow 9AM to 10PM",
       });
       setFromTime("");
     } else {
@@ -111,10 +111,10 @@ function NewPermissionRequest({ newPermissionRequest }) {
 
     console.log("Duration in Minutes:", durationMinutes);
 
-    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 19) {
+    if (hours < 9 || (hours === 9 && minutes < 0) || hours >= 22) {
       setErrors({
         ...errors,
-        toTime: "Only Allow 9AM to 7PM",
+        toTime: "Only Allow 9AM to 10PM",
       });
       setToTime("");
     }
