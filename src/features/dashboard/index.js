@@ -163,14 +163,14 @@ function Dashboard() {
 
         {/* </div>
       <div className="row d-flex mt-3 "> */}
-        {/* {(userRoleCheck === "HR" ||
+        {(userRoleCheck === "HR" ||
           userRoleCheck === "MANAGEMENT" ||
           userRoleCheck === "MANAGER" ||
           userRoleCheck === "ADMIN") && (
             <>
               <div className="col-md-6"><DashboardPermissionApproval /></div>
             </>
-          )} */}
+          )}
       </div>
     </>
   );
