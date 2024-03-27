@@ -180,8 +180,8 @@ export const LeaveType = () => {
             cell.column.id === "email"
               ? validateEmail(event.target.value)
               : cell.column.id === "age"
-              ? validateAge(+event.target.value)
-              : validateRequired(event.target.value);
+                ? validateAge(+event.target.value)
+                : validateRequired(event.target.value);
           if (!isValid) {
             //set validation error for cell if invalid
             setValidationErrors({
@@ -235,6 +235,14 @@ export const LeaveType = () => {
           ...getCommonEditTextFieldProps(cell),
         }),
       },
+      {
+        accessorKey: "effective",
+        header: "Effective",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
       // {
       //   accessorKey: "active",
       //   header: "Active",
@@ -271,7 +279,7 @@ export const LeaveType = () => {
 
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
-              //onClick={getAllCompanyFields}
+            //onClick={getAllCompanyFields}
             >
               <BsListTask style={buttonStyle} />
               <span className="ml-1">List View</span>

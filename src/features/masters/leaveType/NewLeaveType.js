@@ -24,23 +24,59 @@ function NewLeaveType({ newLeaveType }) {
   const [errorType, setErrorType] = React.useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [loginEmpName, setLoginEmpName] = React.useState(localStorage.getItem("empname"));
+  const [effective, setEffective] = React.useState("");
+  const creditDurationList = [
+    { "name": "Monthly" },
+    { "name": "Quartely" },
+    { "name": "Halfly" },
+    { "name": "Yearly" },
+  ];
 
+  const leaveTypeList = [
+    { "name": "Casual Leave", "code": "CL" },
+    { "name": "Sick Leave", "code": "SL" },
+    { "name": "Annual Leave", "code": "AL" },
+    { "name": "Maternity Leave", "code": "ML" },
+    { "name": "Paternity Leave", "code": "PL" },
+    { "name": "Parental Leave", "code": "PARL" },
+    { "name": "Bereavement Leave", "code": "BL" },
+    { "name": "Public Holiday", "code": "PH" },
+    { "name": "Compensatory Leave", "code": "CL" },
+  ];
 
-  const handleLeaveCode = (event) => {
-    setLeaveCode(event.target.value);
+  const scrollableMenuStyle = {
+    maxHeight: '400px',
+    overflowY: 'auto',
   };
+
+
   const handleLeaveType = (event) => {
-    setLeaveType(event.target.value);
+    const selectedLeaveType = event.target.value;
+    setLeaveType(selectedLeaveType);
+
+    const selectedLeaveTypeObj = leaveTypeList.find(item => item.name === selectedLeaveType);
+    if (selectedLeaveTypeObj) {
+      setLeaveCode(selectedLeaveTypeObj.code);
+    }
   };
+
   const handleLeaveapplicable = (event) => {
     setLeaveapplicable(event.target.value);
   };
+
+  const handleEffective = (event) => {
+    setEffective(event.target.value);
+  };
+
   const handleTotLeave = (event) => {
-    setTotLeave(event.target.value);
+    const inputValue = event.target.value;
+    if (/^\d*$/.test(inputValue)) {
+      setTotLeave(inputValue);
+    }
   };
 
   const buttonStyle = {
-    fontSize: "20px", // Adjust the font size as needed save
+    fontSize: "20px",
   };
 
   const handleCloseNewLeaveType = () => {
@@ -73,6 +109,10 @@ function NewLeaveType({ newLeaveType }) {
       newErrors.totLeave = "Total Leave is required";
     }
 
+    if (effective === "") {
+      newErrors.effective = "Effective is required";
+    }
+
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -87,6 +127,7 @@ function NewLeaveType({ newLeaveType }) {
         leave_type: leaveType,
         applicable: leaveapplicable,
         total_leave: totLeave,
+        effective: effective,
         createdby: loginEmpName,
         updatedby: loginEmpName,
       };
@@ -138,6 +179,31 @@ function NewLeaveType({ newLeaveType }) {
             />
           </div>
           <div className="row d-flex mt-3">
+            {/* LEAVE TYPE FIELD */}
+            <div className="col-md-4 mb-3">
+              <FormControl fullWidth size="small">
+                <InputLabel id="newDropdownLabel">Leave Type</InputLabel>
+                <Select
+                  labelId="newDropdownLabel"
+                  id="leave-type"
+                  label="Leave Type"
+                  value={leaveType}
+                  onChange={handleLeaveType}
+                  MenuProps={{ style: scrollableMenuStyle }}
+                >
+                  {leaveTypeList.map((item) => (
+                    <MenuItem key={item.code} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.leaveType && (
+                  <span className="text-red-500">{errors.leaveType}</span>
+                )}
+              </FormControl>
+            </div>
+
+            {/* LEAVE CODE FIELD */}
             <div className="col-md-4">
               <FormControl fullWidth variant="filled">
                 <TextField
@@ -145,29 +211,14 @@ function NewLeaveType({ newLeaveType }) {
                   label="Leave Code"
                   size="small"
                   value={leaveCode}
-                  onChange={handleLeaveCode}
-                  // error={Boolean(errors.leaveCode)}
-                  inputProps={{ maxLength: 30 }}
+                  disabled
+                // onChange={handleLeaveCode}
+                // error={Boolean(errors.leaveCode)}
+                // inputProps={{ maxLength: 30 }}
 
                 />
                 {errors.leaveCode && (
                   <span className="text-red-500">{errors.leaveCode}</span>
-                )}
-              </FormControl>
-            </div>
-            <div className="col-md-4">
-              <FormControl fullWidth variant="filled">
-                <TextField
-                  id="leaveType"
-                  label="Leave Type"
-                  size="small"
-                  value={leaveType}
-                  onChange={handleLeaveType}
-                  //error={Boolean(errors.leaveType)}
-                  inputProps={{ maxLength: 30 }}
-                />
-                {errors.leaveType && (
-                  <span className="text-red-500">{errors.leaveType}</span>
                 )}
               </FormControl>
             </div>
@@ -194,6 +245,7 @@ function NewLeaveType({ newLeaveType }) {
               </FormControl>
             </div>
 
+            {/* TOTAL LEAVE FIELD */}
             <div className="col-md-4">
               <FormControl fullWidth variant="filled">
                 <TextField
@@ -202,14 +254,38 @@ function NewLeaveType({ newLeaveType }) {
                   size="small"
                   value={totLeave}
                   onChange={handleTotLeave}
-                  //error={Boolean(errors.totLeave)}
-                  inputProps={{ maxLength: 30 }}
+                  inputProps={{ maxLength: 2 }}
                 />
                 {errors.totLeave && (
                   <span className="text-red-500">{errors.totLeave}</span>
                 )}
               </FormControl>
             </div>
+
+            {/* EFFECTIVE DURATION FIELD */}
+            <div className="col-md-4 mb-3">
+              <FormControl fullWidth size="small">
+                <InputLabel id="newDropdownLabel">Effective</InputLabel>
+                <Select
+                  labelId="newDropdownLabel"
+                  id="effective"
+                  label="Effective"
+                  value={effective}
+                  onChange={handleEffective}
+                // MenuProps={{ style: scrollableMenuStyle }}
+                >
+                  {creditDurationList.map((item) => (
+                    <MenuItem key={item.name} value={item.name}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.effective && (
+                  <span className="text-red-500">{errors.effective}</span>
+                )}
+              </FormControl>
+            </div>
+
             <div className="col-md-4 mb-3">
               <FormGroup>
                 <FormControlLabel

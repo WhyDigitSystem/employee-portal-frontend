@@ -58,6 +58,48 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [mailMessageTwo, setMailMessageTwo] = React.useState("");
   const [leaveTypeOptions, setleaveTypeOptions] = useState([]);
 
+  const [newDropdownValue, setNewDropdownValue] = useState("");
+  const [newDropdownErrors, setNewDropdownErrors] = useState({});
+  const [newDropdownCount, setNewDropdownCount] = useState(0);
+  const newDropdownOptions = [
+    { value: "Casual Leave", count: 2 },
+    { value: "Personal Leave", count: 10 },
+    { value: "Petanity Leave", count: 1 },
+    { value: "Loss of pay", count: 0 },
+  ];
+
+  const handleNewDropdownChange = (event) => {
+    const selectedValue = event.target.value;
+    setNewDropdownValue(selectedValue);
+    console.log("selectedValue is:", selectedValue);
+
+    // Find the count of the selected value
+    const selectedOption = newDropdownOptions.find(
+      (option) => option.value === selectedValue
+    );
+    if (selectedOption) {
+      console.log("selectedOption:", selectedOption.count);
+      setNewDropdownCount(selectedOption.count);
+
+    } else {
+      setNewDropdownCount(0); // Set count to 0 if value not found
+    }
+  };
+
+  const customStyles = {
+    leftAlignOption: {
+      textAlign: "left",
+      display: "inline-block",
+      width: "80%", // Adjust width as needed
+    },
+    rightAlignCount: (count) => ({
+      textAlign: "right",
+      display: "inline-block",
+      width: "20%", // Adjust width as needed
+      color: count > 5 ? "green" : count > 0 ? "orange" : "inherit",
+    }),
+  };
+
   useEffect(() => {
     getAllLeaveTypeByGender();
     if (from && to && from === to) {
@@ -226,28 +268,84 @@ function NewLeaveRequest({ newLeaveRequest }) {
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-
         <div className="row d-flex mt-3">
-          {/* LEAVE TYPE FIELD */}
+          {/* New Dropdown */}
           {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
+              <InputLabel id="newDropdownLabel">Testing Leave Type</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Leave Type"
-                value={leaveType}
-                onChange={handleLeaveType}
-                //error={Boolean(errors.leaveType)}
+                labelId="newDropdownLabel"
+                id="newDropdownSelect"
+                label="Testing Leave Type"
+                value={newDropdownValue}
+                onChange={handleNewDropdownChange}
               >
-                <MenuItem value={"CL"}>CL</MenuItem>
-                <MenuItem value={"PL"}>PL</MenuItem>
+                {newDropdownOptions.map((option, index) => (
+                  <MenuItem
+                    key={index}
+                    value={option.value}
+                    disabled={option.count === 0}
+                  >
+                    <span style={customStyles.leftAlignOption}>
+                      {option.value}
+                    </span>
+                    
+                    {newDropdownValue !== option.value && (
+                      <span style={customStyles.rightAlignCount}>
+                        {option.count}
+                      </span>
+                    )}
+                  </MenuItem>
+                ))}
               </Select>
-              {errors.leaveType && (
-                <span className="text-red-500">{errors.leaveType}</span>
+              {newDropdownErrors.value && (
+                <span className="text-red-500">{newDropdownErrors.value}</span>
               )}
             </FormControl>
           </div> */}
+          {/* End New Dropdown */}
+
+          {/* New Dropdown */}
+          <div className="col-md-4 mb-3">
+            <FormControl fullWidth size="small">
+              <InputLabel id="newDropdownLabel">Leave Type</InputLabel>
+              <Select
+                labelId="newDropdownLabel"
+                id="newDropdownSelect"
+                label="Leave Type"
+                value={newDropdownValue}
+                onChange={handleNewDropdownChange}
+              >
+                {newDropdownOptions.map((option, index) => (
+                  <MenuItem
+                    key={index}
+                    value={option.value}
+                    disabled={option.count === 0}
+                  >
+                    <span style={customStyles.leftAlignOption}>
+                      {option.value}
+                    </span>
+                    {/* Conditionally render count with custom styles */}
+                    {newDropdownValue !== option.value && (
+                      <span
+                        style={customStyles.rightAlignCount(option.count)}
+                        className={option.count === 0 ? "text-gray-400" : ""}
+                      >
+                        {option.count}
+                      </span>
+                    )}
+                  </MenuItem>
+                ))}
+              </Select>
+              {newDropdownErrors.value && (
+                <span className="text-red-500">{newDropdownErrors.value}</span>
+              )}
+            </FormControl>
+          </div>
+          {/* End New Dropdown */}
+
+
+
 
           {/* FROM DATE FIELD */}
           <div className="col-md-4 mb-3">

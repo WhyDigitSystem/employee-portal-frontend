@@ -48,14 +48,32 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [reportingPersonRole, setReportingPersonRole] = React.useState("");
   const [reportPersonOptions, setReportPersonOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
-
-
+  // LEAVE PROCESS FIELDS
+  const [casual, setCasual] = useState("");
+  const [sick, setSick] = useState("");
+  const [annual, setAnnual] = useState("");
+  const [maternity, setMaternity] = useState("");
+  const [paternity, setPaternity] = useState("");
+  const [parental, setParental] = useState("");
+  const [bereavement, setBereavement] = useState("");
+  const [compensatory, setCompensatory] = useState("");
+  const [orgLeaveTypeList, setOrgLeaveTypeList] = useState([]);
+  // const orgLeaveTypeList = [
+  //   { "name": "Casual Leave" },
+  //   { "name": "Sick Leave" },
+  //   { "name": "Annual Leave" },
+  //   { "name": "Maternity Leave" },
+  //   { "name": "Paternity Leave" },
+  //   { "name": "Parental Leave" },
+  //   { "name": "Compensatory Leave" },
+  // ];
 
   const pwd = empCode + dob;
   const trimmedpwd = pwd.trim();
 
   useEffect(() => {
     fetchBranchName();
+    getLeaveTypeName();
     const fetchReportingPersons = async () => {
       try {
         const response = await Axios.get(
@@ -72,7 +90,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     if (reportingPersonRole) {
       fetchReportingPersons();
     }
-  }, [reportingPersonRole]);
+  }, [reportingPersonRole, gender]);
 
   const fetchBranchName = async () => {
     try {
@@ -87,11 +105,25 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     }
   };
 
+  const getLeaveTypeName = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/getLeaveTypeNameByOrgId?orgId=${orgId}`
+      );
+      if (response.data.statusFlag === "Ok") {
+        setOrgLeaveTypeList(response.data.paramObjectsMap.leaveType);
+        console.log(response.data.paramObjectsMap.leaveType);
+      }
+    } catch (error) {
+      console.error("Error fetching Leave Types:", error);
+    }
+  };
+
   const handleTabSelect = (index) => {
     setTabIndex(index);
   };
   const buttonStyle = {
-    fontSize: "20px", // Adjust the font size as needed save
+    fontSize: "20px",
   };
 
   const handleEmpCode = (event) => {
@@ -172,8 +204,43 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const handleBranch = (event) => {
     setBranch(event.target.value);
   };
+
   const handleReportingPersonRoleChange = (event) => {
     setReportingPersonRole(event.target.value);
+  };
+
+  const handleCasual = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setCasual(numericValue);
+  };
+  const handleSick = (event) => {
+
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setSick(numericValue);
+  };
+  const handleAnnual = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setAnnual(numericValue);
+  };
+  const handleMaternity = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setMaternity(numericValue);
+  };
+  const handlePaternity = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setPaternity(numericValue);
+  };
+  const handleParental = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setParental(numericValue);
+  };
+  const handleBereavement = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setBereavement(numericValue);
+  };
+  const handleCompensatory = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, "");
+    setCompensatory(numericValue);
   };
 
   const handleNew = () => {
@@ -198,6 +265,14 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setAccNo("");
     setIfsc("");
     setReportPerson("");
+    setCasual("");
+    setSick("")
+    setAnnual("")
+    setMaternity("")
+    setPaternity("")
+    setParental("")
+    setBereavement("")
+    setCompensatory("")
   };
 
   const handleValidation = () => {
@@ -325,13 +400,58 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
-            handleNew();
+            // handleNew();
+            handleLeaveAllocationSave();
           })
           .catch((error) => {
             console.error("Error saving data:", error);
           });
       }
     }
+  };
+
+  const handleLeaveAllocationSave = () => {
+    // if (handleValidation()) {
+    const dataToSaveLeaveAllocation = {
+      orgId: orgId,
+      // branchId: branch,
+      empcode: empCode,
+      empname: empName,
+      casual: casual,
+      sick: sick,
+      annual: annual,
+      maternity: maternity,
+      paternity: paternity,
+      parental: parental,
+      bereavement: bereavement,
+      compensatory: compensatory,
+      updatedby: loginEmpName,
+      createdby: loginEmpName,
+    };
+
+    console.log("DataToSaveLeaveAllocation:", dataToSaveLeaveAllocation);
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaveEligible`,
+        dataToSaveLeaveAllocation,
+        { headers }
+      )
+        .then((response) => {
+          console.log("Data saved successfully:", response.data);
+          setSavedData(response.data);
+          handleNew();
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+        });
+    }
+    // }
   };
 
   const handleClosePermission = () => {
@@ -516,6 +636,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </Select>
                 </FormControl>
               </div>
+
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">Role</InputLabel>
@@ -630,6 +751,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                 </FormControl>
               </div>
 
+              {/* MOBILE NO FIELD */}
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
@@ -645,6 +767,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   />
                 </FormControl>
               </div>
+
+              {/* ALTERNATIVE MOBILE NO FIELD */}
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth variant="filled">
                   <TextField
@@ -660,6 +784,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   />
                 </FormControl>
               </div>
+
+              {/* RESIGNATION FIELD */}
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -676,6 +802,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                 </FormControl>
               </div>
 
+              {/* ACTIVE FIELD */}
               <div className="col-md-4 mb-3 mb-3">
                 <FormGroup>
                   <FormControlLabel
@@ -693,8 +820,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               <TabList>
                 <Tab>Bank Account Details</Tab>
                 <Tab>Reporting Person / Approval Person</Tab>
+                <Tab>Leave Allocation</Tab>
               </TabList>
 
+              {/* BANK DETAILS TAB */}
               <TabPanel>
                 <div className="row d-flex mt-3">
                   <div className="col-md-4">
@@ -741,6 +870,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   </div>
                 </div>
               </TabPanel>
+
+              {/* REPORTING PERSON TAB */}
               <TabPanel>
                 <div className="row d-flex mt-3">
                   <div className="col-md-4">
@@ -790,6 +921,148 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       </Select>
                     </FormControl>
                   </div>
+                </div>
+              </TabPanel>
+
+              {/* LEAVE PROCESS TAB */}
+              <TabPanel>
+                <div className="row d-flex mt-3">
+                  {/* CASUAL LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Casual Leave") && (
+                    <div className="col-md-4 mb-3 ">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="casual"
+                          label="Casual"
+                          size="small"
+                          value={casual}
+                          onChange={handleCasual}
+                          error={Boolean(errors.casual)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* SICK LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Sick Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="sick"
+                          label="Sick"
+                          size="small"
+                          value={sick}
+                          onChange={handleSick}
+                          error={Boolean(errors.sick)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* ANNUAL LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Annual Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="annual"
+                          label="Annual"
+                          size="small"
+                          value={annual}
+                          onChange={handleAnnual}
+                          error={Boolean(errors.annual)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* MATERNITY LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Maternity Leave" && gender === 'Female') && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="maternity"
+                          label="Maternity"
+                          size="small"
+                          value={maternity}
+                          onChange={handleMaternity}
+                          error={Boolean(errors.maternity)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* PATERNITY LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Paternity Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="paternity"
+                          label="Paternity"
+                          size="small"
+                          value={paternity}
+                          onChange={handlePaternity}
+                          error={Boolean(errors.paternity)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* PARENTAL LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Parental Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="parental"
+                          label="Parental"
+                          size="small"
+                          value={parental}
+                          onChange={handleParental}
+                          error={Boolean(errors.parental)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* BEREAVEMENT LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Bereavement Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="bereavement"
+                          label="Bereavement"
+                          size="small"
+                          value={bereavement}
+                          onChange={handleBereavement}
+                          error={Boolean(errors.bereavement)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
+                  {/* COMPENSATORY LEAVE FIELD */}
+                  {orgLeaveTypeList.some(item => item.LeaveType === "Compensatory Leave") && (
+                    <div className="col-md-4 mb-3">
+                      <FormControl fullWidth variant="filled">
+                        <TextField
+                          id="compensatory"
+                          label="compensatory"
+                          size="small"
+                          value={compensatory}
+                          onChange={handleCompensatory}
+                          error={Boolean(errors.compensatory)}
+                          inputProps={{ maxLength: 2 }}
+                        />
+                      </FormControl>
+                    </div>
+                  )}
+
                 </div>
               </TabPanel>
             </Tabs>
