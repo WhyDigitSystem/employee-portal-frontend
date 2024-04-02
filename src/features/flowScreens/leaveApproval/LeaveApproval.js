@@ -61,7 +61,8 @@ export const LeaveApproval = () => {
   const getAllLeaveRequestByRole = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=${loginEmpCode}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=${localStorage.getItem("empcode")}&orgId=${orgId}`
+        // `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=WDS018&orgId=${orgId}`
       );
 
       if (response.status === 200) {

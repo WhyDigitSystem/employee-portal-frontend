@@ -49,7 +49,7 @@ function DashboardLeaveApproval() {
   const getAllPendingLeaveRequestByRole = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=WDS012&orgId=1`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest/approval?empcode=${loginEmpCode}&orgId=1`
       );
 
       if (response.status === 200) {
