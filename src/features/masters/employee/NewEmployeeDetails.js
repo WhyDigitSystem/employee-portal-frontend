@@ -621,7 +621,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     <MenuItem value={"Desktop App Developer"}>
                       Software Developer
                     </MenuItem>
-                    <MenuItem value={"Desktop App Developer"}>
+                    <MenuItem value={"SQL Developer"}>
                       SQL Developer
                     </MenuItem>
                     <MenuItem value={"Frontend Developer"}>
