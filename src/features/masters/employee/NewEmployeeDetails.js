@@ -44,7 +44,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [team, setTeam] = React.useState("");
   const [branch, setBranch] = React.useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [loginEmpName, setLoginEmpName] = React.useState(localStorage.getItem("empname"));
+  const [loginEmpName, setLoginEmpName] = React.useState(
+    localStorage.getItem("empname")
+  );
   const [reportingPersonRole, setReportingPersonRole] = React.useState("");
   const [reportPersonOptions, setReportPersonOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
@@ -68,7 +70,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //   { "name": "Compensatory Leave" },
   // ];
 
-  const pwd = empCode + dob;
+  const pwd = "Wds@2022";
   const trimmedpwd = pwd.trim();
 
   useEffect(() => {
@@ -214,7 +216,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setCasual(numericValue);
   };
   const handleSick = (event) => {
-
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setSick(numericValue);
   };
@@ -266,13 +267,13 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setIfsc("");
     setReportPerson("");
     setCasual("");
-    setSick("")
-    setAnnual("")
-    setMaternity("")
-    setPaternity("")
-    setParental("")
-    setBereavement("")
-    setCompensatory("")
+    setSick("");
+    setAnnual("");
+    setMaternity("");
+    setPaternity("");
+    setParental("");
+    setBereavement("");
+    setCompensatory("");
   };
 
   const handleValidation = () => {
@@ -298,9 +299,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     if (dept === "") {
       newErrors.dept = "State is required";
     }
-    if (designation === "") {
-      newErrors.designation = "Please select a valid country";
-    }
+    // if (designation === "") {
+    //   newErrors.designation = "Please select a valid country";
+    // }
     if (role.trim() === "") {
       newErrors.role = "Zipcode is required";
     }
@@ -322,9 +323,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     // if (aadharNo === "") {
     //   newErrors.aadharNo = "Please select a valid country";
     // }
-    if (bank.trim() === "") {
-      newErrors.bank = "Zipcode is required";
-    }
+    // if (bank.trim() === "") {
+    //   newErrors.bank = "Zipcode is required";
+    // }
     // if (accNo.trim() === "") {
     //   newErrors.accNo = "Phone Number is required";
     // }
@@ -340,7 +341,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   };
 
   const handleSave = () => {
+    console.log("handlesave is working");
+
     if (handleValidation()) {
+      console.log("handle validation is working");
+
       const dataToSave = {
         orgId: orgId,
         branchId: branch,
@@ -474,9 +479,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
             <div className="row d-flex mt-3">
               <div className="col-md-4">
                 <FormControl fullWidth size="small">
-                  <InputLabel id="demo-simple-select-label">
-                    Branch
-                  </InputLabel>
+                  <InputLabel id="demo-simple-select-label">Branch</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -553,7 +556,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       }}
                       value={dob}
                       onChange={handleDob}
-                    // error={Boolean(errors.dob)}
+                      // error={Boolean(errors.dob)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -618,12 +621,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     onChange={handleDesignation}
                     error={Boolean(errors.designation)}
                   >
-                    <MenuItem value={"Desktop App Developer"}>
+                    <MenuItem value={"Software Developer"}>
                       Software Developer
                     </MenuItem>
-                    <MenuItem value={"SQL Developer"}>
-                      SQL Developer
-                    </MenuItem>
+                    <MenuItem value={"SQL Developer"}>SQL Developer</MenuItem>
                     <MenuItem value={"Frontend Developer"}>
                       Frontend Developer
                     </MenuItem>
@@ -650,7 +651,12 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   >
                     <MenuItem value={"USER"}>User</MenuItem>
                     <MenuItem value={"TEAM_LEAD"}>Team Lead</MenuItem>
-                    <MenuItem value={"PROJECT MANAGER"}>Project Manager</MenuItem>
+                    <MenuItem value={"PROJECT MANAGER"}>
+                      Project Manager
+                    </MenuItem>
+                    <MenuItem value={"DELIVERY MANAGER"}>
+                      Delivery Manager
+                    </MenuItem>
                     <MenuItem value={"MANAGEMENT"}>Management</MenuItem>
                     <MenuItem value={"HR"}>HR</MenuItem>
                     <MenuItem value={"ADMIN"}>Admin</MenuItem>
@@ -684,7 +690,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                     label="Team"
                     value={team}
                     onChange={handleTeam}
-                  //error={Boolean(errors.team)}
+                    //error={Boolean(errors.team)}
                   >
                     <MenuItem value={"Core"}>Core</MenuItem>
                     <MenuItem value={"Product"}>Product</MenuItem>
@@ -719,7 +725,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       value={joinDate}
                       onChange={handleJoinDate}
 
-                    // error={Boolean(errors.joinDate)}
+                      // error={Boolean(errors.joinDate)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -928,7 +934,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               <TabPanel>
                 <div className="row d-flex mt-3">
                   {/* CASUAL LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Casual Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Casual Leave"
+                  ) && (
                     <div className="col-md-4 mb-3 ">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -945,7 +953,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* SICK LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Sick Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Sick Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -962,7 +972,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* ANNUAL LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Annual Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Annual Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -979,7 +991,11 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* MATERNITY LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Maternity Leave" && gender === 'Female') && (
+                  {orgLeaveTypeList.some(
+                    (item) =>
+                      item.LeaveType === "Maternity Leave" &&
+                      gender === "Female"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -996,7 +1012,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* PATERNITY LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Paternity Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Paternity Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -1013,7 +1031,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* PARENTAL LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Parental Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Parental Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -1030,7 +1050,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* BEREAVEMENT LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Bereavement Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Bereavement Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -1047,7 +1069,9 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                   )}
 
                   {/* COMPENSATORY LEAVE FIELD */}
-                  {orgLeaveTypeList.some(item => item.LeaveType === "Compensatory Leave") && (
+                  {orgLeaveTypeList.some(
+                    (item) => item.LeaveType === "Compensatory Leave"
+                  ) && (
                     <div className="col-md-4 mb-3">
                       <FormControl fullWidth variant="filled">
                         <TextField
@@ -1062,7 +1086,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       </FormControl>
                     </div>
                   )}
-
                 </div>
               </TabPanel>
             </Tabs>
