@@ -77,6 +77,17 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Credit Control", // name that appear in Sidebar
       },
+      {
+        path: "/app/salaryheads", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Salary Heads", // name that appear in Sidebar
+      },
+      {
+        path: "/app/salaryStructure", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Salary Structure", // name that appear in Sidebar
+      },
+      
       // {
       //   path: "/app/jpcheckincheckout", // url
       //   icon: <CalendarDaysIcon className={iconClasses} />, // icon component

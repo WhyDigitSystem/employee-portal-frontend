@@ -22,6 +22,8 @@ const EmployeeDetails = lazy(() =>
   import("../pages/protected/EmployeeDetails")
 );
 const LeaveType = lazy(() => import("../pages/protected/LeaveType"));
+const SalaryHeads = lazy(() => import("../pages/protected/SalaryHeads"));
+const SalaryStructure = lazy(() => import("../pages/protected/SalaryStructure"));
 const LeaveRequest = lazy(() => import("../pages/protected/LeaveRequest"));
 const PermissionRequest = lazy(() =>
   import("../pages/protected/PermissionRequest")
@@ -194,6 +196,15 @@ const routes = [
   {
     path: "/leavecreditcontrol",
     component: LeaveCreditControl,
+  },
+  //09/01/2025 added 2 screens
+  {
+    path: "/salaryheads",
+    component: SalaryHeads,
+  },
+  {
+    path: "/salarystructure",
+    component: SalaryStructure,
   },
 ];
 
