@@ -228,6 +228,11 @@ const NewSalaryStructure = ({newSalary}) => {
       }
       return false;
     };
+    const validateNumericInput = (value) => {
+      const numericRegex = /^[0-9]*$/;
+      return numericRegex.test(value);
+    };
+    
     const displayRowErrorEarning = (table) => {
       if (table === newSalaryStructureTableEarnings) {
         setSalaryStructureTableEarningsErrors((prevErrors) => {
@@ -738,17 +743,40 @@ const NewSalaryStructure = ({newSalary}) => {
                                         <td className="border px-2 py-2">
                                           <input
                                             value={row.amount}
+                                            // onChange={(e) => {
+                                            //   const value = e.target.value;
+                                            //   setNewSalaryStructureTableEarnings((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
+                                            //   // setsalaryStructureTableEarningsErrors((prev) => {
+                                            //   //   const newErrors = [...prev];
+                                            //   //   newErrors[index] = {
+                                            //   //     ...newErrors[index],
+                                            //   //     amount: !value ? 'Amount is required' : ''
+                                            //   //   };
+                                            //   //   return newErrors;
+                                            //   // });
+                                            // }}
                                             onChange={(e) => {
                                               const value = e.target.value;
-                                              setNewSalaryStructureTableEarnings((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
-                                              // setsalaryStructureTableEarningsErrors((prev) => {
-                                              //   const newErrors = [...prev];
-                                              //   newErrors[index] = {
-                                              //     ...newErrors[index],
-                                              //     amount: !value ? 'Amount is required' : ''
-                                              //   };
-                                              //   return newErrors;
-                                              // });
+                                              if (validateNumericInput(value)) {
+                                                setNewSalaryStructureTableEarnings((prev) =>
+                                                  prev.map((row) =>
+                                                    row.id === row.id ? { ...row, amount: value } : row
+                                                  )
+                                                );
+                                                setSalaryStructureTableEarningsErrors((prev) =>
+                                                  prev.map((err, idx) =>
+                                                    idx === index ? { ...err, amount: "" } : err
+                                                  )
+                                                );
+                                              } else {
+                                                setSalaryStructureTableEarningsErrors((prev) =>
+                                                  prev.map((err, idx) =>
+                                                    idx === index
+                                                      ? { ...err, amount: "Only numeric values are allowed." }
+                                                      : err
+                                                  )
+                                                );
+                                              }
                                             }}
                                             className={salaryStructureTableEarningsErrors[index]?.amount ? 'error form-control' : 'form-control'}
                                           />
@@ -845,18 +873,39 @@ const NewSalaryStructure = ({newSalary}) => {
                                         <td className="border px-2 py-2">
                                           <input
                                             value={row.amount}
+                                            // onChange={(e) => {
+                                            //   const value = e.target.value;
+                                            //   setNewSalaryStructureTable((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
+                                            //   // setSalaryStructureTableErrors((prev) => {
+                                            //   //   const newErrors = [...prev];
+                                            //   //   newErrors[index] = {
+                                            //   //     ...newErrors[index],
+                                            //   //     amount: !value ? 'Amount is required' : ''
+                                            //   //   };
+                                            //   //   return newErrors;
+                                            //   // });
+                                            // }}
                                             onChange={(e) => {
                                               const value = e.target.value;
-                                              setNewSalaryStructureTable((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
-                                              // setSalaryStructureTableErrors((prev) => {
-                                              //   const newErrors = [...prev];
-                                              //   newErrors[index] = {
-                                              //     ...newErrors[index],
-                                              //     amount: !value ? 'Amount is required' : ''
-                                              //   };
-                                              //   return newErrors;
-                                              // });
-                                            }}
+                                              if (validateNumericInput(value)) {
+                                                setNewSalaryStructureTable((prev) =>
+                                                  prev.map((row) => (row.id === row.id ? { ...row, amount: value } : row))
+                                                );
+                                                setSalaryStructureTableErrors((prev) =>
+                                                  prev.map((err, idx) =>
+                                                    idx === index ? { ...err, amount: "" } : err
+                                                  )
+                                                );
+                                              } else {
+                                                setSalaryStructureTableErrors((prev) =>
+                                                  prev.map((err, idx) =>
+                                                    idx === index
+                                                      ? { ...err, amount: "Only numeric values are allowed." }
+                                                      : err
+                                                  )
+                                                );
+                                              }
+                                            }}                                            
                                             className={salaryStructureTableErrors[index]?.amount ? 'error form-control' : 'form-control'}
                                           />
                                           {salaryStructureTableErrors[index]?.amount && (

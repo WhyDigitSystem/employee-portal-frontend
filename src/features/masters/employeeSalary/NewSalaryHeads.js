@@ -18,6 +18,7 @@ const NewSalaryHeads = ({newSalary}) => {
     const [loginEmpName, setLoginEmpName] = React.useState(
        localStorage.getItem("empname")
     );
+    const [active, setActive] = useState(true);
     const [errors, setErrors] = React.useState({});
     const [savedData, setSavedData] = React.useState("");
     const [salaryHeadsTable, setSalaryHeadsTable] = useState([
@@ -28,7 +29,7 @@ const NewSalaryHeads = ({newSalary}) => {
           category:'',
           type:'',
           amount:'',
-          active: true
+          // active: true
         }
     ]);
     const [salaryHeadsTableErrors, setSalaryHeadsTableErrors] = useState([
@@ -39,70 +40,116 @@ const NewSalaryHeads = ({newSalary}) => {
             category:'',
             type:'',
             amount:'',
-            active: true
+            // active: true
         }
     ]);
   
-    const handleInputChange = (e) => {
-      const { name, value, checked, selectionStart, selectionEnd, type } = e.target;
-      const nameRegex = /^[A-Za-z ]*$/;
-      const numericRegex = /^[0-9]*$/;
-      let errorMessage = '';
+    // const handleInputChange = (e) => {
+    //   const { name, value, checked, selectionStart, selectionEnd, type } = e.target;
+    //   const nameRegex = /^[A-Za-z ]*$/;
+    //   const numericRegex = /^[0-9]*$/;
+    //   let errorMessage = '';
 
-      // switch (name) {
-      //   case 'headings':
-      //     if (!nameRegex.test(value)) {
-      //       errorMessage = 'Only alphabetic characters are allowed';
-      //     }
-      //   break;
-      //   case 'code':
-      //     if (!nameRegex.test(value)) {
-      //       errorMessage = 'Only alphabetic characters are allowed';
-      //     }
-      //   break;
-      //   case 'category':
-      //     if (!nameRegex.test(value)) {
-      //       errorMessage = 'Only alphabetic characters are allowed';
-      //     }
-      //   break;
-      //   case 'type':
-      //     if (!nameRegex.test(value)) {
-      //       errorMessage = 'Only alphabetic characters are allowed';
-      //     }
-      //   break;
-      //   case 'amount':
-      //     if (!numericRegex.test(value)) {
-      //       errorMessage = 'Only numbers are allowed';
-      //     }
-      //   break;
-      //   default:
-      //     break;
-      // }
-      if (errorMessage) {
-        console.log("Test",errorMessage);
-        setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: errorMessage });
-      }
-      else if (type === 'checkbox') { 
-        setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
-      }
-      else {
-        // Clear error message for valid input
-        setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: '' });
-        setSalaryHeadsTable({ ...salaryHeadsTable, [name]: value });
-        // setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
+    //   // switch (name) {
+    //   //   case 'headings':
+    //   //     if (!nameRegex.test(value)) {
+    //   //       errorMessage = 'Only alphabetic characters are allowed';
+    //   //     }
+    //   //   break;
+    //   //   case 'code':
+    //   //     if (!nameRegex.test(value)) {
+    //   //       errorMessage = 'Only alphabetic characters are allowed';
+    //   //     }
+    //   //   break;
+    //   //   case 'category':
+    //   //     if (!nameRegex.test(value)) {
+    //   //       errorMessage = 'Only alphabetic characters are allowed';
+    //   //     }
+    //   //   break;
+    //   //   case 'type':
+    //   //     if (!nameRegex.test(value)) {
+    //   //       errorMessage = 'Only alphabetic characters are allowed';
+    //   //     }
+    //   //   break;
+    //   //   case 'amount':
+    //   //     if (!numericRegex.test(value)) {
+    //   //       errorMessage = 'Only numbers are allowed';
+    //   //     }
+    //   //   break;
+    //   //   default:
+    //   //     break;
+    //   // }
+    //   if (errorMessage) {
+    //     console.log("Test",errorMessage);
+    //     setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: errorMessage });
+    //   }
+    //   else if (type === 'checkbox') { 
+    //     setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
+    //   }
+    //   else {
+    //     // Clear error message for valid input
+    //     setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: '' });
+    //     setSalaryHeadsTable({ ...salaryHeadsTable, [name]: value });
+    //     // setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
   
-        // Preserve the cursor position for text-based inputs
-        if (type === 'text' || type === 'textarea') {
-          setTimeout(() => {
-            const inputElement = document.getElementsByName(name)[0];
-            if (inputElement && inputElement.setSelectionRange) {
-              inputElement.setSelectionRange(selectionStart, selectionEnd);
-            }
-          }, 0);
-        }
-      }
+    //     // Preserve the cursor position for text-based inputs
+    //     if (type === 'text' || type === 'textarea') {
+    //       setTimeout(() => {
+    //         const inputElement = document.getElementsByName(name)[0];
+    //         if (inputElement && inputElement.setSelectionRange) {
+    //           inputElement.setSelectionRange(selectionStart, selectionEnd);
+    //         }
+    //       }, 0);
+    //     }
+    //   }
+    // };
+    const handleCheckboxChange = (event) => {
+      setActive(event.target.checked);
     };
+    const handleInputChange = (e) => {
+      const { name, value, type } = e.target;
     
+      // Define validation rules
+      const nameRegex = /^[A-Za-z ]*$/; // Only alphabets and spaces
+      const numericRegex = /^[0-9]*$/; // Only numeric values
+      let errorMessage = "";
+    
+      // Apply validation based on the field name
+      switch (name) {
+        case "headings":
+        case "category":
+        case "code":
+          if (!nameRegex.test(value)) {
+            errorMessage = "Only alphabetic characters are allowed.";
+          }
+          break;
+        case "amount":
+          if (!numericRegex.test(value)) {
+            errorMessage = "Only numeric values are allowed.";
+          }
+          break;
+        default:
+          break;
+      }
+    
+      // Set error message or update field value
+      if (errorMessage) {
+        setSalaryHeadsTableErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: errorMessage,
+        }));
+      } else {
+        setSalaryHeadsTableErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: "",
+        }));
+    
+        setSalaryHeadsTable((prevData) => ({
+          ...prevData,
+          [name]: type === "checkbox" ? e.target.checked : value,
+        }));
+      }
+    };    
     const handleClosePermission = () => {
         newSalary(false);
     };
@@ -140,7 +187,7 @@ const NewSalaryHeads = ({newSalary}) => {
           code: salaryHeadsTable.code,
           headings: salaryHeadsTable.headings,
           type: salaryHeadsTable.type,
-          active: salaryHeadsTable.active === true ? true : false,
+          active: active,
           updatedby: loginEmpName,
           createdby: loginEmpName,
         };
@@ -274,7 +321,21 @@ const NewSalaryHeads = ({newSalary}) => {
                   />
                 </FormControl>
             </div>
-            <div className="col-md-4 mb-3 mb-3">
+            <div className="col-md-4 mb-3">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={active} 
+                      onChange={handleCheckboxChange} 
+                    />
+                  }
+                  label="Active"
+                  name="active"
+                />
+              </FormGroup>
+            </div>
+            {/* <div className="col-md-4 mb-3 mb-3">
                 <FormGroup>
                   <FormControlLabel
                     control={<Checkbox defaultChecked />}
@@ -283,7 +344,7 @@ const NewSalaryHeads = ({newSalary}) => {
                     typeof="checkbox"
                   />
                 </FormGroup>
-              </div>
+              </div> */}
           </div>
           <div className="d-flex flex-row mt-3">
             <button

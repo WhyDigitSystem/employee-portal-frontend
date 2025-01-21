@@ -193,14 +193,14 @@ const SalaryHeads = () => {
               ...getCommonEditTextFieldProps(cell),
             }),
           },
-          // {
-          //   accessorKey: "active",
-          //   header: "Active",
-          //   size: 140,
-          //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          //     ...getCommonEditTextFieldProps(cell),
-          //   }),
-          // },
+          {
+            accessorKey: "active",
+            header: "Active",
+            size: 140,
+            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+              ...getCommonEditTextFieldProps(cell),
+            }),
+          },
         ],
         [getCommonEditTextFieldProps]
       );
