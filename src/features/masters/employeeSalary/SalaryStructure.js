@@ -221,6 +221,7 @@ const SalaryStructure = () => {
       const handleEditSalaryStructure = async ({ exitEditingMode, row, values }) => {
         if (!Object.keys(validationErrors).length) {
           try {
+            values.orgid = orgId;
             values.id = parseInt(values.id);
             const token = localStorage.getItem("token");
     

@@ -106,6 +106,29 @@ const NewSalaryHeads = ({newSalary}) => {
     const handleCheckboxChange = (event) => {
       setActive(event.target.checked);
     };
+    const handleClear = () => {
+      setSalaryHeadsTable({
+        amount: "",
+        category: "",
+        code: "",
+        headings: "",
+        type: "",
+      });
+      // setOrgId("");
+      setActive(false);
+      // setLoginEmpName("");
+      console.log("All fields cleared.");
+    };
+    
+    // const handleClear = () => {
+    //  salaryHeadsTable({
+    //   headings:'',
+    //   code:'',
+    //   category:'',
+    //   type:'',
+    //   amount:'',
+    //  })
+    // };
     const handleInputChange = (e) => {
       const { name, value, type } = e.target;
     
@@ -214,6 +237,8 @@ const NewSalaryHeads = ({newSalary}) => {
             .then((response) => {
               console.log("Data saved successfully:", response.data);
               setSavedData(response.data);
+              handleClear();
+              
               // handleNew();
               // handleLeaveAllocationSave();
             })

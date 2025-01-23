@@ -29,6 +29,7 @@ import Axios from "axios";
 import NewSalaryHeads from "./NewSalaryHeads";
 const SalaryHeads = () => {
     const [add, setAdd] = React.useState(false);
+    const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
     const [tableData, setTableData] = useState([]);
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
@@ -177,14 +178,14 @@ const SalaryHeads = () => {
               ...getCommonEditTextFieldProps(cell),
             }),
           },
-          {
-            accessorKey: "type",
-            header: "Type",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
+          // {
+          //   accessorKey: "type",
+          //   header: "Type",
+          //   size: 140,
+          //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          //     ...getCommonEditTextFieldProps(cell),
+          //   }),
+          // },
           {
             accessorKey: "amount",
             header: "Amount",
@@ -194,9 +195,10 @@ const SalaryHeads = () => {
             }),
           },
           {
-            accessorKey: "active",
+            accessorKey: "active", // This maps to the raw data field in your data object
             header: "Active",
             size: 140,
+            Cell: ({ cell }) => (cell.getValue() === true ? "Active" : "Inactive"), // Conditional rendering logic
             muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
               ...getCommonEditTextFieldProps(cell),
             }),
@@ -229,6 +231,7 @@ const SalaryHeads = () => {
         if (!Object.keys(validationErrors).length) {
           try {
             // Make a PUT request to update the user role data
+            values.orgid = orgId;
             values.id = parseInt(values.id);
             values.amount = parseInt(values.amount);
             const token = localStorage.getItem("token");
