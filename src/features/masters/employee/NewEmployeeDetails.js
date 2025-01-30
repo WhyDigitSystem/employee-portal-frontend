@@ -60,6 +60,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   const [bereavement, setBereavement] = useState("");
   const [compensatory, setCompensatory] = useState("");
   const [orgLeaveTypeList, setOrgLeaveTypeList] = useState([]);
+  const [active, setActive] = useState(true);
+
   // const orgLeaveTypeList = [
   //   { "name": "Casual Leave" },
   //   { "name": "Sick Leave" },
@@ -79,7 +81,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     const fetchReportingPersons = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=1&role=${reportingPersonRole}`
+          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee/role?orgId=${orgId}&role=${reportingPersonRole}`
         );
         if (response.data.statusFlag === "Ok") {
           setReportPersonOptions(response.data.paramObjectsMap.Employee);
@@ -243,25 +245,28 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, "");
     setCompensatory(numericValue);
   };
+  const handleActive = (event) => {
+    setActive(event.target.checked);
+  };
 
   const handleNew = () => {
     setEmpCode("");
     setEmpName("");
     setGender("");
-    setDob("");
+    setDob(null);
     setBloodGroup("");
     setDept("");
     setDesignation("");
     setRole("");
     setGrade("");
     setEmail("");
-    setJoinDate("");
+    setJoinDate(null);
     setPan("");
     setAadharNo("");
     // setUserType("");
     setMobNo("");
     setAltMobNo("");
-    setResigningDate("");
+    setResigningDate(null);
     setBank("");
     setAccNo("");
     setIfsc("");
@@ -274,6 +279,8 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setParental("");
     setBereavement("");
     setCompensatory("");
+    setReportingPersonRole("");
+    setActive(true)
   };
 
   const handleValidation = () => {
@@ -303,7 +310,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     //   newErrors.designation = "Please select a valid country";
     // }
     if (role.trim() === "") {
-      newErrors.role = "Zipcode is required";
+      newErrors.role = "Role is required";
     }
     if (email.trim() === "") {
       newErrors.email = "Phone Number is required";
@@ -332,13 +339,114 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     // if (ifsc.trim() === "") {
     //   newErrors.ifsc = "Email is required";
     // }
-    if (reportPerson.trim() === "") {
-      newErrors.reportPerson = "Gst is required";
-    }
+    // if (reportPerson.trim() === "") {
+    //   newErrors.reportPerson = "Gst is required";
+    // }
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
   };
+
+  // const handleSave = () => {
+  //   console.log("handlesave is working");
+
+  //   if (handleValidation()) {
+  //     console.log("handle validation is working");
+
+  //     // const dataToSave = {
+  //     //   orgId: orgId,
+  //     //   branchId: branch,
+  //     //   empcode: empCode,
+  //     //   empname: empName,
+  //     //   gender: gender,
+  //     //   date_of_birth: dob,
+  //     //   blood: bloodGroup,
+  //     //   department: dept,
+  //     //   designation: designation,
+  //     //   role: role,
+  //     //   email: email,
+  //     //   joining_date: joinDate,
+  //     //   pan: pan,
+  //     //   aadhar: aadharNo,
+  //     //   mobile_no: mobNo,
+  //     //   alternate_mobile_no: altMobNo,
+  //     //   resigning_date: resigningDate,
+  //     //   bank_name: bank,
+  //     //   account_no: accNo,
+  //     //   ifsc_code: ifsc,
+  //     //   reporting_person: reportPerson,
+  //     //   updatedby: loginEmpName,
+  //     //   createdby: loginEmpName,
+  //     // };
+  //     const dataToSave = {
+  //       aadhar: aadharNo,
+  //       accountNo: accNo,
+  //       bankName: bank,
+  //       blood: bloodGroup,
+  //       branchId: branch,
+  //       createdby: loginEmpName,
+  //       dateOfBirth: dob,
+  //       department: dept,
+  //       designation: designation,
+  //       email: email,
+  //       empCode: empCode,
+  //       empName: empName,
+  //       gender: gender,
+  //       ifscCode: ifsc,
+  //       joiningDate: joinDate,
+  //       mobileNo: mobNo,
+  //       orgId: orgId,
+  //       pan: pan,
+  //       reportingPerson: reportPerson,
+  //       reportingPersonRole: reportingPersonRole,
+  //       resigningDate: resigningDate,
+  //       role: role,
+  //       alternateMobileNo: altMobNo,
+  //     };
+  //     const dataToSaveUser = {
+  //       //orgId: orgId,
+  //       branchId: branch,
+  //       empcode: empCode,
+  //       empname: empName,
+  //       role: role,
+  //       email: email,
+  //       updatedby: loginEmpName,
+  //       createdby: loginEmpName,
+  //       password: encryptPassword(trimmedpwd),
+  //     };
+
+  //     console.log("DataToSave:", dataToSave);
+  //     console.log("DataToSaveUser:", dataToSaveUser);
+  //     const token = localStorage.getItem("token");
+
+  //     if (token) {
+  //       const headers = {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       };
+  //       Axios.put(
+  //         // `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
+  //         `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateEmployee`,
+  //         dataToSave,
+  //         { headers }
+  //       );
+  //       Axios.post(
+  //         `${process.env.REACT_APP_API_URL}/api/user/signup`,
+  //         dataToSaveUser,
+  //         { headers }
+  //       )
+  //         .then((response) => {
+  //           console.log("Data saved successfully:", response.data);
+  //           setSavedData(response.data);
+  //           // handleNew();
+  //           handleLeaveAllocationSave();
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error saving data:", error);
+  //         });
+  //     }
+  //   }
+  // };
 
   const handleSave = () => {
     console.log("handlesave is working");
@@ -347,32 +455,33 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
       console.log("handle validation is working");
 
       const dataToSave = {
-        orgId: orgId,
-        branchId: branch,
-        empcode: empCode,
-        empname: empName,
-        gender: gender,
-        date_of_birth: dob,
+        aadhar: aadharNo,
+        accountNo: accNo,
+        bankName: bank,
         blood: bloodGroup,
+        branchId: branch,
+        createdby: loginEmpName,
+        dateOfBirth: dob,
         department: dept,
         designation: designation,
-        role: role,
         email: email,
-        joining_date: joinDate,
+        empCode: empCode,
+        empName: empName,
+        gender: gender,
+        ifscCode: ifsc,
+        joiningDate: joinDate,
+        mobileNo: mobNo,
+        orgId: orgId,
         pan: pan,
-        aadhar: aadharNo,
-        mobile_no: mobNo,
-        alternate_mobile_no: altMobNo,
-        resigning_date: resigningDate,
-        bank_name: bank,
-        account_no: accNo,
-        ifsc_code: ifsc,
-        reporting_person: reportPerson,
-        updatedby: loginEmpName,
-        createdby: loginEmpName,
+        reportingPerson: reportPerson,
+        reportingPersonRole: reportingPersonRole,
+        resigningDate: resigningDate,
+        role: role,
+        alternateMobileNo: altMobNo,
+        active: active,
       };
+
       const dataToSaveUser = {
-        //orgId: orgId,
         branchId: branch,
         empcode: empCode,
         empname: empName,
@@ -385,6 +494,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
 
       console.log("DataToSave:", dataToSave);
       console.log("DataToSaveUser:", dataToSaveUser);
+
       const token = localStorage.getItem("token");
 
       if (token) {
@@ -392,34 +502,53 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         };
-        Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/employee`,
-          dataToSave,
-          { headers }
-        );
-        Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/signup`,
-          dataToSaveUser,
-          { headers }
-        )
-          .then((response) => {
-            console.log("Data saved successfully:", response.data);
-            setSavedData(response.data);
-            // handleNew();
+
+        // Execute both requests in parallel using Promise.all()
+        Promise.all([
+          Axios.put(
+            `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateEmployee`,
+            dataToSave,
+            { headers }
+          ),
+          Axios.post(
+            `${process.env.REACT_APP_API_URL}/api/user/signup`,
+            dataToSaveUser,
+            { headers }
+          ),
+        ])
+          .then(([employeeResponse, userResponse]) => {
+            if (
+              employeeResponse.data.statusFlag === "Error" ||
+              userResponse.data.statusFlag === "Error"
+            ) {
+              console.error(
+                "Backend error:",
+                employeeResponse.data.paramObjectsMap?.errorMessage ||
+                  userResponse.data.paramObjectsMap?.errorMessage
+              );
+              return; // Stop execution if there's an error
+            }
+
+            console.log("Employee Data Saved:", employeeResponse.data);
+            console.log("User Data Saved:", userResponse.data);
+
+            setSavedData(userResponse.data);
+            handleNew();
+
+            // Call handleLeaveAllocationSave() only after both requests succeed
             handleLeaveAllocationSave();
           })
           .catch((error) => {
             console.error("Error saving data:", error);
+            alert("Error while saving data. Please try again.");
           });
       }
     }
   };
 
   const handleLeaveAllocationSave = () => {
-    // if (handleValidation()) {
     const dataToSaveLeaveAllocation = {
       orgId: orgId,
-      // branchId: branch,
       empcode: empCode,
       empname: empName,
       casual: casual,
@@ -435,6 +564,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     };
 
     console.log("DataToSaveLeaveAllocation:", dataToSaveLeaveAllocation);
+
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -442,22 +572,77 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       };
+
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/leaveEligible`,
         dataToSaveLeaveAllocation,
         { headers }
       )
         .then((response) => {
-          console.log("Data saved successfully:", response.data);
+          if (response.data.statusFlag === "Error") {
+            console.error(
+              "Backend error:",
+              response.data.paramObjectsMap?.errorMessage
+            );
+            return; // Stop execution if there's an error
+          }
+
+          console.log("Leave Allocation Data Saved:", response.data);
           setSavedData(response.data);
+
+          // Clear token and reset form data only after success
+          localStorage.removeItem("token");
           handleNew();
         })
         .catch((error) => {
-          console.error("Error saving data:", error);
+          console.error("Error saving leave allocation data:", error);
         });
     }
-    // }
   };
+
+  // const handleLeaveAllocationSave = () => {
+  //   // if (handleValidation()) {
+  //   const dataToSaveLeaveAllocation = {
+  //     orgId: orgId,
+  //     // branchId: branch,
+  //     empcode: empCode,
+  //     empname: empName,
+  //     casual: casual,
+  //     sick: sick,
+  //     annual: annual,
+  //     maternity: maternity,
+  //     paternity: paternity,
+  //     parental: parental,
+  //     bereavement: bereavement,
+  //     compensatory: compensatory,
+  //     updatedby: loginEmpName,
+  //     createdby: loginEmpName,
+  //   };
+
+  //   console.log("DataToSaveLeaveAllocation:", dataToSaveLeaveAllocation);
+  //   const token = localStorage.getItem("token");
+
+  //   if (token) {
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //       "Content-Type": "application/json",
+  //     };
+  //     Axios.post(
+  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/leaveEligible`,
+  //       dataToSaveLeaveAllocation,
+  //       { headers }
+  //     )
+  //       .then((response) => {
+  //         console.log("Data saved successfully:", response.data);
+  //         setSavedData(response.data);
+  //         handleNew();
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error saving data:", error);
+  //       });
+  //   }
+  //   // }
+  // };
 
   const handleClosePermission = () => {
     newEmployee(false);
@@ -809,14 +994,16 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               </div>
 
               {/* ACTIVE FIELD */}
-              <div className="col-md-4 mb-3 mb-3">
-                <FormGroup>
-                  <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label="Active"
-                  />
-                </FormGroup>
-              </div>
+            <div className="col-md-4 mb-3">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={active} onChange={handleActive} />
+                  }
+                  label="Active"
+                />
+              </FormGroup>
+            </div>
             </div>
             <Tabs
               className="mt-4   "
@@ -825,8 +1012,10 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
             >
               <TabList>
                 <Tab>Bank Account Details</Tab>
-                <Tab>Reporting Person / Approval Person</Tab>
-                <Tab>Leave Allocation</Tab>
+                {role !== "MANAGEMENT" && (
+                  <Tab>Reporting Person / Approval Person</Tab>
+                )}
+                {/* <Tab>Leave Allocation</Tab> */}
               </TabList>
 
               {/* BANK DETAILS TAB */}
@@ -878,57 +1067,59 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               </TabPanel>
 
               {/* REPORTING PERSON TAB */}
-              <TabPanel>
-                <div className="row d-flex mt-3">
-                  <div className="col-md-4">
-                    <FormControl fullWidth size="small">
-                      <InputLabel id="demo-simple-select-label">
-                        Reporting Person Role
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        //multiple
+              {role !== "MANAGEMENT" && (
+                <TabPanel>
+                  <div className="row d-flex mt-3">
+                    <div className="col-md-4">
+                      <FormControl fullWidth size="small">
+                        <InputLabel id="demo-simple-select-label">
+                          Reporting Person Role
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          //multiple
 
-                        label="Reporting Person Role"
-                        value={reportingPersonRole}
-                        onChange={handleReportingPersonRoleChange}
-                        error={Boolean(errors.reportingPersonRole)}
-                      >
-                        <MenuItem value={"TEAM_LEAD"}>Team Lead</MenuItem>
-                        <MenuItem value={"MANAGER"}>Manager</MenuItem>
-                        <MenuItem value={"MANAGEMENT"}>Management</MenuItem>
-                        <MenuItem value={"HR"}>HR</MenuItem>
-                        {/* <MenuItem value={"ADMIN"}>Admin</MenuItem> */}
-                      </Select>
-                    </FormControl>
+                          label="Reporting Person Role"
+                          value={reportingPersonRole}
+                          onChange={handleReportingPersonRoleChange}
+                          error={Boolean(errors.reportingPersonRole)}
+                        >
+                          <MenuItem value={"TEAM_LEAD"}>Team Lead</MenuItem>
+                          <MenuItem value={"MANAGER"}>Manager</MenuItem>
+                          <MenuItem value={"MANAGEMENT"}>Management</MenuItem>
+                          <MenuItem value={"HR"}>HR</MenuItem>
+                          {/* <MenuItem value={"ADMIN"}>Admin</MenuItem> */}
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    <div className="col-md-4">
+                      <FormControl fullWidth size="small">
+                        <InputLabel id="demo-simple-select-label">
+                          Reporting Person
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          //multiple
+
+                          label="Reporting Person"
+                          value={reportPerson}
+                          onChange={handleReportPersonChange}
+                          error={Boolean(errors.reportPerson)}
+                        >
+                          {reportPersonOptions.map((person) => (
+                            <MenuItem key={person.Id} value={person.Empname}>
+                              {person.Empname}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
                   </div>
-
-                  <div className="col-md-4">
-                    <FormControl fullWidth size="small">
-                      <InputLabel id="demo-simple-select-label">
-                        Reporting Person
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        //multiple
-
-                        label="Reporting Person"
-                        value={reportPerson}
-                        onChange={handleReportPersonChange}
-                        error={Boolean(errors.reportPerson)}
-                      >
-                        {reportPersonOptions.map((person) => (
-                          <MenuItem key={person.Id} value={person.Id}>
-                            {person.Empname}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                </div>
-              </TabPanel>
+                </TabPanel>
+              )}
 
               {/* LEAVE PROCESS TAB */}
               <TabPanel>
@@ -1099,7 +1290,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               </button>
               <button
                 type="button"
-                onClick={handleClosePermission}
+                onClick={handleNew}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
                 Cancel

@@ -18,10 +18,23 @@ const ProfileSettings = lazy(() =>
 const GettingStarted = lazy(() => import("../pages/GettingStarted"));
 const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
+const Department = lazy(() =>
+  import("../pages/protected/Department")
+);
+const Role = lazy(() =>
+  import("../pages/protected/Role")
+);
+const Designation = lazy(() =>
+  import("../pages/protected/Designation")
+);
 const EmployeeDetails = lazy(() =>
   import("../pages/protected/EmployeeDetails")
 );
+const AttendanceProcess = lazy(() =>
+  import("../pages/protected/AttendanceProcess")
+);
 const LeaveType = lazy(() => import("../pages/protected/LeaveType"));
+const LeaveTypeMaster = lazy(() => import("../pages/protected/LeaveTypeMaster"));
 const SalaryHeads = lazy(() => import("../pages/protected/SalaryHeads"));
 const SalaryStructure = lazy(() => import("../pages/protected/SalaryStructure"));
 const LeaveRequest = lazy(() => import("../pages/protected/LeaveRequest"));
@@ -122,12 +135,32 @@ const routes = [
 
   // Our Changes
   {
+    path: "/department",
+    component: Department,
+  },
+  {
+    path: "/designation",
+    component: Designation,
+  },
+  {
+    path: "/role",
+    component: Role,
+  },
+  {
     path: "/employeeDetails",
     component: EmployeeDetails,
   },
   {
+    path: "/attendanceProcess",
+    component: AttendanceProcess,
+  },
+  {
     path: "/leavetype",
     component: LeaveType,
+  },
+  {
+    path: "/leavetypeMaster",
+    component: LeaveTypeMaster,
   },
   {
     path: "/permissionrequest",

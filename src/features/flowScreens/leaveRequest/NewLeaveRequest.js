@@ -44,8 +44,10 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [to, setTo] = React.useState(null);
   const [tot, setTot] = React.useState("");
   const [leaveType, setLeaveType] = React.useState("");
+  const [leaveCode, setLeaveCode] = React.useState("");
   const [selectLeave, setSelectLeave] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const [notify, setNotify] = React.useState("");
   const [showLeaveTypeField, setShowLeaveTypeField] = useState(false);
   const [notification, setNotification] = React.useState(false);
   const [message, setMessage] = React.useState("");
@@ -57,33 +59,65 @@ function NewLeaveRequest({ newLeaveRequest }) {
   const [mailMessage, setMailMessage] = React.useState("");
   const [mailMessageTwo, setMailMessageTwo] = React.useState("");
   const [leaveTypeOptions, setleaveTypeOptions] = useState([]);
+  const [leaveCodeList, setleaveCodeList] = useState([]);
+  const [newDropdownOptions, setNewDropdownOptions] = useState([]);
 
   const [newDropdownValue, setNewDropdownValue] = useState("");
   const [newDropdownErrors, setNewDropdownErrors] = useState({});
   const [newDropdownCount, setNewDropdownCount] = useState(0);
-  const newDropdownOptions = [
-    { value: "Casual Leave", count: 2 },
-    { value: "Personal Leave", count: 10 },
-    { value: "Petanity Leave", count: 1 },
-    { value: "Loss of pay", count: 0 },
-  ];
+  const [leaveError, setLeaveError] = useState("");
+  // const newDropdownOptions = [
+  //   { value: "Casual Leave", count: 2 },
+  //   { value: "Personal Leave", count: 10 },
+  //   { value: "Petanity Leave", count: 1 },
+  //   { value: "Loss of pay", count: 0 },
+  // ];
+
+  // const handleNewDropdownChange = (event) => {
+  //   const selectedValue = event.target.value;
+  //   setNewDropdownValue(selectedValue);
+  //   console.log("selectedValue is:", selectedValue);
+
+  //   // Find the count of the selected value
+  //   const selectedOption = newDropdownOptions.find(
+  //     (option) => option.value === selectedValue
+  //   );
+  //   if (selectedOption) {
+  //     console.log("selectedOption:", selectedOption.count);
+  //     setNewDropdownCount(selectedOption.count);
+
+  //   } else {
+  //     setNewDropdownCount(0); // Set count to 0 if value not found
+  //   }
+  // };
+
+  // const handleNewDropdownChange = (event) => {
+  //   const selectedValue = event.target.value;
+  //   setNewDropdownValue(selectedValue);
+
+  //   // Find the count of the selected value
+  //   const selectedOption = newDropdownOptions.find(
+  //     (option) => option.value === selectedValue
+  //   );
+  //   setNewDropdownCount(selectedOption ? selectedOption.count : 0);
+  // };
 
   const handleNewDropdownChange = (event) => {
     const selectedValue = event.target.value;
     setNewDropdownValue(selectedValue);
-    console.log("selectedValue is:", selectedValue);
 
     // Find the count of the selected value
     const selectedOption = newDropdownOptions.find(
       (option) => option.value === selectedValue
     );
-    if (selectedOption) {
-      console.log("selectedOption:", selectedOption.count);
-      setNewDropdownCount(selectedOption.count);
+    setNewDropdownCount(selectedOption ? selectedOption.count : 0);
 
-    } else {
-      setNewDropdownCount(0); // Set count to 0 if value not found
-    }
+    // Find corresponding leave code
+    const matchingLeave = leaveCodeList.find(
+      (item) => item["Leave Type"] === selectedValue
+    );
+
+    setLeaveCode(matchingLeave ? matchingLeave["Leave Code"] : ""); // Update Leave Code
   };
 
   const customStyles = {
@@ -101,6 +135,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
   };
 
   useEffect(() => {
+    getAllLeaveType();
+    getAllLeaveCode();
     getAllLeaveTypeByGender();
     if (from && to && from === to) {
       setShowLeaveTypeField(true);
@@ -122,6 +158,40 @@ function NewLeaveRequest({ newLeaveRequest }) {
     }
   };
 
+  const getAllLeaveCode = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/masterController/getLeaveCode?orgId=${orgId}`
+      );
+      if (response.data.statusFlag === "Ok") {
+        setleaveCodeList(response.data.paramObjectsMap.leaveCode);
+      }
+    } catch (error) {
+      console.error("Error fetching reporting persons:", error);
+    }
+  };
+
+  const getAllLeaveType = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/masterController/getEmployeeLeaveCount?empId=${loginEmpId}&orgId=${orgId}`
+      );
+
+      if (response.data.statusFlag === "Ok") {
+        // Convert object format to array
+        const leaveData = response.data.paramObjectsMap.employeeLeaveCount[0];
+        const formattedOptions = Object.keys(leaveData).map((key) => ({
+          value: key, // Leave type name
+          count: parseInt(leaveData[key], 10), // Convert count to number
+        }));
+
+        setNewDropdownOptions(formattedOptions);
+      }
+    } catch (error) {
+      console.error("Error fetching leave types:", error);
+    }
+  };
+
   const handleFrom = (newDate) => {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
@@ -131,6 +201,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
 
   const handleNotes = (event) => {
     setNotes(event.target.value);
+  };
+  const handleNotify = (event) => {
+    setNotify(event.target.value);
   };
   const handleLeaveType = (event) => {
     setLeaveType(event.target.value);
@@ -152,13 +225,39 @@ function NewLeaveRequest({ newLeaveRequest }) {
     }
   };
 
+  // const handleTo = (newDate) => {
+  //   const originalDateString = newDate;
+  //   const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+  //   setTo(formattedDate);
+
+  //   const daysDifference = dayjs(formattedDate).diff(dayjs(from), "day") + 1;
+  //   setTot(String(daysDifference));
+  // };
+
   const handleTo = (newDate) => {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
     setTo(formattedDate);
 
+    // Calculate the total number of selected leave days
     const daysDifference = dayjs(formattedDate).diff(dayjs(from), "day") + 1;
-    setTot(String(daysDifference));
+
+    // Find the selected leave option to get the available count
+    const selectedOption = newDropdownOptions.find(
+      (option) => option.value === newDropdownValue
+    );
+    const availableLeaveCount = selectedOption ? selectedOption.count : 0;
+
+    // Validation: Ensure user does not select more leave days than available
+    if (availableLeaveCount > 0 && daysDifference > availableLeaveCount) {
+      setLeaveError(
+        `You have only ${availableLeaveCount} day(s) available for ${newDropdownValue}.`
+      );
+      setTot(""); // Reset total days
+    } else {
+      setLeaveError(""); // Clear error
+      setTot(String(daysDifference));
+    }
   };
 
   const handleSearchChange = (event, newValue) => {
@@ -167,15 +266,18 @@ function NewLeaveRequest({ newLeaveRequest }) {
 
   const handleCloseNewLeave = () => {
     newLeaveRequest(false);
+    handleNew();
   };
 
   const handleNew = () => {
     setFrom(null);
     setTo(null);
     setTot("");
-    setLeaveType("");
+    setNewDropdownValue("");
     setNotes("");
-    setSearchValue("");
+    setNotify("");
+    setLeaveCode("");
+    setSelectLeave("");
   };
 
   const handleValidation = () => {
@@ -187,7 +289,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
     if (!to) {
       newErrors.to = "To Date is required";
     }
-    if (leaveType === "") {
+    if (newDropdownValue === "") {
       newErrors.leaveType = "Leave Type is required";
     }
     if (!notes) {
@@ -200,19 +302,20 @@ function NewLeaveRequest({ newLeaveRequest }) {
   };
 
   const handleSave = () => {
-    handleValidation();
-    if (handleValidation()) {
+    // handleValidation();
+    // if (handleValidation()) {
       const dataToSave = {
-        empcode: empCode,
-        empname: empName,
-        empmail: empmail,
-        fromdate: from,
-        todate: to,
-        totaldays: tot,
-        leavetype: leaveType,
-        notes: notes,
-        notifyto: searchValue,
-        status: "Pending",
+        active: true,
+        createdBy: empCode,
+        dayType: selectLeave,
+        empId: loginEmpId,
+        fromDate: from,
+        leaveCode: leaveCode,
+        leaveType: newDropdownValue,
+        notify: notify,
+        remarks: notes,
+        toDate: to,
+        totalLeave: tot,
       };
 
       console.log("test", dataToSave);
@@ -225,8 +328,8 @@ function NewLeaveRequest({ newLeaveRequest }) {
           "Content-Type": "application/json",
         };
 
-        Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/basicMaster/leaverequest`,
+        Axios.put(
+          `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateRequestLeave`,
           dataToSave,
           { headers }
         )
@@ -254,7 +357,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
       } else {
         console.error("User is not authenticated. Please log in.");
       }
-    }
+    // }
   };
 
   return (
@@ -269,43 +372,6 @@ function NewLeaveRequest({ newLeaveRequest }) {
           />
         </div>
         <div className="row d-flex mt-3">
-          {/* New Dropdown */}
-          {/* <div className="col-md-4 mb-3">
-            <FormControl fullWidth size="small">
-              <InputLabel id="newDropdownLabel">Testing Leave Type</InputLabel>
-              <Select
-                labelId="newDropdownLabel"
-                id="newDropdownSelect"
-                label="Testing Leave Type"
-                value={newDropdownValue}
-                onChange={handleNewDropdownChange}
-              >
-                {newDropdownOptions.map((option, index) => (
-                  <MenuItem
-                    key={index}
-                    value={option.value}
-                    disabled={option.count === 0}
-                  >
-                    <span style={customStyles.leftAlignOption}>
-                      {option.value}
-                    </span>
-                    
-                    {newDropdownValue !== option.value && (
-                      <span style={customStyles.rightAlignCount}>
-                        {option.count}
-                      </span>
-                    )}
-                  </MenuItem>
-                ))}
-              </Select>
-              {newDropdownErrors.value && (
-                <span className="text-red-500">{newDropdownErrors.value}</span>
-              )}
-            </FormControl>
-          </div> */}
-          {/* End New Dropdown */}
-
-          {/* New Dropdown */}
           <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="newDropdownLabel">Leave Type</InputLabel>
@@ -322,18 +388,20 @@ function NewLeaveRequest({ newLeaveRequest }) {
                     value={option.value}
                     disabled={option.count === 0}
                   >
-                    <span style={customStyles.leftAlignOption}>
-                      {option.value}
-                    </span>
-                    {/* Conditionally render count with custom styles */}
-                    {newDropdownValue !== option.value && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <span>{option.value}</span>
                       <span
-                        style={customStyles.rightAlignCount(option.count)}
-                        className={option.count === 0 ? "text-gray-400" : ""}
+                        style={{ color: option.count === 0 ? "gray" : "black" }}
                       >
                         {option.count}
                       </span>
-                    )}
+                    </div>
                   </MenuItem>
                 ))}
               </Select>
@@ -342,10 +410,18 @@ function NewLeaveRequest({ newLeaveRequest }) {
               )}
             </FormControl>
           </div>
-          {/* End New Dropdown */}
 
-
-
+          <div className="col-md-4 mb-3">
+            <FormControl fullWidth variant="filled">
+              <TextField
+                id="leaveCode"
+                label="Leave Code"
+                size="small"
+                disabled
+                value={leaveCode}
+              />
+            </FormControl>
+          </div>
 
           {/* FROM DATE FIELD */}
           <div className="col-md-4 mb-3">
@@ -381,6 +457,9 @@ function NewLeaveRequest({ newLeaveRequest }) {
                   format="DD/MM/YYYY"
                 />
                 {errors.to && <span className="text-red-500">{errors.to}</span>}
+                {leaveError && (
+                  <span className="text-red-500">{leaveError}</span>
+                )}
               </LocalizationProvider>
             </FormControl>
           </div>
@@ -389,13 +468,11 @@ function NewLeaveRequest({ newLeaveRequest }) {
           {showLeaveTypeField && from && to && (
             <div className="col-md-4 mb-3">
               <FormControl fullWidth size="small">
-                <InputLabel id="demo-simple-select-label">
-                  Select Leave
-                </InputLabel>
+                <InputLabel id="demo-simple-select-label">Day Type</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Select Leave"
+                  label="Day Type"
                   value={selectLeave}
                   onChange={handleSelectLeave}
                 >
@@ -424,7 +501,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </div>
 
           {/* LEAVE TYPE FIELD */}
-          <div className="col-md-4 mb-3">
+          {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Leave Type</InputLabel>
               <Select
@@ -447,6 +524,22 @@ function NewLeaveRequest({ newLeaveRequest }) {
                 <span className="text-red-500">{errors.leaveType}</span>
               )}
             </FormControl>
+          </div> */}
+
+          <div className="col-md-4 mb-3">
+            <FormControl fullWidth variant="filled">
+              <TextField
+                id="notify"
+                label="Notify"
+                size="small"
+                multiline
+                value={notify}
+                onChange={handleNotify}
+              />
+              {errors.notify && (
+                <span className="text-red-500">{errors.notify}</span>
+              )}
+            </FormControl>
           </div>
 
           {/* NOTES FIELD */}
@@ -465,6 +558,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
               )}
             </FormControl>
           </div>
+
           {/* NOTIFY FIELD */}
           {/* <div className="col-md-4 mb-3">
             <FormControl fullWidth variant="filled">
@@ -506,7 +600,7 @@ function NewLeaveRequest({ newLeaveRequest }) {
           </button>
           <button
             type="button"
-            onClick={handleCloseNewLeave}
+            onClick={handleNew}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Reset

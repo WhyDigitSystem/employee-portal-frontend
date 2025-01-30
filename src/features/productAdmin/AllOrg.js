@@ -25,6 +25,7 @@ import { BsListTask } from "react-icons/bs";
 // import { data } from "./makeData";
 import Axios from "axios";
 import OrgCreation from "./OrgCreation";
+import Checkbox from "@mui/material/Checkbox";
 
 export const AllOrg = () => {
   const buttonStyle = {
@@ -145,7 +146,7 @@ export const AllOrg = () => {
 
   useEffect(() => {
     // 👆 daisy UI themes initialization
-    getAllState();
+    getAllOrganizationList();
   }, []);
 
   const handleDeleteRow = useCallback(
@@ -205,38 +206,101 @@ export const AllOrg = () => {
         }),
       },
       {
-        accessorKey: "empcode",
+        accessorKey: "name",
         header: "Organization",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 140,
+      //   Cell: ({ cell }) => (cell.getValue() === true ? "Active" : "In-active"),
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 140,
+      //   Cell: ({ cell }) => (
+      //     <span
+      //       style={{
+      //         color: cell.getValue() === true ? "white" : "white",
+      //         backgroundColor: cell.getValue() === true ? "#5e8351" : "#f0836d",
+      //         padding: "5px 10px",
+      //         borderRadius: "25px",
+      //         display: "inline-block",
+      //         textAlign: "center",
+      //         width: "80px",
+      //       }}
+      //     >
+      //       {cell.getValue() === true ? "Active" : "In-Active"}
+      //     </span>
+      //   ),
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //     sx: {
+      //       backgroundColor: cell.getValue() === true ? "5e8351" : "f0836d",
+      //       color: "white",
+      //       borderRadius: "5px",
+      //       padding: "5px",
+      //     },
+      //   }),
+      // },
       {
-        accessorKey: "empcode",
+        accessorKey: "active",
         header: "Active",
         size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
+        Cell: ({ cell }) => (
+          <span
+            style={{
+              color: "white",
+              backgroundColor: cell.getValue() ? "#5e8351" : "#f0836d",
+              padding: "5px 10px",
+              borderRadius: "25px",
+              display: "inline-block",
+              textAlign: "center",
+              width: "80px",
+            }}
+          >
+            {cell.getValue() ? "Active" : "In-Active"}
+          </span>
+        ),
+        muiTableBodyCellEditTextFieldProps: ({ cell, row }) => ({
+          type: "checkbox",
+          component: Checkbox,
+          checked: cell.getValue() || false,
+          onChange: (event) => {
+            const updatedTableData = [...tableData];
+            updatedTableData[row.index] = {
+              ...updatedTableData[row.index],
+              active: event.target.checked,
+            };
+            setTableData(updatedTableData);
+          },
         }),
-      },
+      }      
     ],
     [getCommonEditTextFieldProps]
   );
 
-  const getAllState = () => {
+  const getAllOrganizationList = () => {
     const token = localStorage.getItem("token");
 
     if (token) {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      Axios.get(`${process.env.REACT_APP_API_URL}/api/basicMaster/employee`, {
+      Axios.get(`${process.env.REACT_APP_API_URL}/api/admin/getAllOrganization`, {
         headers,
       })
         .then((response) => {
           console.log("Data saved successfully:", response.data);
-          setTableData(response.data.paramObjectsMap.employeeVO);
+          setTableData(response.data.paramObjectsMap.organizationVO);
           // handleView();
         })
         .catch((error) => {
@@ -342,7 +406,7 @@ export const AllOrg = () => {
                   sx={{
                     display: "flex",
                     gap: "1rem",
-                    justifyContent: "flex-end",
+                    justifyContent: "center",
                   }}
                 >
                   {/* <Tooltip arrow placement="left" title="Delete">

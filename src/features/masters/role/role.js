@@ -11,6 +11,7 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
+import axios from "axios";
 import dayjs from "dayjs";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -23,40 +24,27 @@ import {
 import { CSVLink } from "react-csv";
 import { AiOutlineSearch, AiOutlineWallet } from "react-icons/ai";
 import { BsListTask } from "react-icons/bs";
-// import { data } from "./makeData";
-import Axios from "axios";
-import NewEmployeeDetails from "./NewEmployeeDetails";
 import Checkbox from "@mui/material/Checkbox";
 import ToastComponent from "../../../utils/ToastComponent";
+import NewRole from "./NewRole";
+//import { data } from "./makeData";
 
-export const EmployeeDetails = () => {
+export const Role = () => {
   const buttonStyle = {
     fontSize: "20px",
   };
-
-  const [searchValue, setSearchValue] = useState("");
-  const [options, setOptions] = useState([
-    "Karupu",
-    "Cesil",
-    "Karthi",
-    "Guhan",
-    "Vasanth",
-  ]);
 
   const [value, setValue] = React.useState(dayjs("2022-04-17T15:30"));
   const [add, setAdd] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
-  const [getState, setGetState] = React.useState();
+  const [leaveTypeList, setLeaveTypeList] = useState([]);
+  const [savedData, setSavedData] = useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [notification, setNotification] = useState(false);
   const [message, setMessage] = useState("");
   const [errorType, setErrorType] = useState("");
-
-  const handleSearchChange = (event, newValue) => {
-    setSearchValue(newValue);
-  };
 
   const handleAddOpen = () => {
     setAdd(true);
@@ -64,7 +52,7 @@ export const EmployeeDetails = () => {
 
   const handleBack = () => {
     setAdd(false);
-    getAllEmployee();
+    getAllLeaveType();
   };
 
   const handleCreateNewRow = (values) => {
@@ -85,6 +73,66 @@ export const EmployeeDetails = () => {
     setValidationErrors({});
   };
 
+  useEffect(() => {
+    getAllLeaveType();
+  }, []);
+
+  const getAllLeaveType = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/masterController/getAllLeaveDetails?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setLeaveTypeList(response.data.paramObjectsMap.leaveDetailsVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleEditHoliday = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        values.orgId = orgId;
+        values.id = parseInt(values.id);
+        const token = localStorage.getItem("token");
+
+        if (token) {
+          const headers = {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          };
+          const response = await axios.put(
+            `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateLeaveDeatils?id=${values.id}`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+            setErrorType("success");
+            setMessage("Data Updated successfully!");
+            setNotification(true);
+            exitEditingMode(); // Exit editing mode and close the modal
+          }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          setErrorType("error");
+          setMessage("Data Not Saved!");
+          setNotification(true);
+          // Handle authentication failure
+        }
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
+    }
+  };
+
   const exportDataAsCSV = () => {
     // Format your data to be exported as CSV (tableData in this case)
     // For example, transform your data into an array of arrays or objects
@@ -93,69 +141,32 @@ export const EmployeeDetails = () => {
     // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
     // You might need to modify the data structure to fit CSVLink requirements
 
-    const csvData = tableData.map((row) => ({
-      "Employee Code": row.employeeCode,
-      Name: row.name,
-      Gender: row.gender,
-      "Date of Birth": row.dateofBirth,
-      "Blood Group": row.bloodGroup,
-      Department: row.department,
-      Designation: row.designation,
-      Role: row.role,
-      "Email Id": row.emailId,
-      "Joining Date": row.joiningDate,
-      PAN: row.pan,
-      Aadhar: row.aadhar,
-      Mobile: row.mobile,
-      "Alternate Mobile": row.alternateMobile,
-      "Resigning Date": row.resigningDate,
-      "Bank Name": row.bankName,
-      "Account Number": row.accountNumber,
-      "IFSC Code": row.ifscCode,
-      "Reporting Person": row.reportingPerson,
-      // "Reporting Person Role": row.rreporting_person_role
-    }));
+    // const csvData = tableData.map((row) => ({
+    //   "S No": row.id,
+    //   Date: row.holiday_date,
+    //   Day: row.day,
+    //   Festival: row.festival,
+    // }));
 
     // Define CSV headers
-    const headers = [
-      { label: "S No", key: "id" },
-      { label: "Employee Code", key: "empcode" },
-      { label: "Name", key: "empname" },
-      { label: "Gender", key: "gender" },
-      { label: "Date of Birth", key: "date_of_birth" },
-      { label: "Blood Group", key: "blood" },
-      { label: "Department", key: "department" },
-      { label: "Designation", key: "designation" },
-      { label: "Role", key: "role" },
-      { label: "Email Id", key: "email" },
-      { label: "Joining Date", key: "joining_date" },
-      { label: "PAN", key: "pan" },
-      { label: "Aadhar", key: "aadhar" },
-      { label: "Mobile", key: "mobile_no" },
-      { label: "Alternate Mobile", key: "alternate_mobile_no" },
-      { label: "Resigning Date", key: "resigning_date" },
-      { label: "Bank Name", key: "bank_name" },
-      { label: "Account Number", key: "account_no" },
-      { label: "IFSC Code", key: "ifsc_code" },
-      { label: "Reporting Person", key: "reporting_person" },
-    ];
+    // const headers = [
+    //   { label: "S No", key: "id" },
+    //   { label: "Day", key: "day" },
+    //   { label: "Date", key: "holiday_date" },
+    //   { label: "Festival", key: "festival" },
+    // ];
 
-    return (
-      <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
-        <p>
-          <img
-            src={process.env.REACT_APP_EXPORT_ICON}
-            style={{ width: "30px" }}
-          />
-        </p>
-      </CSVLink>
-    );
+    // return (
+    //   <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
+    //     <p>
+    //       <img
+    //         src={process.env.REACT_APP_EXPORT_ICON}
+    //         style={{ width: "30px" }}
+    //       />
+    //     </p>
+    //   </CSVLink>
+    // );
   };
-
-  useEffect(() => {
-    // 👆 daisy UI themes initialization
-    getAllEmployee();
-  }, []);
 
   const handleDeleteRow = useCallback(
     (row) => {
@@ -214,161 +225,48 @@ export const EmployeeDetails = () => {
         }),
       },
       {
-        accessorKey: "empCode",
-        header: "Employee Code",
+        accessorKey: "leaveType",
+        header: "Leave Type",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "empName",
-        header: "Name",
+        accessorKey: "leaveCode",
+        header: "Leave Code",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "gender",
-        header: "Gender",
+        accessorKey: "effective",
+        header: "Effective",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "dateOfBirth",
-        header: "Date of Birth",
+        accessorKey: "noOfDays",
+        header: "No Of Leaves",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "blood",
-        header: "Blood Group",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-
-      {
-        accessorKey: "department",
-        header: "Department",
+        accessorKey: "leaveApplicable",
+        header: "Leave Applicable",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
-        accessorKey: "designation",
-        header: "Designation",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "role",
-        header: "Role",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "email",
-        header: "Email Id",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "joiningDate",
-        header: "Joining Date",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "pan",
-        header: "PAN",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "aadhar",
-        header: "Aadhar",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "mobileNo",
-        header: "Mobile",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      // {
-      //   accessorKey: "alternate_mobile_no",
-      //   header: "Alternate Mobile",
-      //   size: 140,
-      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-      //     ...getCommonEditTextFieldProps(cell),
-      //   }),
-      // },
-      {
-        accessorKey: "resigningDate",
-        header: "Resigning Date",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "bankName",
-        header: "Bank Name",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "accountNo",
-        header: "Account Number",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "ifscCode",
-        header: "IFSC Code",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "reportingPerson",
-        header: "Reporting Person",
-        size: 140,
-        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          ...getCommonEditTextFieldProps(cell),
-        }),
-      },
-      {
-        accessorKey: "reportingPersonRole",
-        header: "Reporting Person Role",
+        accessorKey: "carryForward",
+        header: "Carry Forward",
         size: 140,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
@@ -411,83 +309,15 @@ export const EmployeeDetails = () => {
     [getCommonEditTextFieldProps]
   );
 
-  const getAllEmployee = () => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/masterController/getAllEmployee?orgId=${orgId}`,
-        {
-          headers,
-        }
-      )
-        .then((response) => {
-          console.log("Data saved successfully:", response.data);
-          setTableData(response.data.paramObjectsMap.employeeVO);
-          // handleView();
-        })
-        .catch((error) => {
-          // Handle errors here
-          console.error("Error saving data:", error);
-        });
-    }
-  };
-
-  const handleEditEmployee = async ({ exitEditingMode, row, values }) => {
-    if (!Object.keys(validationErrors).length) {
-      try {
-        // Make a PUT request to update the user role data
-        values.orgId = orgId;
-        values.id = parseInt(values.id);
-        const token = localStorage.getItem("token");
-
-        if (token) {
-          const headers = {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          };
-          const response = await Axios.put(
-            `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateEmployee?id=${values.id}`,
-            values,
-            { headers }
-          );
-
-          if (response.status === 200) {
-            // If successful response, update the local tableData with the edited values
-            tableData[row.index] = values;
-            setTableData([...tableData]);
-            setErrorType("success");
-            setMessage("Data Updated successfully!");
-            setNotification(true);
-            exitEditingMode(); // Exit editing mode and close the modal
-          }
-        } else {
-          console.error("User is not authenticated. Please log in.");
-          setErrorType("error");
-          setMessage("Data Not Saved!");
-          setNotification(true);
-          // Handle authentication failure
-        }
-      } catch (error) {
-        console.error("Error updating row:", error);
-        // Handle errors (e.g., display an error message to the user)
-      }
-    }
-  };
-
   return (
     <>
       {add ? (
-        <NewEmployeeDetails newEmployee={handleBack} />
+        <NewRole newRole ={handleBack} />
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           {/* <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">Group / Ledger</h1>
         </div> */}
-
           <div className="d-flex flex-wrap justify-content-start mb-2">
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
@@ -500,13 +330,7 @@ export const EmployeeDetails = () => {
               <AiOutlineSearch style={buttonStyle} />
               <span className="ml-1">Search</span>
             </button>
-            {/* <button
-          className="btn btn-ghost btn-sm normal-case col-xs-2"
-          onClick={handleSave}
-        >
-          <AiFillSave style={buttonStyle} />
-          <span className="ml-1">Save</span>
-        </button> */}
+
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
               //onClick={getAllCompanyFields}
@@ -527,11 +351,11 @@ export const EmployeeDetails = () => {
                 },
               }}
               columns={columns}
-              data={tableData}
+              data={leaveTypeList}
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              onEditingRowSave={handleEditEmployee}
+              onEditingRowSave={handleEditHoliday}
               onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
@@ -644,4 +468,4 @@ const validateEmail = (email) =>
     );
 const validateAge = (age) => age >= 18 && age <= 50;
 
-export default EmployeeDetails;
+export default Role;

@@ -53,14 +53,39 @@ const routes = [
     name: "Masters", // name that appear in Sidebar
     submenu: [
       {
+        path: "/app/department", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Department", // name that appear in Sidebar
+      },
+      {
+        path: "/app/designation", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Designation", // name that appear in Sidebar
+      },
+      {
+        path: "/app/role", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Role", // name that appear in Sidebar
+      },
+      {
         path: "/app/employeeDetails", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Employee Details", // name that appear in Sidebar
       },
       {
+        path: "/app/attendanceProcess", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Attendance Process", // name that appear in Sidebar
+      },
+      {
         path: "/app/leavetype", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Type", // name that appear in Sidebar
+      },
+      {
+        path: "/app/leaveTypeMaster", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Leave Type Master", // name that appear in Sidebar
       },
       {
         path: "/app/holidays", // url
