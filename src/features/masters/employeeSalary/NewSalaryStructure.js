@@ -152,6 +152,7 @@ const NewSalaryStructure = ({newSalary}) => {
     };
     const handleClosePermission = () => {
         newSalary(false);
+        handleClear();
     };
     const handleAddRowDetection = () => {
       if (isLastRowEmptyDetection(newSalaryStructureTable)) {
@@ -322,6 +323,39 @@ const NewSalaryStructure = ({newSalary}) => {
         });
     }
   };
+  // const getAllHeadings = () => {
+  //   const token = localStorage.getItem("token");
+  
+  //   if (token) {
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+      
+  //     Axios.get(`${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`, {
+  //       headers,
+  //     })
+  //       .then((response) => {
+  //         console.log("Data fetched successfully:", response.data.paramObjectsMap.salaryMasterDetails);
+          
+  //         // Destructure salaryMasterDetails from response
+  //         const { salaryMasterDetails } = response.data.paramObjectsMap;
+          
+  //         if (Array.isArray(salaryMasterDetails)) {
+  //           // Separate Earnings and Deductions based on `type`
+  //           const earnings = salaryMasterDetails.filter((item) => item.type === 'E');
+  //           const deductions = salaryMasterDetails.filter((item) => item.type === 'D');
+            
+  //           // Update the respective states
+  //           setListAllHeadingEarning(earnings);
+  //           setListAllHeadingDeduction(deductions);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error on fetching data:", error);
+  //       });
+  //   }
+  // };
+
   const getAllHeadings = () => {
     const token = localStorage.getItem("token");
   
@@ -329,30 +363,87 @@ const NewSalaryStructure = ({newSalary}) => {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      
+  
       Axios.get(`${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`, {
         headers,
       })
         .then((response) => {
           console.log("Data fetched successfully:", response.data.paramObjectsMap.salaryMasterDetails);
-          
-          // Destructure salaryMasterDetails from response
+  
           const { salaryMasterDetails } = response.data.paramObjectsMap;
-          
+  
           if (Array.isArray(salaryMasterDetails)) {
-            // Separate Earnings and Deductions based on `type`
+            // Separate Earnings and Deductions
             const earnings = salaryMasterDetails.filter((item) => item.type === 'E');
             const deductions = salaryMasterDetails.filter((item) => item.type === 'D');
-            
-            // Update the respective states
+  
             setListAllHeadingEarning(earnings);
             setListAllHeadingDeduction(deductions);
+  
+            // Dynamically update the table based on available data
+            setNewSalaryStructureTableEarnings(
+              earnings.map((item, index) => ({
+                id: index + 1,
+                heading: item.headings,
+                // amount: item.amount || '',
+              }))
+            );
+  
+            setNewSalaryStructureTable(
+              deductions.map((item, index) => ({
+                id: index + 1,
+                heading: item.headings,
+                // amount: item.amount || '',
+              }))
+            );
           }
         })
         .catch((error) => {
           console.error("Error on fetching data:", error);
         });
     }
+  };
+  
+  const handleClear = () => {
+    setFormData({
+      employeeName:'',
+      employeeCode:'',
+      dob:'',
+      grade:'',
+      department:'',
+      panNo:'',
+      bankAccountNo:'',
+      position:'',
+      doj:''
+    });
+    setSalaryStructureErrors({
+      employeeName:'',
+      employeeCode:'',
+      dob:'',
+      grade:'',
+      department:'',
+      panNo:'',
+      bankAccountNo:'',
+      position:'',
+      doj:''
+    })
+    setSalaryStructureErrors({
+      heading:'',
+      amount:'',
+    })
+    setSalaryStructureTableEarningsErrors({
+      heading:'',
+      amount:'',
+    })
+    setNewSalaryStructureTable({
+        heading:'',
+        amount:'',
+    })
+    setNewSalaryStructureTableEarnings({
+      heading:'',
+      amount:'',
+    })
+    console.log("All fields cleared.");
   };
   const handleSave = () => {
     console.log("handlesave is working");
@@ -400,6 +491,7 @@ const NewSalaryStructure = ({newSalary}) => {
           .then((response) => {
             console.log("Data saved successfully:", response.data);
             setSavedData(response.data);
+            handleClear();
           })
           .catch((error) => {
             console.error("Error saving data:", error);
@@ -692,8 +784,10 @@ const NewSalaryStructure = ({newSalary}) => {
                                   <tbody>
                                     {newSalaryStructureTableEarnings.map((row, index) => (
                                       <tr key={row.id}>
-                                        <td className="col-md-1 border px-2 py-2 text-center">
+                                        <td className="col-md-1 border px-2 py-2 text-center"
+                                        >
                                           <ActionButton
+                                          // style={{ backgroundColor: 'blue' }}
                                             className=" mb-2"
                                             title="Delete"
                                             icon={DeleteIcon}
@@ -759,8 +853,8 @@ const NewSalaryStructure = ({newSalary}) => {
                                               const value = e.target.value;
                                               if (validateNumericInput(value)) {
                                                 setNewSalaryStructureTableEarnings((prev) =>
-                                                  prev.map((row) =>
-                                                    row.id === row.id ? { ...row, amount: value } : row
+                                                  prev.map((r) =>
+                                                    r.id === row.id ? { ...r, amount: value } : r // Corrected ID comparison
                                                   )
                                                 );
                                                 setSalaryStructureTableEarningsErrors((prev) =>
@@ -826,6 +920,7 @@ const NewSalaryStructure = ({newSalary}) => {
                                           <ActionButton
                                             className=" mb-2"
                                             title="Delete"
+                                            
                                             icon={DeleteIcon}
                                             onClick={() =>
                                               handleDeleteRowEarnings(
@@ -889,7 +984,9 @@ const NewSalaryStructure = ({newSalary}) => {
                                               const value = e.target.value;
                                               if (validateNumericInput(value)) {
                                                 setNewSalaryStructureTable((prev) =>
-                                                  prev.map((row) => (row.id === row.id ? { ...row, amount: value } : row))
+                                                  prev.map((r) =>
+                                                    r.id === row.id ? { ...r, amount: value } : r // Corrected ID comparison
+                                                  )
                                                 );
                                                 setSalaryStructureTableErrors((prev) =>
                                                   prev.map((err, idx) =>

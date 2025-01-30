@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
 import {FormHelperText } from '@mui/material';
@@ -28,7 +28,6 @@ const NewSalaryHeads = ({newSalary}) => {
           code:'',
           category:'',
           type:'',
-          amount:'',
           // active: true
         }
     ]);
@@ -39,96 +38,24 @@ const NewSalaryHeads = ({newSalary}) => {
             code:'',
             category:'',
             type:'',
-            amount:'',
             // active: true
         }
     ]);
-  
-    // const handleInputChange = (e) => {
-    //   const { name, value, checked, selectionStart, selectionEnd, type } = e.target;
-    //   const nameRegex = /^[A-Za-z ]*$/;
-    //   const numericRegex = /^[0-9]*$/;
-    //   let errorMessage = '';
-
-    //   // switch (name) {
-    //   //   case 'headings':
-    //   //     if (!nameRegex.test(value)) {
-    //   //       errorMessage = 'Only alphabetic characters are allowed';
-    //   //     }
-    //   //   break;
-    //   //   case 'code':
-    //   //     if (!nameRegex.test(value)) {
-    //   //       errorMessage = 'Only alphabetic characters are allowed';
-    //   //     }
-    //   //   break;
-    //   //   case 'category':
-    //   //     if (!nameRegex.test(value)) {
-    //   //       errorMessage = 'Only alphabetic characters are allowed';
-    //   //     }
-    //   //   break;
-    //   //   case 'type':
-    //   //     if (!nameRegex.test(value)) {
-    //   //       errorMessage = 'Only alphabetic characters are allowed';
-    //   //     }
-    //   //   break;
-    //   //   case 'amount':
-    //   //     if (!numericRegex.test(value)) {
-    //   //       errorMessage = 'Only numbers are allowed';
-    //   //     }
-    //   //   break;
-    //   //   default:
-    //   //     break;
-    //   // }
-    //   if (errorMessage) {
-    //     console.log("Test",errorMessage);
-    //     setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: errorMessage });
-    //   }
-    //   else if (type === 'checkbox') { 
-    //     setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
-    //   }
-    //   else {
-    //     // Clear error message for valid input
-    //     setSalaryHeadsTableErrors({ ...salaryHeadsTableErrors, [name]: '' });
-    //     setSalaryHeadsTable({ ...salaryHeadsTable, [name]: value });
-    //     // setSalaryHeadsTable((prevData) => ({ ...prevData, [name]: checked }));
-  
-    //     // Preserve the cursor position for text-based inputs
-    //     if (type === 'text' || type === 'textarea') {
-    //       setTimeout(() => {
-    //         const inputElement = document.getElementsByName(name)[0];
-    //         if (inputElement && inputElement.setSelectionRange) {
-    //           inputElement.setSelectionRange(selectionStart, selectionEnd);
-    //         }
-    //       }, 0);
-    //     }
-    //   }
-    // };
     const handleCheckboxChange = (event) => {
       setActive(event.target.checked);
     };
     const handleClear = () => {
       setSalaryHeadsTable({
-        amount: "",
         category: "",
         code: "",
         headings: "",
         type: "",
       });
-      // setOrgId("");
       setActive(false);
       // setLoginEmpName("");
       console.log("All fields cleared.");
     };
     
-    // const handleClear = () => {
-    //  salaryHeadsTable({
-    //   headings:'',
-    //   code:'',
-    //   category:'',
-    //   type:'',
-    //   amount:'',
-    //  })
-    // };
     const handleInputChange = (e) => {
       const { name, value, type } = e.target;
     
@@ -144,11 +71,6 @@ const NewSalaryHeads = ({newSalary}) => {
         case "code":
           if (!nameRegex.test(value)) {
             errorMessage = "Only alphabetic characters are allowed.";
-          }
-          break;
-        case "amount":
-          if (!numericRegex.test(value)) {
-            errorMessage = "Only numeric values are allowed.";
           }
           break;
         default:
@@ -205,7 +127,6 @@ const NewSalaryHeads = ({newSalary}) => {
   
         const dataToSave = {
           orgid: orgId,
-          amount: parseInt(salaryHeadsTable.amount),
           category: salaryHeadsTable.category,
           code: salaryHeadsTable.code,
           headings: salaryHeadsTable.headings,
@@ -330,22 +251,6 @@ const NewSalaryHeads = ({newSalary}) => {
                     {salaryHeadsTableErrors.type && <FormHelperText>{salaryHeadsTableErrors.type}</FormHelperText>}
                   </FormControl>
                 </div>
-            <div className="col-md-4 mb-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="amount"
-                    name="amount"
-                    label="Amount"
-                    size="small"
-                    value={salaryHeadsTable.amount}
-                    onChange={handleInputChange}
-                    error={Boolean(salaryHeadsTableErrors.amount)}
-                    required
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
-                  />
-                </FormControl>
-            </div>
             <div className="col-md-4 mb-3">
               <FormGroup>
                 <FormControlLabel
