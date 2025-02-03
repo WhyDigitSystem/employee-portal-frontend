@@ -112,7 +112,7 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Salary Structure", // name that appear in Sidebar
       },
-      
+
       // {
       //   path: "/app/jpcheckincheckout", // url
       //   icon: <CalendarDaysIcon className={iconClasses} />, // icon component
@@ -152,6 +152,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "SwipeIN & SwipeOUT", // name that appear in Sidebar
       },
+      {
+        path: "/app/payslip", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Payslip", // name that appear in Sidebar
+      },
     ],
   },
   // transaction folder end
@@ -181,7 +186,6 @@ const routes = [
         name: "Today Attendance", // name that appear in Sidebar
       },
 
-
       // {
       //      path: "/app/attendance", // url
       //      icon: <CalendarDaysIcon className={iconClasses} />, // icon component
@@ -191,13 +195,19 @@ const routes = [
   },
 ];
 
-
 //USER ROLE CONTROL
 if (userRole === "USER") {
-  const sectionsToRemove = ["Organization", "Organization Setup", "Masters", "Team"];
+  const sectionsToRemove = [
+    "Organization",
+    "Organization Setup",
+    "Masters",
+    "Team",
+  ];
 
-  sectionsToRemove.forEach(sectionName => {
-    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+  sectionsToRemove.forEach((sectionName) => {
+    const sectionIndex = routes.findIndex(
+      (route) => route.name === sectionName
+    );
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
@@ -208,8 +218,10 @@ if (userRole === "USER") {
 if (userRole === "HR") {
   const sectionsToRemove = ["Organization", "Organization Setup", "Masters"];
 
-  sectionsToRemove.forEach(sectionName => {
-    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+  sectionsToRemove.forEach((sectionName) => {
+    const sectionIndex = routes.findIndex(
+      (route) => route.name === sectionName
+    );
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
@@ -240,24 +252,31 @@ if (userRole === "HR") {
 //   });
 // }
 
-
 // MANAGER ROLE CONTROL
 if (userRole === "MANAGER") {
   // Remove top-level sections
   const sectionsToRemove = ["Organization", "Organization Setup", "Masters"];
-  sectionsToRemove.forEach(sectionName => {
-    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+  sectionsToRemove.forEach((sectionName) => {
+    const sectionIndex = routes.findIndex(
+      (route) => route.name === sectionName
+    );
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
   });
 
   // Remove nested routes within the "Team" section
-  const teamSectionIndex = routes.findIndex(route => route.name === "Team");
+  const teamSectionIndex = routes.findIndex((route) => route.name === "Team");
   if (teamSectionIndex !== -1) {
-    const nestedRoutesToRemove = ["Attendance Report", "Today Attendance", "Search Attendance"];
-    nestedRoutesToRemove.forEach(routeName => {
-      const nestedRouteIndex = routes[teamSectionIndex].submenu.findIndex(route => route.name === routeName);
+    const nestedRoutesToRemove = [
+      "Attendance Report",
+      "Today Attendance",
+      "Search Attendance",
+    ];
+    nestedRoutesToRemove.forEach((routeName) => {
+      const nestedRouteIndex = routes[teamSectionIndex].submenu.findIndex(
+        (route) => route.name === routeName
+      );
       if (nestedRouteIndex !== -1) {
         routes[teamSectionIndex].submenu.splice(nestedRouteIndex, 1);
       }
@@ -265,15 +284,14 @@ if (userRole === "MANAGER") {
   }
 }
 
-
-
-
 //ADMIN ROLE CONTROL
 if (userRole === "ADMIN") {
   const sectionsToRemove = ["Organization", "Me"];
 
-  sectionsToRemove.forEach(sectionName => {
-    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+  sectionsToRemove.forEach((sectionName) => {
+    const sectionIndex = routes.findIndex(
+      (route) => route.name === sectionName
+    );
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
@@ -284,13 +302,14 @@ if (userRole === "ADMIN") {
 if (userRole === "OWNER") {
   const sectionsToRemove = ["Organization Setup", "Me", "Team", "Masters"];
 
-  sectionsToRemove.forEach(sectionName => {
-    const sectionIndex = routes.findIndex(route => route.name === sectionName);
+  sectionsToRemove.forEach((sectionName) => {
+    const sectionIndex = routes.findIndex(
+      (route) => route.name === sectionName
+    );
     if (sectionIndex !== -1) {
       routes.splice(sectionIndex, 1);
     }
   });
 }
-
 
 export default routes;
