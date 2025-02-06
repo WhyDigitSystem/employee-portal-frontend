@@ -1,4 +1,3 @@
-
 import { Edit } from "@mui/icons-material";
 import {
   Box,
@@ -28,90 +27,91 @@ import { BsListTask } from "react-icons/bs";
 import Axios from "axios";
 import NewSalaryHeads from "./NewSalaryHeads";
 const SalaryHeads = () => {
-    const [add, setAdd] = React.useState(false);
-    const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-    const [tableData, setTableData] = useState([]);
-    const [createModalOpen, setCreateModalOpen] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({});
-    const buttonStyle = {
-        fontSize: "20px",
-    };
-    const handleAddOpen = () => {
-        setAdd(true);
-    };
-    const handleBack = () => {
-        setAdd(false);
-    };
-    const handleCreateNewRow = (values) => {
-        tableData.push(values);
-        setTableData([...tableData]);
-      };
-    const exportDataAsCSV = () => {
-        // Format your data to be exported as CSV (tableData in this case)
-        // For example, transform your data into an array of arrays or objects
-        // that represents rows and columns in the CSV file format
+  const [add, setAdd] = React.useState(false);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [tableData, setTableData] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const buttonStyle = {
+    fontSize: "20px",
+  };
+  const handleAddOpen = () => {
+    setAdd(true);
+  };
+  const handleBack = () => {
+    setAdd(false);
+    getAllSalaryHeads();
+  };
+  const handleCreateNewRow = (values) => {
+    tableData.push(values);
+    setTableData([...tableData]);
+  };
+  const exportDataAsCSV = () => {
+    // Format your data to be exported as CSV (tableData in this case)
+    // For example, transform your data into an array of arrays or objects
+    // that represents rows and columns in the CSV file format
 
-        // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
-        // You might need to modify the data structure to fit CSVLink requirements
+    // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
+    // You might need to modify the data structure to fit CSVLink requirements
 
-        const csvData = tableData.map((row) => ({
-        //   "Employee Code": row.employeeCode,
-        //   Name: row.name,
-        //   Gender: row.gender,
-        //   "Date of Birth": row.dateofBirth,
-        //   "Blood Group": row.bloodGroup,
-        //   Department: row.department,
-        //   Designation: row.designation,
-        //   Role: row.role,
-        //   "Email Id": row.emailId,
-        //   "Joining Date": row.joiningDate,
-        //   PAN: row.pan,
-        //   Aadhar: row.aadhar,
-        //   Mobile: row.mobile,
-        //   "Alternate Mobile": row.alternateMobile,
-        //   "Resigning Date": row.resigningDate,
-        //   "Bank Name": row.bankName,
-        //   "Account Number": row.accountNumber,
-        //   "IFSC Code": row.ifscCode,
-        //   "Reporting Person": row.reportingPerson,
-        // "Reporting Person Role": row.rreporting_person_role
-        }));
+    const csvData = tableData.map((row) => ({
+      //   "Employee Code": row.employeeCode,
+      //   Name: row.name,
+      //   Gender: row.gender,
+      //   "Date of Birth": row.dateofBirth,
+      //   "Blood Group": row.bloodGroup,
+      //   Department: row.department,
+      //   Designation: row.designation,
+      //   Role: row.role,
+      //   "Email Id": row.emailId,
+      //   "Joining Date": row.joiningDate,
+      //   PAN: row.pan,
+      //   Aadhar: row.aadhar,
+      //   Mobile: row.mobile,
+      //   "Alternate Mobile": row.alternateMobile,
+      //   "Resigning Date": row.resigningDate,
+      //   "Bank Name": row.bankName,
+      //   "Account Number": row.accountNumber,
+      //   "IFSC Code": row.ifscCode,
+      //   "Reporting Person": row.reportingPerson,
+      // "Reporting Person Role": row.rreporting_person_role
+    }));
 
-        // Define CSV headers
-        const headers = [
-        { label: "S No", key: "id" },
-        //   { label: "Employee Code", key: "empcode" },
-        //   { label: "Name", key: "empname" },
-        //   { label: "Gender", key: "gender" },
-        //   { label: "Date of Birth", key: "date_of_birth" },
-        //   { label: "Blood Group", key: "blood" },
-        //   { label: "Department", key: "department" },
-        //   { label: "Designation", key: "designation" },
-        //   { label: "Role", key: "role" },
-        //   { label: "Email Id", key: "email" },
-        //   { label: "Joining Date", key: "joining_date" },
-        //   { label: "PAN", key: "pan" },
-        //   { label: "Aadhar", key: "aadhar" },
-        //   { label: "Mobile", key: "mobile_no" },
-        //   { label: "Alternate Mobile", key: "alternate_mobile_no" },
-        //   { label: "Resigning Date", key: "resigning_date" },
-        //   { label: "Bank Name", key: "bank_name" },
-        //   { label: "Account Number", key: "account_no" },
-        //   { label: "IFSC Code", key: "ifsc_code" },
-        //   { label: "Reporting Person", key: "reporting_person" },
-        ];
+    // Define CSV headers
+    const headers = [
+      { label: "S No", key: "id" },
+      //   { label: "Employee Code", key: "empcode" },
+      //   { label: "Name", key: "empname" },
+      //   { label: "Gender", key: "gender" },
+      //   { label: "Date of Birth", key: "date_of_birth" },
+      //   { label: "Blood Group", key: "blood" },
+      //   { label: "Department", key: "department" },
+      //   { label: "Designation", key: "designation" },
+      //   { label: "Role", key: "role" },
+      //   { label: "Email Id", key: "email" },
+      //   { label: "Joining Date", key: "joining_date" },
+      //   { label: "PAN", key: "pan" },
+      //   { label: "Aadhar", key: "aadhar" },
+      //   { label: "Mobile", key: "mobile_no" },
+      //   { label: "Alternate Mobile", key: "alternate_mobile_no" },
+      //   { label: "Resigning Date", key: "resigning_date" },
+      //   { label: "Bank Name", key: "bank_name" },
+      //   { label: "Account Number", key: "account_no" },
+      //   { label: "IFSC Code", key: "ifsc_code" },
+      //   { label: "Reporting Person", key: "reporting_person" },
+    ];
 
-        return (
-        <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
-            <p>
-            <img
-                src={process.env.REACT_APP_EXPORT_ICON}
-                style={{ width: "30px" }}
-            />
-            </p>
-        </CSVLink>
-        );
-    };
+    return (
+      <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
+        <p>
+          <img
+            src={process.env.REACT_APP_EXPORT_ICON}
+            style={{ width: "30px" }}
+          />
+        </p>
+      </CSVLink>
+    );
+  };
   const getCommonEditTextFieldProps = useCallback(
     (cell) => {
       return {
@@ -142,128 +142,132 @@ const SalaryHeads = () => {
     },
     [validationErrors]
   );
-    useEffect(() => {
-      getAllSalaryHeads();
-    }, []);
-    const columns = useMemo( () => [
-          {
-            accessorKey: "id",
-            header: "S No",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "headings",
-            header: "Heading",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "code",
-            header: "Code",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "category",
-            header: "Category",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          // {
-          //   accessorKey: "type",
-          //   header: "Type",
-          //   size: 140,
-          //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-          //     ...getCommonEditTextFieldProps(cell),
-          //   }),
-          // },
-          {
-            accessorKey: "amount",
-            header: "Amount",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "active", // This maps to the raw data field in your data object
-            header: "Active",
-            size: 140,
-            Cell: ({ cell }) => (cell.getValue() === true ? "Active" : "Inactive"), // Conditional rendering logic
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-        ],
-        [getCommonEditTextFieldProps]
-      );
-      const getAllSalaryHeads = () => {
+  useEffect(() => {
+    getAllSalaryHeads();
+  }, []);
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: "S No",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "headings",
+        header: "Heading",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "code",
+        header: "Code",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "category",
+        header: "Category",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      // {
+      //   accessorKey: "type",
+      //   header: "Type",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
+      // {
+      //   accessorKey: "amount",
+      //   header: "Amount",
+      //   size: 140,
+      //   muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+      //     ...getCommonEditTextFieldProps(cell),
+      //   }),
+      // },
+      {
+        accessorKey: "active", // This maps to the raw data field in your data object
+        header: "Active",
+        size: 140,
+        Cell: ({ cell }) => (cell.getValue() === true ? "Active" : "Inactive"), // Conditional rendering logic
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+    ],
+    [getCommonEditTextFieldProps]
+  );
+  const getAllSalaryHeads = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/salaryMaster/getAllSalaryMaster`,
+        {
+          headers,
+        }
+      )
+        .then((response) => {
+          console.log("Data fetched successfully:", response.data);
+          setTableData(response.data);
+          // handleView();
+        })
+        .catch((error) => {
+          // Handle errors here
+          console.error("Error on fetching data:", error);
+        });
+    }
+  };
+  const handleEditSalaryHeads = async ({ exitEditingMode, row, values }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        // Make a PUT request to update the user role data
+        values.orgid = orgId;
+        values.id = parseInt(values.id);
+        values.amount = parseInt(values.amount);
         const token = localStorage.getItem("token");
-    
+
         if (token) {
           const headers = {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           };
-          Axios.get(`${process.env.REACT_APP_API_URL}/api/salaryMaster/getAllSalaryMaster`, {
-            headers,
-          })
-            .then((response) => {
-              console.log("Data fetched successfully:", response.data);
-              setTableData(response.data);
-              // handleView();
-            })
-            .catch((error) => {
-              // Handle errors here
-              console.error("Error on fetching data:", error);
-            });
-        }
-      };
-      const handleEditSalaryHeads = async ({ exitEditingMode, row, values }) => {
-        if (!Object.keys(validationErrors).length) {
-          try {
-            // Make a PUT request to update the user role data
-            values.orgid = orgId;
-            values.id = parseInt(values.id);
-            values.amount = parseInt(values.amount);
-            const token = localStorage.getItem("token");
-    
-            if (token) {
-              const headers = {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              };
-              const response = await Axios.put(
-                `${process.env.REACT_APP_API_URL}/api/salaryMaster/updateSalaryMaster?id=${values.id}`,
-                values,
-                { headers }
-              );
-    
-              if (response.status === 200) {
-                // If successful response, update the local tableData with the edited values
-                tableData[row.index] = values;
-                setTableData([...tableData]);
-    
-                exitEditingMode(); // Exit editing mode and close the modal
-              }
-            } else {
-              console.error("User is not authenticated. Please log in.");
-              // Handle authentication failure
-            }
-          } catch (error) {
-            console.error("Error updating row:", error);
-            // Handle errors (e.g., display an error message to the user)
+          const response = await Axios.put(
+            `${process.env.REACT_APP_API_URL}/api/salaryMaster/updateSalaryMaster?id=${values.id}`,
+            values,
+            { headers }
+          );
+
+          if (response.status === 200) {
+            // If successful response, update the local tableData with the edited values
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+
+            exitEditingMode(); // Exit editing mode and close the modal
           }
+        } else {
+          console.error("User is not authenticated. Please log in.");
+          // Handle authentication failure
         }
-      };
+      } catch (error) {
+        console.error("Error updating row:", error);
+        // Handle errors (e.g., display an error message to the user)
+      }
+    }
+  };
   return (
     <>
       {add ? (
@@ -295,7 +299,7 @@ const SalaryHeads = () => {
         </button> */}
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
-            //onClick={getAllCompanyFields}
+              //onClick={getAllCompanyFields}
             >
               <BsListTask style={buttonStyle} />
               <span className="ml-1">List View</span>
@@ -318,13 +322,13 @@ const SalaryHeads = () => {
               enableColumnOrdering
               enableEditing
               onEditingRowSave={handleEditSalaryHeads}
-            //   onEditingRowCancel={handleCancelRowEdits}
+              //   onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
                   sx={{
                     display: "flex",
                     gap: "1rem",
-                    justifyContent: "flex-end",
+                    justifyContent: "center",
                   }}
                 >
                   {/* <Tooltip arrow placement="left" title="Delete">
@@ -367,8 +371,8 @@ const SalaryHeads = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = useState(() =>
     columns.reduce((acc, column) => {
@@ -415,4 +419,4 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
     </Dialog>
   );
 };
-export default SalaryHeads
+export default SalaryHeads;

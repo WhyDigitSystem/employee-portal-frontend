@@ -1,4 +1,3 @@
-
 import { Edit } from "@mui/icons-material";
 import {
   Box,
@@ -28,90 +27,91 @@ import { BsListTask } from "react-icons/bs";
 import Axios from "axios";
 import NewSalaryStructure from "./NewSalaryStructure";
 const SalaryStructure = () => {
-    const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-    const [add, setAdd] = React.useState(false);
-    const [tableData, setTableData] = useState([]);
-    const [createModalOpen, setCreateModalOpen] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({});
-    const buttonStyle = {
-        fontSize: "20px",
-    };
-    const handleAddOpen = () => {
-        setAdd(true);
-    };
-    const handleBack = () => {
-        setAdd(false);
-    };
-    const handleCreateNewRow = (values) => {
-        tableData.push(values);
-        setTableData([...tableData]);
-      };
-    const exportDataAsCSV = () => {
-        // Format your data to be exported as CSV (tableData in this case)
-        // For example, transform your data into an array of arrays or objects
-        // that represents rows and columns in the CSV file format
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [add, setAdd] = React.useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const buttonStyle = {
+    fontSize: "20px",
+  };
+  const handleAddOpen = () => {
+    setAdd(true);
+  };
+  const handleBack = () => {
+    setAdd(false);
+    getAllSalaryStructure();
+  };
+  const handleCreateNewRow = (values) => {
+    tableData.push(values);
+    setTableData([...tableData]);
+  };
+  const exportDataAsCSV = () => {
+    // Format your data to be exported as CSV (tableData in this case)
+    // For example, transform your data into an array of arrays or objects
+    // that represents rows and columns in the CSV file format
 
-        // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
-        // You might need to modify the data structure to fit CSVLink requirements
+    // In this example, we'll use the tableData directly assuming it's in the right format for CSV export
+    // You might need to modify the data structure to fit CSVLink requirements
 
-        const csvData = tableData.map((row) => ({
-        //   "Employee Code": row.employeeCode,
-        //   Name: row.name,
-        //   Gender: row.gender,
-        //   "Date of Birth": row.dateofBirth,
-        //   "Blood Group": row.bloodGroup,
-        //   Department: row.department,
-        //   Designation: row.designation,
-        //   Role: row.role,
-        //   "Email Id": row.emailId,
-        //   "Joining Date": row.joiningDate,
-        //   PAN: row.pan,
-        //   Aadhar: row.aadhar,
-        //   Mobile: row.mobile,
-        //   "Alternate Mobile": row.alternateMobile,
-        //   "Resigning Date": row.resigningDate,
-        //   "Bank Name": row.bankName,
-        //   "Account Number": row.accountNumber,
-        //   "IFSC Code": row.ifscCode,
-        //   "Reporting Person": row.reportingPerson,
-        // "Reporting Person Role": row.rreporting_person_role
-        }));
+    const csvData = tableData.map((row) => ({
+      //   "Employee Code": row.employeeCode,
+      //   Name: row.name,
+      //   Gender: row.gender,
+      //   "Date of Birth": row.dateofBirth,
+      //   "Blood Group": row.bloodGroup,
+      //   Department: row.department,
+      //   Designation: row.designation,
+      //   Role: row.role,
+      //   "Email Id": row.emailId,
+      //   "Joining Date": row.joiningDate,
+      //   PAN: row.pan,
+      //   Aadhar: row.aadhar,
+      //   Mobile: row.mobile,
+      //   "Alternate Mobile": row.alternateMobile,
+      //   "Resigning Date": row.resigningDate,
+      //   "Bank Name": row.bankName,
+      //   "Account Number": row.accountNumber,
+      //   "IFSC Code": row.ifscCode,
+      //   "Reporting Person": row.reportingPerson,
+      // "Reporting Person Role": row.rreporting_person_role
+    }));
 
-        // Define CSV headers
-        const headers = [
-        { label: "S No", key: "id" },
-        //   { label: "Employee Code", key: "empcode" },
-        //   { label: "Name", key: "empname" },
-        //   { label: "Gender", key: "gender" },
-        //   { label: "Date of Birth", key: "date_of_birth" },
-        //   { label: "Blood Group", key: "blood" },
-        //   { label: "Department", key: "department" },
-        //   { label: "Designation", key: "designation" },
-        //   { label: "Role", key: "role" },
-        //   { label: "Email Id", key: "email" },
-        //   { label: "Joining Date", key: "joining_date" },
-        //   { label: "PAN", key: "pan" },
-        //   { label: "Aadhar", key: "aadhar" },
-        //   { label: "Mobile", key: "mobile_no" },
-        //   { label: "Alternate Mobile", key: "alternate_mobile_no" },
-        //   { label: "Resigning Date", key: "resigning_date" },
-        //   { label: "Bank Name", key: "bank_name" },
-        //   { label: "Account Number", key: "account_no" },
-        //   { label: "IFSC Code", key: "ifsc_code" },
-        //   { label: "Reporting Person", key: "reporting_person" },
-        ];
+    // Define CSV headers
+    const headers = [
+      { label: "S No", key: "id" },
+      //   { label: "Employee Code", key: "empcode" },
+      //   { label: "Name", key: "empname" },
+      //   { label: "Gender", key: "gender" },
+      //   { label: "Date of Birth", key: "date_of_birth" },
+      //   { label: "Blood Group", key: "blood" },
+      //   { label: "Department", key: "department" },
+      //   { label: "Designation", key: "designation" },
+      //   { label: "Role", key: "role" },
+      //   { label: "Email Id", key: "email" },
+      //   { label: "Joining Date", key: "joining_date" },
+      //   { label: "PAN", key: "pan" },
+      //   { label: "Aadhar", key: "aadhar" },
+      //   { label: "Mobile", key: "mobile_no" },
+      //   { label: "Alternate Mobile", key: "alternate_mobile_no" },
+      //   { label: "Resigning Date", key: "resigning_date" },
+      //   { label: "Bank Name", key: "bank_name" },
+      //   { label: "Account Number", key: "account_no" },
+      //   { label: "IFSC Code", key: "ifsc_code" },
+      //   { label: "Reporting Person", key: "reporting_person" },
+    ];
 
-        return (
-        <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
-            <p>
-            <img
-                src={process.env.REACT_APP_EXPORT_ICON}
-                style={{ width: "30px" }}
-            />
-            </p>
-        </CSVLink>
-        );
-    };
+    return (
+      <CSVLink data={csvData} headers={headers} filename={"table_data.csv"}>
+        <p>
+          <img
+            src={process.env.REACT_APP_EXPORT_ICON}
+            style={{ width: "30px" }}
+          />
+        </p>
+      </CSVLink>
+    );
+  };
   const getCommonEditTextFieldProps = useCallback(
     (cell) => {
       return {
@@ -142,112 +142,120 @@ const SalaryStructure = () => {
     },
     [validationErrors]
   );
-    const columns = useMemo( () => [
-          {
-            accessorKey: "id",
-            header: "S No",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "employeeName",
-            header: "EmployeeName",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "employeeCode",
-            header: "Employee Code",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "dateOfBirth",
-            header: "DOB",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "department",
-            header: "Department",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-          {
-            accessorKey: "bankAccountNo",
-            header: "Bank Account",
-            size: 140,
-            muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
-              ...getCommonEditTextFieldProps(cell),
-            }),
-          },
-        ],
-        [getCommonEditTextFieldProps]
-      );
-      useEffect(() => {
-        getAllSalaryStructure();
-      }, []);
-      const getAllSalaryStructure = () => {
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: "S No",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "employeeName",
+        header: "EmployeeName",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "employeeCode",
+        header: "Employee Code",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "dateOfBirth",
+        header: "DOB",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "department",
+        header: "Department",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+      {
+        accessorKey: "bankAccountNo",
+        header: "Bank Account",
+        size: 140,
+        muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
+          ...getCommonEditTextFieldProps(cell),
+        }),
+      },
+    ],
+    [getCommonEditTextFieldProps]
+  );
+  useEffect(() => {
+    getAllSalaryStructure();
+  }, []);
+  const getAllSalaryStructure = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/SalaryStructure/getAllSalaryStructure?orgId=${orgId}`,
+        {
+          headers,
+        }
+      )
+        .then((response) => {
+          console.log("Data saved successfully:", response.data);
+          setTableData(response.data.paramObjectsMap.salaryStructureVO);
+          // handleView();
+        })
+        .catch((error) => {
+          // Handle errors here
+          console.error("Error saving data:", error);
+        });
+    }
+  };
+  const handleEditSalaryStructure = async ({
+    exitEditingMode,
+    row,
+    values,
+  }) => {
+    if (!Object.keys(validationErrors).length) {
+      try {
+        values.orgid = orgId;
+        values.id = parseInt(values.id);
         const token = localStorage.getItem("token");
-    
+
         if (token) {
           const headers = {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           };
-          Axios.get(`${process.env.REACT_APP_API_URL}/api/SalaryStructure/getAllSalaryStructure?orgId=${orgId}`, {
-            headers,
-          })
-            .then((response) => {
-              console.log("Data saved successfully:", response.data);
-              setTableData(response.data.paramObjectsMap.salaryStructureVO);
-              // handleView();
-            })
-            .catch((error) => {
-              // Handle errors here
-              console.error("Error saving data:", error);
-            });
-        }
-      };
-      const handleEditSalaryStructure = async ({ exitEditingMode, row, values }) => {
-        if (!Object.keys(validationErrors).length) {
-          try {
-            values.orgid = orgId;
-            values.id = parseInt(values.id);
-            const token = localStorage.getItem("token");
-    
-            if (token) {
-              const headers = {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              };
-              const response = await Axios.put(
-                `${process.env.REACT_APP_API_URL}/api/SalaryStructure/createSalaryStructure?id=${values.id}`,
-                values,
-                { headers }
-              );
-              if (response.status === 200) {
-                tableData[row.index] = values;
-                setTableData([...tableData]);
-                exitEditingMode();
-              }
-            } else {
-              console.error("User is not authenticated. Please log in.");
-            }
-          } catch (error) {
-            console.error("Error updating row:", error);
+          const response = await Axios.put(
+            `${process.env.REACT_APP_API_URL}/api/SalaryStructure/createSalaryStructure?id=${values.id}`,
+            values,
+            { headers }
+          );
+          if (response.status === 200) {
+            tableData[row.index] = values;
+            setTableData([...tableData]);
+            exitEditingMode();
           }
+        } else {
+          console.error("User is not authenticated. Please log in.");
         }
-      };
+      } catch (error) {
+        console.error("Error updating row:", error);
+      }
+    }
+  };
   return (
     <>
       {add ? (
@@ -279,7 +287,7 @@ const SalaryStructure = () => {
         </button> */}
             <button
               className="btn btn-ghost btn-sm normal-case col-xs-2"
-            //onClick={getAllCompanyFields}
+              //onClick={getAllCompanyFields}
             >
               <BsListTask style={buttonStyle} />
               <span className="ml-1">List View</span>
@@ -302,13 +310,13 @@ const SalaryStructure = () => {
               enableColumnOrdering
               enableEditing
               onEditingRowSave={handleEditSalaryStructure}
-            //   onEditingRowCancel={handleCancelRowEdits}
+              //   onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
                   sx={{
                     display: "flex",
                     gap: "1rem",
-                    justifyContent: "flex-end",
+                    justifyContent: "center",
                   }}
                 >
                   {/* <Tooltip arrow placement="left" title="Delete">
@@ -351,8 +359,8 @@ const SalaryStructure = () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = useState(() =>
     columns.reduce((acc, column) => {
@@ -399,4 +407,4 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
     </Dialog>
   );
 };
-export default SalaryStructure
+export default SalaryStructure;

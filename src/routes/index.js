@@ -27,6 +27,9 @@ const EmployeeDetails = lazy(() =>
 const AttendanceProcess = lazy(() =>
   import("../pages/protected/AttendanceProcess")
 );
+const SalaryProcess = lazy(() =>
+  import("../pages/protected/SalaryProcess")
+);
 const LeaveType = lazy(() => import("../pages/protected/LeaveType"));
 const LeaveTypeMaster = lazy(() =>
   import("../pages/protected/LeaveTypeMaster")
@@ -152,6 +155,10 @@ const routes = [
   {
     path: "/attendanceProcess",
     component: AttendanceProcess,
+  },
+  {
+    path: "/salaryProcess",
+    component: SalaryProcess,
   },
   {
     path: "/leavetype",

@@ -280,7 +280,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
     setBereavement("");
     setCompensatory("");
     setReportingPersonRole("");
-    setActive(true)
+    setActive(true);
   };
 
   const handleValidation = () => {
@@ -416,7 +416,7 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
   //     };
 
   //     console.log("DataToSave:", dataToSave);
-  //     console.log("DataToSaveUser:", dataToSaveUser);
+  //     console.log("DataToSaveUser:" , dataToSaveUser);
   //     const token = localStorage.getItem("token");
 
   //     if (token) {
@@ -662,6 +662,37 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               />
             </div>
             <div className="row d-flex mt-3">
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth variant="filled">
+                  <TextField
+                    id="name"
+                    label="Employee Name"
+                    size="small"
+                    value={empName}
+                    onChange={handleEmpName}
+                    error={Boolean(errors.empName)}
+                    required
+                    //placeholder="accountcode"
+                    inputProps={{ maxLength: 50 }}
+                  />
+                </FormControl>
+              </div>
+              <div className="col-md-4 mb-3">
+                <FormControl fullWidth variant="filled">
+                  <TextField
+                    id="employee"
+                    label="Employee Code"
+                    size="small"
+                    value={empCode}
+                    onChange={handleEmpCode}
+                    error={Boolean(errors.empCode)}
+                    required
+                    //placeholder="accountcode"
+                    inputProps={{ maxLength: 30 }}
+                  />
+                </FormControl>
+              </div>
+
               <div className="col-md-4">
                 <FormControl fullWidth size="small">
                   <InputLabel id="demo-simple-select-label">Branch</InputLabel>
@@ -681,36 +712,6 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
                       </MenuItem>
                     ))}
                   </Select>
-                </FormControl>
-              </div>
-              <div className="col-md-4 mb-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="employee"
-                    label="Employee Code"
-                    size="small"
-                    value={empCode}
-                    onChange={handleEmpCode}
-                    error={Boolean(errors.empCode)}
-                    required
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 30 }}
-                  />
-                </FormControl>
-              </div>
-              <div className="col-md-4 mb-3">
-                <FormControl fullWidth variant="filled">
-                  <TextField
-                    id="name"
-                    label="Name"
-                    size="small"
-                    value={empName}
-                    onChange={handleEmpName}
-                    error={Boolean(errors.empName)}
-                    required
-                    //placeholder="accountcode"
-                    inputProps={{ maxLength: 50 }}
-                  />
                 </FormControl>
               </div>
               <div className="col-md-4 mb-3">
@@ -994,16 +995,16 @@ export const NewEmployeeDetails = ({ newEmployee }) => {
               </div>
 
               {/* ACTIVE FIELD */}
-            <div className="col-md-4 mb-3">
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={active} onChange={handleActive} />
-                  }
-                  label="Active"
-                />
-              </FormGroup>
-            </div>
+              <div className="col-md-4 mb-3">
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={active} onChange={handleActive} />
+                    }
+                    label="Active"
+                  />
+                </FormGroup>
+              </div>
             </div>
             <Tabs
               className="mt-4   "

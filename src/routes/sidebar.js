@@ -78,6 +78,11 @@ const routes = [
         name: "Attendance Process", // name that appear in Sidebar
       },
       {
+        path: "/app/salaryProcess", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Salary Process", // name that appear in Sidebar
+      },
+      {
         path: "/app/leavetype", // url
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Leave Type", // name that appear in Sidebar

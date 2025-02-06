@@ -6,6 +6,7 @@ import ToastComponent from "../../../utils/ToastComponent";
 import EmailConfig from "../../../utils/SendEmail";
 import html2pdf from "html2pdf.js";
 import logo from "../../../assets/WDS.jpeg";
+import Payslip from "./Payslip";
 
 function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
   const [header, setHeader] = React.useState(headerDetails);
@@ -119,8 +120,8 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
             <div style={styles.header}>
               <img src={logo} alt="Company Logo" style={styles.headerImg} />
               <div style={styles.headerContent}>
-                <h1 style={styles.title}>{header.name}</h1>
-                <p style={styles.subtitle}>{header.address}</p>
+                <h1 style={styles.title}><strong>{header.name}</strong></h1>
+                {/* <p style={styles.subtitle}>{header.address}</p> */}
                 {/* <p style={styles.subtitle_1}>Bengaluru-560016</p> */}
               </div>
             </div>
@@ -133,7 +134,7 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
                 // paddingLeft: "50px",
               }}
             >
-              Payslip for the month of {paySlip.month} {paySlip.year}
+              <strong>Payslip for the month of {paySlip.month} {paySlip.year}</strong>
             </h2>
 
             <table style={styles.table}>
@@ -148,7 +149,7 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
                   <td style={styles.thTd}>Designation:</td>
                   <td style={styles.thTd}>{paySlip.position}</td>
                   <td style={styles.thTd}>Bank Name:</td>
-                  <td style={styles.thTd}>-</td>
+                  <td style={styles.thTd}>{paySlip.bankName}</td>
                 </tr>
                 <tr>
                   <td style={styles.thTd}>Department:</td>
@@ -158,21 +159,21 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
                 </tr>
                 <tr>
                   <td style={styles.thTd}>Location:</td>
-                  <td style={styles.thTd}>-</td>
+                  <td style={styles.thTd}>{paySlip.location}</td>
                   <td style={styles.thTd}>PAN Number:</td>
                   <td style={styles.thTd}>{paySlip.pan}</td>
                 </tr>
                 <tr>
                   <td style={styles.thTd}>Effective Work Days:</td>
-                  <td style={styles.thTd}>-</td>
-                  <td style={styles.thTd}>UAN No:</td>
-                  <td style={styles.thTd}>-</td>
+                  <td style={styles.thTd}>{paySlip.effectiveWorkingDays}</td>
+                  <td style={styles.thTd}>UAN No / PF No:</td>
+                  <td style={styles.thTd}>{paySlip.uan}</td>
                 </tr>
                 <tr>
                   <td style={styles.thTd}>LOP:</td>
-                  <td style={styles.thTd}>-</td>
-                  <td style={styles.thTd}>PF No:</td>
-                  <td style={styles.thTd}>-</td>
+                  <td style={styles.thTd}>{paySlip.lop}</td>
+                  {/* <td style={styles.thTd}>PF No:</td>
+                  <td style={styles.thTd}></td> */}
                 </tr>
               </tbody>
             </table>
@@ -181,7 +182,7 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
               <thead>
                 <tr>
                   <th style={styles.thTd}>Earnings</th>
-                  <th style={styles.thTd}>Master</th>
+                  {/* <th style={styles.thTd}>Master</th> */}
                   <th style={styles.thTd}>Actual</th>
                   <th style={styles.thTd}>Deductions</th>
                   <th style={styles.thTd}>Actual</th>
@@ -189,32 +190,42 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
               </thead>
               <tbody>
                 <tr>
-                  <td style={styles.thTd}>BASIC</td>
-                  <td style={styles.thTd}>-</td>
                   <td style={styles.thTd}>
-                    {paySlip.salaryStructureEarningsVO[0].amount}
+                    {paySlip.salaryDetailsEarningsVO[0].heading}
                   </td>
-                  <td style={styles.thTd}>PF</td>
+                  {/* <td style={styles.thTd}>-</td> */}
                   <td style={styles.thTd}>
-                    {paySlip.salaryStructureDeductionVO[0].amount}
+                    {paySlip.salaryDetailsEarningsVO[0].amount}
                   </td>
-                </tr>
-                <tr>
-                  <td style={styles.thTd}>HRA</td>
-                  <td style={styles.thTd}>-</td>
                   <td style={styles.thTd}>
-                    {paySlip.salaryStructureEarningsVO[1].amount}
+                    {paySlip.salaryDetailsDeductionVO[0].heading}
                   </td>
-                  <td style={styles.thTd}>PROF TAX</td>
                   <td style={styles.thTd}>
-                    {paySlip.salaryStructureDeductionVO[1].amount}
+                    {paySlip.salaryDetailsDeductionVO[0].amount}
                   </td>
                 </tr>
                 <tr>
-                  <td style={styles.thTd}>FLEXIBLE COMPENSATION</td>
-                  <td style={styles.thTd}>-</td>
                   <td style={styles.thTd}>
-                    {paySlip.salaryStructureEarningsVO[2].amount}
+                    {paySlip.salaryDetailsEarningsVO[1].heading}
+                  </td>
+                  {/* <td style={styles.thTd}>-</td> */}
+                  <td style={styles.thTd}>
+                    {paySlip.salaryDetailsEarningsVO[1].amount}
+                  </td>
+                  <td style={styles.thTd}>
+                    {paySlip.salaryDetailsDeductionVO[1].heading}
+                  </td>
+                  <td style={styles.thTd}>
+                    {paySlip.salaryDetailsDeductionVO[1].amount}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={styles.thTd}>
+                    {paySlip.salaryDetailsEarningsVO[2].heading}
+                  </td>
+                  {/* <td style={styles.thTd}>-</td> */}
+                  <td style={styles.thTd}>
+                    {paySlip.salaryDetailsEarningsVO[2].amount}
                   </td>
                   <td style={styles.thTd}>&nbsp;</td>
                   <td style={styles.thTd}>&nbsp;</td>
@@ -222,7 +233,7 @@ function PayslipPdf({ newPayslipRequest, paySlipDetails, headerDetails }) {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="2" style={styles.thTd}>
+                  <td style={styles.thTd}>
                     Total Earnings: INR
                   </td>
                   <td style={styles.thTd}>{paySlip.totalEarnings}</td>

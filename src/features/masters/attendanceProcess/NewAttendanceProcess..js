@@ -9,6 +9,8 @@ import React, { useState, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import "react-tabs/style/react-tabs.css";
 import { encryptPassword } from "../../user/components/utils";
+import CommonBulkUpload from "../../../utils/CommonBulkUpload";
+import SampleFile from "../../../assets/SampleFile/Monthly Attendance.xlsx";
 
 export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
   const [fromDate, setFromDate] = React.useState(null);
@@ -35,6 +37,8 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
   const [errors, setErrors] = React.useState({});
   const [data, setData] = useState([]);
   const [file, setFile] = useState(null);
+  const [totalWorkingDays, setTotalWorkingDays] = useState(0);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   const pwd = "Wds@2022";
   const trimmedpwd = pwd.trim();
@@ -60,8 +64,27 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
     ]);
   };
 
+  const handleBulkUploadOpen = () => {
+    setUploadOpen(true);
+  };
+
+  const handleBulkUploadClose = () => {
+    setUploadOpen(false);
+  };
+
   const handleFileUpload = (event) => {
-    setFile(event.target.files[0]);
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    console.log("Submit clicked");
+    handleBulkUploadClose();
+  };
+
+  const handleLopChange = (index, newValue) => {
+    const updatedData = [...data];
+    updatedData[index].lop = newValue;
+    setData(updatedData);
   };
 
   useEffect(() => {
@@ -81,25 +104,69 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
       console.error("Error fetching Leave Types:", error);
     }
   };
+  const getAllEmployeeDetails = async () => {
+    if (!fromDate || !toDate) {
+      alert("Please select both From Date and To Date");
+      return;
+    }
+
+    // Convert DD-MM-YYYY to YYYY-MM-DD
+    const formattedFromDate = dayjs(fromDate, "DD-MM-YYYY").format(
+      "YYYY-MM-DD"
+    );
+    const formattedToDate = dayjs(toDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/masterController/getAttendanceDetailsOfEmpForMonth?fromDate=${formattedFromDate}&orgId=${orgId}&toDate=${formattedToDate}`
+      );
+
+      if (response.data.statusFlag === "Ok") {
+        setTotalWorkingDays(
+          response.data.paramObjectsMap.attendanceDetails[0]?.totalDays || 0
+        );
+        setData(
+          response.data.paramObjectsMap.attendanceDetails.map((item) => ({
+            name: item.empName,
+            code: item.empCode,
+            leaves: item.consumedLeave,
+            workingDays: item.precentDays,
+            lop: item.totalDays - item.precentDays,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching Employee Leave Details:", error);
+    }
+  };
+
+  // const handleFromDate = (newDate) => {
+  //   const originalDateString = newDate;
+  //   const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+  //   setFromDate(formattedDate);
+  // };
+  // const handleToDate = (newDate) => {
+  //   const originalDateString = newDate;
+  //   const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+  //   setToDate(formattedDate);
+  // };
 
   const handleFromDate = (newDate) => {
-    const originalDateString = newDate;
-    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-    setFromDate(formattedDate);
+    setFromDate(newDate ? dayjs(newDate).format("DD-MM-YYYY") : null);
   };
+
   const handleToDate = (newDate) => {
-    const originalDateString = newDate;
-    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-    setToDate(formattedDate);
+    setToDate(newDate ? dayjs(newDate).format("DD-MM-YYYY") : null);
   };
+
   const handleActive = (event) => {
     setActive(event.target.checked);
   };
 
   const handleNew = () => {
-    setCompensatory("");
-    setReportingPersonRole("");
-    setActive(true);
+    setFromDate(null);
+    setToDate(null);
+    setData([]);
   };
 
   const handleValidation = () => {
@@ -115,51 +182,103 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // const handleSave = () => {
+  //   console.log("handlesave is working");
+
+  //   if (handleValidation()) {
+  //     console.log("handle validation is working");
+
+  //     const dataToSave = {
+  //       branch: null,
+  //       branchCode: null,
+  //       empCode: empCode,
+  //       empName: empName,
+  //       lop: lop,
+  //       presentDays: precentDays,
+  //       salaryMonth: dept,
+  //       totalDays: totalDays,
+  //       totalLeaves: consumedLeave,
+  //       year: empCode,
+  //       orgId: orgId,
+  //     };
+
+  //     console.log("DataToSave:", dataToSave);
+
+  //     const token = localStorage.getItem("token");
+
+  //     if (token) {
+  //       const headers = {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       };
+
+  //       // Execute both requests in parallel using Promise.all()
+  //       Promise.all([
+  //         Axios.put(
+  //           `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateEmployee`,
+  //           dataToSave,
+  //           { headers }
+  //         ),
+  //       ])
+  //         .then(([employeeResponse, userResponse]) => {
+  //           if (
+  //             employeeResponse.data.statusFlag === "Error" ||
+  //             userResponse.data.statusFlag === "Error"
+  //           ) {
+  //             console.error(
+  //               "Backend error:",
+  //               employeeResponse.data.paramObjectsMap?.errorMessage ||
+  //                 userResponse.data.paramObjectsMap?.errorMessage
+  //             );
+  //             return; // Stop execution if there's an error
+  //           }
+
+  //           console.log("Employee Data Saved:", employeeResponse.data);
+  //           console.log("User Data Saved:", userResponse.data);
+
+  //           setSavedData(userResponse.data);
+  //           handleNew();
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error saving data:", error);
+  //           alert("Error while saving data. Please try again.");
+  //         });
+  //     }
+  //   }
+  // };
+
   const handleSave = () => {
     console.log("handlesave is working");
 
     if (handleValidation()) {
       console.log("handle validation is working");
 
-      const dataToSave = {
-        // aadhar: aadharNo,
-        // accountNo: accNo,
-        // bankName: bank,
-        // blood: bloodGroup,
-        // branchId: branch,
-        // createdby: loginEmpName,
-        // department: dept,
-        // designation: designation,
-        // email: email,
-        // empCode: empCode,
-        // employeeName: employeeName,
-        // gender: gender,
-        // ifscCode: ifsc,
-        // joiningDate: joinDate,
-        // mobileNo: mobNo,
-        // orgId: orgId,
-        // pan: pan,
-        // reportingPerson: reportPerson,
-        // reportingPersonRole: reportingPersonRole,
-        // resigningDate: resigningDate,
-        // role: role,
-        // alternateMobileNo: altMobNo,
-        // active: active,
-      };
+      if (!toDate) {
+        alert("Please select a To Date before saving.");
+        return;
+      }
 
-      const dataToSaveUser = {
-        // branchId: branch,
-        // empcode: empCode,
-        // employeeName: employeeName,
-        // role: role,
-        // email: email,
-        // updatedby: loginEmpName,
-        // createdby: loginEmpName,
-        // password: encryptPassword(trimmedpwd),
-      };
+      const parsedToDate = dayjs(toDate, "DD-MM-YYYY");
+
+      const salaryMonth = parsedToDate.format("MMMM"); // Month Name (e.g., "January")
+      const year = parsedToDate.format("YYYY"); // Year (e.g., "2024")
+
+      // Prepare data from the existing state (data from getAllEmployeeDetails)
+      const dataToSave = data.map((item) => ({
+        branch: null,
+        branchCode: null,
+        empCode: item.code, // Employee Code from API data
+        empName: item.name, // Employee Name from API data
+        lop: item.lop, // LOP entered by the user
+        orgId: orgId,
+        presentDays: item.workingDays, // Present Days from API data
+        salaryMonth: salaryMonth,
+        totalDays: totalWorkingDays, // Total working days from API response
+        totalLeaves: item.leaves, // Leaves taken from API data
+        year: year, // Extracted year from toDate
+      }));
 
       console.log("DataToSave:", dataToSave);
-      console.log("DataToSaveUser:", dataToSaveUser);
 
       const token = localStorage.getItem("token");
 
@@ -169,40 +288,23 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
           "Content-Type": "application/json",
         };
 
-        // Execute both requests in parallel using Promise.all()
-        Promise.all([
-          Axios.put(
-            `${process.env.REACT_APP_API_URL}/api/masterController/createUpdateEmployee`,
-            dataToSave,
-            { headers }
-          ),
-          Axios.post(
-            `${process.env.REACT_APP_API_URL}/api/user/signup`,
-            dataToSaveUser,
-            { headers }
-          ),
-        ])
-          .then(([employeeResponse, userResponse]) => {
-            if (
-              employeeResponse.data.statusFlag === "Error" ||
-              userResponse.data.statusFlag === "Error"
-            ) {
+        Axios.put(
+          `${process.env.REACT_APP_API_URL}/api/salaryMaster/createMonthlyAttendance`,
+          dataToSave,
+          { headers }
+        )
+          .then((response) => {
+            if (response.data.statusFlag === "Error") {
               console.error(
                 "Backend error:",
-                employeeResponse.data.paramObjectsMap?.errorMessage ||
-                  userResponse.data.paramObjectsMap?.errorMessage
+                response.data.paramObjectsMap?.errorMessage
               );
-              return; // Stop execution if there's an error
+              return;
             }
 
-            console.log("Employee Data Saved:", employeeResponse.data);
-            console.log("User Data Saved:", userResponse.data);
-
-            setSavedData(userResponse.data);
+            console.log("Employee Data Saved:", response.data);
+            setSavedData(response.data);
             handleNew();
-
-            // Call handleLeaveAllocationSave() only after both requests succeed
-            handleLeaveAllocationSave();
           })
           .catch((error) => {
             console.error("Error saving data:", error);
@@ -212,60 +314,15 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
     }
   };
 
-  const handleLeaveAllocationSave = () => {
-    const dataToSaveLeaveAllocation = {
-      orgId: orgId,
-      casual: casual,
-      sick: sick,
-      annual: annual,
-      maternity: maternity,
-      paternity: paternity,
-      parental: parental,
-      bereavement: bereavement,
-      compensatory: compensatory,
-      updatedby: loginEmpName,
-      createdby: loginEmpName,
-    };
-
-    console.log("DataToSaveLeaveAllocation:", dataToSaveLeaveAllocation);
-
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      };
-
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/leaveEligible`,
-        dataToSaveLeaveAllocation,
-        { headers }
-      )
-        .then((response) => {
-          if (response.data.statusFlag === "Error") {
-            console.error(
-              "Backend error:",
-              response.data.paramObjectsMap?.errorMessage
-            );
-            return; // Stop execution if there's an error
-          }
-
-          console.log("Leave Allocation Data Saved:", response.data);
-          setSavedData(response.data);
-
-          // Clear token and reset form data only after success
-          localStorage.removeItem("token");
-          handleNew();
-        })
-        .catch((error) => {
-          console.error("Error saving leave allocation data:", error);
-        });
-    }
-  };
-
   const handleClosePermission = () => {
     newAttendanceProcess(false);
+  };
+
+  const handleCancel = () => {
+    setData([]); // Clears the table data
+    setTotalWorkingDays(0); // Resets total working days
+    setFromDate(null); // Resets the From Date if needed
+    setToDate(null); // Resets the To Date if needed
   };
 
   return (
@@ -273,42 +330,34 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
       <div>
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="row d-flex justify-content-center align-items-center">
-            <div className="d-flex justify-content-between">
-              {/* <h1 className="text-xl font-semibold mb-3">New Employee</h1> */}
-              {/* <IoMdClose
-                type="button"
-                className="cursor-pointer w-8 h-8 mb-3"
-                onClick={handleClosePermission}
-              /> */}
-            </div>
             <div className="row d-flex mt-3">
-              <div className="col-md-4 mb-3">
+              <div className="col-md-3 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="From Date"
+                      format="DD-MM-YYYY"
+                      value={fromDate ? dayjs(fromDate, "DD-MM-YYYY") : null} // Convert string back to Dayjs
+                      onChange={handleFromDate}
                       slotProps={{
                         textField: { size: "small", clearable: true },
                       }}
-                      value={fromDate}
-                      onChange={handleFromDate}
-                      // error={Boolean(errors.dob)}
                     />
                   </LocalizationProvider>
                 </FormControl>
               </div>
 
-              <div className="col-md-4 mb-3">
+              <div className="col-md-3 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="To Date"
+                      format="DD-MM-YYYY"
+                      value={toDate ? dayjs(toDate, "DD-MM-YYYY") : null} // Convert string back to Dayjs
+                      onChange={handleToDate}
                       slotProps={{
                         textField: { size: "small", clearable: true },
                       }}
-                      value={toDate}
-                      onChange={handleToDate}
-                      // error={Boolean(errors.dob)}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -325,47 +374,74 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
                 </FormGroup>
               </div> */}
             </div>
-            <div className="row d-flex mt-3">
-              <div className="col-md-4 mb-3">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  onClick={handleSearch}
-                  className="self-center"
-                >
-                  Search
-                </Button>
-                <span className="ml-4">
-                  <Button
-                    variant="contained"
-                    component="label"
-                    color="primary"
-                    size="medium"
-                    className="self-center"
-                  >
-                    Upload File
-                    <input type="file" hidden onChange={handleFileUpload} />
-                  </Button>
-                </span>
-              </div>
+            <div className="d-flex flex-wrap justify-start mt-3 gap-4">
+              <Button
+                variant="contained"
+                color="primary"
+                size="medium"
+                onClick={getAllEmployeeDetails}
+                className="self-center"
+              >
+                Search
+              </Button>
+              <Button
+                variant="contained"
+                component="label"
+                color="primary"
+                size="medium"
+                className="self-center"
+                onClick={handleBulkUploadOpen}
+              >
+                Upload File
+                {/* <input type="file" hidden onChange={handleBulkUploadOpen} /> */}
+              </Button>
             </div>
-            {data.length > 0 && (
-              <div className="overflow-x-auto shadow-lg rounded-lg">
-                <table className="w-full border-collapse bg-white shadow-md rounded-md">
-                  <thead>
-                    <tr className="bg-blue-600 text-white">
-                      <th className="py-3 px-4 text-left">Employee Name</th>
-                      <th className="py-3 px-4 text-left">Employee Code</th>
-                      <th className="py-3 px-4 text-center">No Of Leaves</th>
-                      <th className="py-3 px-4 text-center">
-                        No of Working Days
-                      </th>
-                      <th className="py-3 px-4 text-center">LOP</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((row, index) => (
+            {/* </span> */}
+            {uploadOpen && (
+              <CommonBulkUpload
+                open={uploadOpen}
+                handleClose={handleBulkUploadClose}
+                title="Upload Files"
+                uploadText="Upload file"
+                downloadText="Sample File"
+                fileName="Monthly Attendance.xlsx"
+                onSubmit={handleSubmit}
+                sampleFileDownload={SampleFile}
+                handleFileUpload={handleFileUpload}
+                apiUrl={`/salaryMaster/excelUploadForMonthlyAttendance`}
+                screen="PutAway"
+                orgId={orgId}
+              />
+            )}
+          </div>
+          {/* {data.length > 0 && ( */}
+          <div>
+            <div className="text-lg font-semibold text-gray-700 mt-4 mb-2">
+              {toDate &&
+                `${dayjs(toDate, "DD-MM-YYYY").format(
+                  "MMMM YYYY"
+                )}, Total Working Days: ${totalWorkingDays}`}
+            </div>
+
+            <div className="overflow-x-auto shadow-lg rounded-lg">
+              <table className="w-full table-bordered">
+                <thead>
+                  <tr
+                    className="text-white"
+                    style={{ backgroundColor: "#626366" }}
+                  >
+                    <th className="py-3 px-4 text-left">Employee Name</th>
+                    <th className="py-3 px-4 text-left">Employee Code</th>
+                    <th className="py-3 px-4 text-center">No Of Leaves</th>
+                    <th className="py-3 px-4 text-center">
+                      No of Working Days
+                    </th>
+                    <th className="py-3 px-4 text-center">LOP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.length > 0 ? (
+                    data.map((row, index) => (
                       <tr
                         key={index}
                         className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
@@ -376,31 +452,52 @@ export const NewAttendanceProcess = ({ newAttendanceProcess }) => {
                         <td className="py-3 px-4 text-center">
                           {row.workingDays}
                         </td>
-                        <td className="py-3 px-4 text-center">{row.lop}</td>
+                        <td className="py-3 px-4 text-center">
+                          <input
+                            type="number"
+                            value={row.lop}
+                            onChange={(e) =>
+                              handleLopChange(index, e.target.value)
+                            }
+                            className="border p-1 w-16 text-center"
+                          />
+                        </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            <div className="d-flex flex-row mt-3">
-              {/* <button
-                type="button"
-                onClick={handleSave}
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Save
-              </button> */}
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                onClick={handleSearch}
-                className="self-center"
-              >
-                Submit
-              </Button>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="py-3 px-4 text-center text-gray-500"
+                      >
+                        No data found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
+          </div>
+          <div className="d-flex flex-wrap justify-start mt-3 gap-4">
+            <Button
+              variant="outlined"
+              color="primary"
+              size="medium"
+              onClick={handleCancel}
+              className="self-center"
+            >
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              size="medium"
+              onClick={handleSave}
+              className="self-center"
+            >
+              Submit
+            </Button>
           </div>
         </div>
       </div>
