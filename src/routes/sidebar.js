@@ -117,6 +117,11 @@ const routes = [
         icon: <CalendarDaysIcon className={iconClasses} />, // icon component
         name: "Salary Structure", // name that appear in Sidebar
       },
+      {
+        path: "/app/salaryReport", // url
+        icon: <CalendarDaysIcon className={iconClasses} />, // icon component
+        name: "Salary Report", // name that appear in Sidebar
+      }
 
       // {
       //   path: "/app/jpcheckincheckout", // url

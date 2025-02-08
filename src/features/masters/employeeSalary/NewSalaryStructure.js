@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import { encryptPassword } from "../../user/components/utils";
 import ToastComponent from "../../../utils/ToastComponent";
+import { useLocation } from "react-router-dom";
 
 const NewSalaryStructure = ({ newSalary }) => {
   const [showTable, setShowTable] = useState(true);
@@ -48,6 +49,9 @@ const NewSalaryStructure = ({ newSalary }) => {
   const [notification, setNotification] = useState(false);
   const [message, setMessage] = useState("");
   const [errorType, setErrorType] = useState("");
+  const location = useLocation();
+  const employeeData = location.state?.employeeData || {};
+  const reviseEmployeeData = location.state?.reviseEmployee || {};
   const [formData, setFormData] = useState([
     {
       id: 1,
@@ -84,8 +88,6 @@ const NewSalaryStructure = ({ newSalary }) => {
       uan: "",
       location: "",
       bankName: "",
-      // month: "",
-      // year: "",
     },
   ]);
   const [newSalaryStructureTable, setNewSalaryStructureTable] = useState([
@@ -129,6 +131,111 @@ const NewSalaryStructure = ({ newSalary }) => {
   const handleTabSelect = (index) => {
     setTabIndex(index);
   };
+
+  // useEffect(() => {
+  //   if (employeeData) {
+  //     getAllEmployeeNames();
+  //   }
+  // }, [employeeData]);
+
+  useEffect(() => {
+    if (employeeData.empName) {
+      setFormData({
+        employeeName: employeeData.empName || "",
+        employeeCode: employeeData.empCode || "",
+        dob: employeeData.DOB || "",
+        doj: employeeData.joiningDate || "",
+        pan: employeeData.pan || "",
+        position: employeeData.designation || "",
+        bankAccountNo: employeeData.accountNo || "",
+        department: employeeData.department || "",
+        grade: employeeData.grade || "",
+        totalDays: employeeData.totalDays || "",
+        lop: employeeData.lop || "",
+        uan: employeeData.uan || "",
+        location: employeeData.branch || "",
+        bankName: employeeData.bankName || "",
+      });
+    }
+  }, [employeeData]);
+
+  // useEffect(() => {
+  //   if (reviseEmployeeData) {
+  //     setFormData({
+  //       employeeName: reviseEmployeeData.employeeName || "",
+  //       employeeCode: reviseEmployeeData.employeeCode || "",
+  //       dob: reviseEmployeeData.dateOfBirth || "",
+  //       doj: reviseEmployeeData.dateOfJoining || "",
+  //       panNo: reviseEmployeeData.pan || "",
+  //       position: reviseEmployeeData.position || "",
+  //       bankAccountNo: reviseEmployeeData.bankAccountNo || "",
+  //       department: reviseEmployeeData.department || "",
+  //       grade: reviseEmployeeData.grade || "",
+  //       lop: reviseEmployeeData.lop || "",
+  //       uan: reviseEmployeeData.uan || "",
+  //       location: reviseEmployeeData.location || "",
+  //       bankName: reviseEmployeeData.bankName || "",
+  //       totalEarnings: reviseEmployeeData.totalEarnings || "",
+  //       totalDeductions: reviseEmployeeData.totalDeduction || "",
+  //       netPay: reviseEmployeeData.netPay || "",
+  //       earnings: reviseEmployeeData.salaryStructureEarningsVO || [],
+  //       deductions: reviseEmployeeData.salaryStructureDeductionVO || [],
+  //     });
+
+  //     // Set earnings and deductions table (only on initial load)
+  //     setNewSalaryStructureTableEarnings(reviseEmployeeData.salaryStructureEarningsVO || []);
+  //     setNewSalaryStructureTable(reviseEmployeeData.salaryStructureDeductionVO || []);
+  //   }
+  // }, [reviseEmployeeData]); // ✅ Removed newSalaryStructureTableEarnings & newSalaryStructureTable
+
+  useEffect(() => {
+    
+    if (reviseEmployeeData && Object.keys(reviseEmployeeData).length > 0) {
+      console.log("reviseEmployeeData newSalaryStructure", reviseEmployeeData); // Debugging API response
+      setFormData((prevState) => ({
+        ...prevState,
+        employeeName: reviseEmployeeData.employeeName || "",
+        employeeCode: reviseEmployeeData.employeeCode || "",
+        dob: reviseEmployeeData.dateOfBirth || "",
+        doj: reviseEmployeeData.dateOfJoining || "",
+        pan: reviseEmployeeData.pan || "",
+        position: reviseEmployeeData.position || "",
+        bankAccountNo: reviseEmployeeData.bankAccountNo || "",
+        department: reviseEmployeeData.department || "",
+        grade: reviseEmployeeData.grade || "",
+        lop: reviseEmployeeData.lop || "",
+        uan: reviseEmployeeData.uan || "",
+        location: reviseEmployeeData.location || "",
+        bankName: reviseEmployeeData.bankName || "",
+        totalEarnings: reviseEmployeeData.totalEarnings || "",
+        totalDeductions: reviseEmployeeData.totalDeduction || "",
+        netPay: reviseEmployeeData.netPay || "",
+        // earnings: reviseEmployeeData.salaryStructureEarningsVO || [],
+        // deductions: reviseEmployeeData.salaryStructureDeductionVO || [],
+      }));
+
+      setNewSalaryStructureTableEarnings(
+        reviseEmployeeData.salaryStructureEarningsVO?.length > 0
+          ? reviseEmployeeData.salaryStructureEarningsVO.map((item) => ({
+              id: item.id,
+              heading: item.heading,
+              amount: item.amount,
+            }))
+          : []
+      );
+
+      setNewSalaryStructureTable(
+        reviseEmployeeData.salaryStructureDeductionVO?.length > 0
+          ? reviseEmployeeData.salaryStructureDeductionVO.map((item) => ({
+              id: item.id,
+              heading: item.heading,
+              amount: item.amount,
+            }))
+          : []
+      );
+    }
+  }, [reviseEmployeeData]);
+
   // const handleInputChange = (e) => {
   //   const { name, value, checked, selectionStart, selectionEnd, type } =
   //     e.target;
@@ -411,7 +518,7 @@ const NewSalaryStructure = ({ newSalary }) => {
       )
         .then((response) => {
           console.log(
-            "Data fetched successfully:",
+            "getAllEmployeeNames",
             response.data.paramObjectsMap.employeeVO
           );
           setAllEmployeeName(response.data.paramObjectsMap.employeeVO);
@@ -483,55 +590,115 @@ const NewSalaryStructure = ({ newSalary }) => {
   //   }
   // };
 
+  // const getAllHeadings = () => {
+  //   const token = localStorage.getItem("token");
+
+  //   if (token) {
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //     };
+
+  //     Axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`,
+  //       {
+  //         headers,
+  //       }
+  //     )
+  //       .then((response) => {
+  //         console.log(
+  //           "getAllHeadings",
+  //           response.data.paramObjectsMap.salaryMasterDetails
+  //         );
+
+  //         const { salaryMasterDetails } = response.data.paramObjectsMap;
+
+  //         if (Array.isArray(salaryMasterDetails)) {
+  //           // Separate Earnings and Deductions
+  //           const earnings = salaryMasterDetails.filter(
+  //             (item) => item.type === "E"
+  //           );
+  //           const deductions = salaryMasterDetails.filter(
+  //             (item) => item.type === "D"
+  //           );
+
+  //           setListAllHeadingEarning(earnings);
+  //           setListAllHeadingDeduction(deductions);
+
+  //           // Dynamically update the table based on available data
+  //           setNewSalaryStructureTableEarnings(
+  //             earnings.map((item, index) => ({
+  //               id: index + 1,
+  //               heading: item.headings,
+  //               // amount: item.amount || '',
+  //             }))
+  //           );
+
+  //           setNewSalaryStructureTable(
+  //             deductions.map((item, index) => ({
+  //               id: index + 1,
+  //               heading: item.headings,
+  //               // amount: item.amount || '',
+  //             }))
+  //           );
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error on fetching data:", error);
+  //       });
+  //   }
+  // };
   const getAllHeadings = () => {
     const token = localStorage.getItem("token");
-
+  
     if (token) {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-
+  
       Axios.get(
         `${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`,
-        {
-          headers,
-        }
+        { headers }
       )
         .then((response) => {
           console.log(
-            "Data fetched successfully:",
+            "getAllHeadings",
             response.data.paramObjectsMap.salaryMasterDetails
           );
-
+  
           const { salaryMasterDetails } = response.data.paramObjectsMap;
-
+  
           if (Array.isArray(salaryMasterDetails)) {
-            // Separate Earnings and Deductions
             const earnings = salaryMasterDetails.filter(
               (item) => item.type === "E"
             );
             const deductions = salaryMasterDetails.filter(
               (item) => item.type === "D"
             );
-
+  
             setListAllHeadingEarning(earnings);
             setListAllHeadingDeduction(deductions);
-
-            // Dynamically update the table based on available data
-            setNewSalaryStructureTableEarnings(
-              earnings.map((item, index) => ({
-                id: index + 1,
-                heading: item.headings,
-                // amount: item.amount || '',
-              }))
+  
+            // Preserve existing amounts
+            setNewSalaryStructureTableEarnings((prev) =>
+              earnings.map((item, index) => {
+                const existingItem = prev.find((prevItem) => prevItem.heading === item.headings);
+                return {
+                  id: index + 1,
+                  heading: item.headings,
+                  amount: existingItem ? existingItem.amount : "", // Keep old amount if available
+                };
+              })
             );
-
-            setNewSalaryStructureTable(
-              deductions.map((item, index) => ({
-                id: index + 1,
-                heading: item.headings,
-                // amount: item.amount || '',
-              }))
+  
+            setNewSalaryStructureTable((prev) =>
+              deductions.map((item, index) => {
+                const existingItem = prev.find((prevItem) => prevItem.heading === item.headings);
+                return {
+                  id: index + 1,
+                  heading: item.headings,
+                  amount: existingItem ? existingItem.amount : "", // Keep old amount if available
+                };
+              })
             );
           }
         })
@@ -540,6 +707,7 @@ const NewSalaryStructure = ({ newSalary }) => {
         });
     }
   };
+  
 
   const handleClear = () => {
     setFormData({
@@ -580,7 +748,7 @@ const NewSalaryStructure = ({ newSalary }) => {
       heading: "",
       amount: "",
     });
-    getAllHeadings();
+    // getAllHeadings();
     console.log("All fields cleared.");
   };
   const handleSave = () => {
@@ -618,7 +786,6 @@ const NewSalaryStructure = ({ newSalary }) => {
         bankName: formData.bankName,
         // month: formData.month,
         // year: formData.year,
-
       };
 
       console.log("DataToSave:", dataToSave);
@@ -688,91 +855,6 @@ const NewSalaryStructure = ({ newSalary }) => {
               />
             </div>
             <div className="row d-flex mt-3">
-              {/* <div className="col-md-4 mb-3">
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="Select Month"
-                  name="month" // Ensure name is set
-                  value={formData.month || ""}
-                  onChange={handleInputChange} // Pass the full event
-                >
-                  {months.map((month, index) => (
-                    <MenuItem key={index} value={month}>
-                      {month}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div>
-
-              <div className="col-md-4 mb-3">
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="Select Year"
-                  name="year" // Ensure name is set
-                  value={formData.year || ""}
-                  onChange={handleInputChange} // Pass the full event
-                >
-                  {years.map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div> */}
-              {/* <div className="col-md-4 mb-3">
-                <Autocomplete
-                  disablePortal
-                  options={allEmployeeName}
-                  getOptionLabel={(option) => option.empname || ""}
-                  sx={{ width: "100%" }}
-                  size="small"
-                  // disabled={!!editId}
-                  value={
-                    allEmployeeName.find(
-                      (c) => c.empname === formData.employeeName
-                    ) || null
-                  }
-                  onChange={(event, newValue) => {
-                    if (newValue) {
-                      setFormData({
-                        ...formData,
-                        employeeName: newValue.empname,
-                        employeeCode: newValue.empcode,
-                        dob: newValue.date_of_birth,
-                        doj: newValue.joining_date,
-                        panNo: newValue.pan,
-                        position: newValue.role,
-                        bankAccountNo: newValue.account_no,
-                        department: newValue.department,
-                        grade: newValue.designation,
-                      });
-                    } else {
-                      setFormData({
-                        ...formData,
-                        employeeName: "",
-                      });
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Employee Name"
-                      name="employeeName"
-                      error={!!salaryStructureErrors.employeeName}
-                      helperText={salaryStructureErrors.employeeName}
-                      InputProps={{
-                        ...params.InputProps,
-                        style: { height: 40 },
-                      }}
-                      // disabled={!!editId}
-                    />
-                  )}
-                />
-              </div> */}
               <div className="col-md-4 mb-3">
                 <Autocomplete
                   disablePortal
@@ -823,11 +905,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                     }
                   }}
                   renderInput={(params) => (
-                    // <TextField
-                    //   {...params}
-                    //   label="Employee Name"
-                    //   name="employeeName"
-                    // />
                     <TextField
                       {...params}
                       label="Employee Name"
@@ -852,23 +929,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                   disabled
                 />
               </div>
-
-              {/* <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="employeeCode"
-                    label="Employee Code"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="employeeCode"
-                    value={formData.employeeCode}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.employeeCode ? salaryStructureErrors.employeeCode : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.employeeCode}
-                  />
-                </div> */}
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -902,22 +962,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                   disabled
                 />
               </div>
-              {/* <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="grade"
-                    label="Grade"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="grade"
-                    value={formData.grade}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.grade ? salaryStructureErrors.grade : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.grade}
-                  />
-                </div> */}
               <div className="col-md-4 mb-3">
                 <TextField
                   fullWidth
@@ -932,7 +976,7 @@ const NewSalaryStructure = ({ newSalary }) => {
                   fullWidth
                   size="small"
                   label="PAN No"
-                  value={formData.panNo || ""}
+                  value={formData.pan || ""}
                   disabled
                 />
               </div>
@@ -954,71 +998,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                   disabled
                 />
               </div>
-              {/* <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="department"
-                    label="Department"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.department ? salaryStructureErrors.department : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.department}
-                  />
-                </div> */}
-
-              {/* <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="panNo"
-                    label="Pan No"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="panNo"
-                    value={formData.panNo}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.panNo ? salaryStructureErrors.panNo : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.panNo}
-                  />
-                </div> */}
-              {/* <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="bankAccountNo"
-                    label="Bank Account No"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="bankAccountNo"
-                    value={formData.bankAccountNo}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.bankAccountNo ? salaryStructureErrors.bankAccountNo : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.bankAccountNo}
-                  />
-                </div>
-                <div className="col-md-4 mb-3">
-                  <TextField
-                    disabled
-                    id="position"
-                    label="Position"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    name="position"
-                    value={formData.position}
-                    onChange={handleInputChange}
-                    helperText={<span style={{ color: 'red' }}>{salaryStructureErrors.position ? salaryStructureErrors.position : ''}</span>}
-                    inputProps={{ maxLength: 40 }}
-                    error={!!salaryStructureErrors.position}
-                  />
-                </div> */}
               <div className="col-md-4 mb-3">
                 <FormControl fullWidth>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1188,18 +1167,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                                     <td className="border px-2 py-2">
                                       <input
                                         value={row.amount}
-                                        // onChange={(e) => {
-                                        //   const value = e.target.value;
-                                        //   setNewSalaryStructureTableEarnings((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
-                                        //   // setsalaryStructureTableEarningsErrors((prev) => {
-                                        //   //   const newErrors = [...prev];
-                                        //   //   newErrors[index] = {
-                                        //   //     ...newErrors[index],
-                                        //   //     amount: !value ? 'Amount is required' : ''
-                                        //   //   };
-                                        //   //   return newErrors;
-                                        //   // });
-                                        // }}
                                         onChange={(e) => {
                                           const value = e.target.value;
                                           if (validateNumericInput(value)) {
@@ -1405,18 +1372,6 @@ const NewSalaryStructure = ({ newSalary }) => {
                                   <td className="border px-2 py-2">
                                     <input
                                       value={row.amount}
-                                      // onChange={(e) => {
-                                      //   const value = e.target.value;
-                                      //   setNewSalaryStructureTable((prev) => prev.map((r) => (r.id === row.id ? { ...r, amount: value } : r)));
-                                      //   // setSalaryStructureTableErrors((prev) => {
-                                      //   //   const newErrors = [...prev];
-                                      //   //   newErrors[index] = {
-                                      //   //     ...newErrors[index],
-                                      //   //     amount: !value ? 'Amount is required' : ''
-                                      //   //   };
-                                      //   //   return newErrors;
-                                      //   // });
-                                      // }}
                                       onChange={(e) => {
                                         const value = e.target.value;
                                         if (validateNumericInput(value)) {

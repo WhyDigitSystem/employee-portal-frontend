@@ -28,7 +28,7 @@ import Axios from "axios";
 import NewSalaryStructure from "./NewSalaryStructure";
 const SalaryStructure = () => {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [add, setAdd] = React.useState(false);
+  const [add, setAdd] = React.useState(true);
   const [tableData, setTableData] = useState([]);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});

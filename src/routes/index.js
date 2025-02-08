@@ -44,6 +44,7 @@ const PermissionRequest = lazy(() =>
 );
 const Holidays = lazy(() => import("../pages/protected/Holidays"));
 const Attendance = lazy(() => import("../pages/protected/Attendance"));
+const SalaryReport = lazy(() => import("../pages/protected/SalaryReport"));
 const HolidayReport = lazy(() => import("../pages/protected/HolidayReport"));
 const LeaveApproval = lazy(() => import("../pages/protected/LeaveApproval"));
 const PermissionApproval = lazy(() =>
@@ -183,6 +184,10 @@ const routes = [
   {
     path: "/attendance",
     component: Attendance,
+  },
+  {
+    path: "/salaryReport",
+    component: SalaryReport,
   },
   {
     path: "/holidayreport",
