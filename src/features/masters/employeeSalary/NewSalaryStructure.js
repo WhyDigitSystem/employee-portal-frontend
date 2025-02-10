@@ -1,12 +1,8 @@
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Axios from "axios";
-import Box from "@mui/material/Box";
 import AddIcon from "@mui/icons-material/Add";
 import dayjs from "dayjs";
 import React, { useState, useEffect } from "react";
@@ -22,17 +18,8 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormHelperText,
-} from "@mui/material";
-import { encryptPassword } from "../../user/components/utils";
 import ToastComponent from "../../../utils/ToastComponent";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const NewSalaryStructure = ({ newSalary }) => {
   const [showTable, setShowTable] = useState(true);
@@ -50,6 +37,7 @@ const NewSalaryStructure = ({ newSalary }) => {
   const [message, setMessage] = useState("");
   const [errorType, setErrorType] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
   const employeeData = location.state?.employeeData || {};
   const reviseEmployeeData = location.state?.reviseEmployee || {};
   const [formData, setFormData] = useState([
@@ -132,12 +120,6 @@ const NewSalaryStructure = ({ newSalary }) => {
     setTabIndex(index);
   };
 
-  // useEffect(() => {
-  //   if (employeeData) {
-  //     getAllEmployeeNames();
-  //   }
-  // }, [employeeData]);
-
   useEffect(() => {
     if (employeeData.empName) {
       setFormData({
@@ -159,37 +141,7 @@ const NewSalaryStructure = ({ newSalary }) => {
     }
   }, [employeeData]);
 
-  // useEffect(() => {
-  //   if (reviseEmployeeData) {
-  //     setFormData({
-  //       employeeName: reviseEmployeeData.employeeName || "",
-  //       employeeCode: reviseEmployeeData.employeeCode || "",
-  //       dob: reviseEmployeeData.dateOfBirth || "",
-  //       doj: reviseEmployeeData.dateOfJoining || "",
-  //       panNo: reviseEmployeeData.pan || "",
-  //       position: reviseEmployeeData.position || "",
-  //       bankAccountNo: reviseEmployeeData.bankAccountNo || "",
-  //       department: reviseEmployeeData.department || "",
-  //       grade: reviseEmployeeData.grade || "",
-  //       lop: reviseEmployeeData.lop || "",
-  //       uan: reviseEmployeeData.uan || "",
-  //       location: reviseEmployeeData.location || "",
-  //       bankName: reviseEmployeeData.bankName || "",
-  //       totalEarnings: reviseEmployeeData.totalEarnings || "",
-  //       totalDeductions: reviseEmployeeData.totalDeduction || "",
-  //       netPay: reviseEmployeeData.netPay || "",
-  //       earnings: reviseEmployeeData.salaryStructureEarningsVO || [],
-  //       deductions: reviseEmployeeData.salaryStructureDeductionVO || [],
-  //     });
-
-  //     // Set earnings and deductions table (only on initial load)
-  //     setNewSalaryStructureTableEarnings(reviseEmployeeData.salaryStructureEarningsVO || []);
-  //     setNewSalaryStructureTable(reviseEmployeeData.salaryStructureDeductionVO || []);
-  //   }
-  // }, [reviseEmployeeData]); // ✅ Removed newSalaryStructureTableEarnings & newSalaryStructureTable
-
   useEffect(() => {
-    
     if (reviseEmployeeData && Object.keys(reviseEmployeeData).length > 0) {
       console.log("reviseEmployeeData newSalaryStructure", reviseEmployeeData); // Debugging API response
       setFormData((prevState) => ({
@@ -235,61 +187,6 @@ const NewSalaryStructure = ({ newSalary }) => {
       );
     }
   }, [reviseEmployeeData]);
-
-  // const handleInputChange = (e) => {
-  //   const { name, value, checked, selectionStart, selectionEnd, type } =
-  //     e.target;
-  //   let errorMessage = "";
-  //   if (errorMessage) {
-  //     setSalaryStructureErrors({
-  //       ...salaryStructureErrors,
-  //       [name]: errorMessage,
-  //     });
-  //   } else {
-  //     setSalaryStructureErrors({ ...salaryStructureErrors, [name]: "" });
-  //     setFormData({ ...formData, [name]: value.toUpperCase() });
-
-  //     if (type === "text" || type === "textarea") {
-  //       setTimeout(() => {
-  //         const inputElement = document.getElementsByName(name)[0];
-  //         if (inputElement && inputElement.setSelectionRange) {
-  //           inputElement.setSelectionRange(selectionStart, selectionEnd);
-  //         }
-  //       }, 0);
-  //     }
-  //   }
-  // };
-  // const handleInputChange = (e) => {
-  //   const { name, value, type, selectionStart, selectionEnd } = e.target;
-  //   let errorMessage = "";
-
-  //   if (errorMessage) {
-  //     setSalaryStructureErrors({
-  //       ...salaryStructureErrors,
-  //       [name]: errorMessage,
-  //     });
-  //   } else {
-  //     setSalaryStructureErrors({ ...salaryStructureErrors, [name]: "" });
-
-  //     // Ensure dropdown values are stored without converting to uppercase
-  //     let newValue = value;
-  //     if (type === "text" || type === "textarea") {
-  //       newValue = value.toUpperCase();
-  //     }
-
-  //     setFormData((prev) => ({ ...prev, [name]: newValue }));
-
-  //     // Maintain cursor position for text fields
-  //     if (type === "text" || type === "textarea") {
-  //       setTimeout(() => {
-  //         const inputElement = document.getElementsByName(name)[0];
-  //         if (inputElement && inputElement.setSelectionRange) {
-  //           inputElement.setSelectionRange(selectionStart, selectionEnd);
-  //         }
-  //       }, 0);
-  //     }
-  //   }
-  // };
 
   const handleInputChange = (e) => {
     const { name, value, type, selectionStart, selectionEnd } = e.target;
@@ -531,130 +428,14 @@ const NewSalaryStructure = ({ newSalary }) => {
     }
   };
 
-  // const getAllEmployeeNames = () => {
-  //   const token = localStorage.getItem("token");
-
-  //   if (token) {
-  //     // Ensure month and year are selected
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     Axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/SalaryStructure/empNameDetails?orgId=${orgId}`,
-  //       { headers }
-  //     )
-  //       .then((response) => {
-  //         console.log(
-  //           "Data fetched successfully:",
-  //           response.data.paramObjectsMap.employeeVO
-  //         );
-  //         setAllEmployeeName(response.data.paramObjectsMap.employeeVO);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching data:", error);
-  //       });
-  //   }
-  // };
-
-  // const getAllHeadings = () => {
-  //   const token = localStorage.getItem("token");
-
-  //   if (token) {
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     Axios.get(`${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`, {
-  //       headers,
-  //     })
-  //       .then((response) => {
-  //         console.log("Data fetched successfully:", response.data.paramObjectsMap.salaryMasterDetails);
-
-  //         // Destructure salaryMasterDetails from response
-  //         const { salaryMasterDetails } = response.data.paramObjectsMap;
-
-  //         if (Array.isArray(salaryMasterDetails)) {
-  //           // Separate Earnings and Deductions based on `type`
-  //           const earnings = salaryMasterDetails.filter((item) => item.type === 'E');
-  //           const deductions = salaryMasterDetails.filter((item) => item.type === 'D');
-
-  //           // Update the respective states
-  //           setListAllHeadingEarning(earnings);
-  //           setListAllHeadingDeduction(deductions);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error on fetching data:", error);
-  //       });
-  //   }
-  // };
-
-  // const getAllHeadings = () => {
-  //   const token = localStorage.getItem("token");
-
-  //   if (token) {
-  //     const headers = {
-  //       Authorization: `Bearer ${token}`,
-  //     };
-
-  //     Axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`,
-  //       {
-  //         headers,
-  //       }
-  //     )
-  //       .then((response) => {
-  //         console.log(
-  //           "getAllHeadings",
-  //           response.data.paramObjectsMap.salaryMasterDetails
-  //         );
-
-  //         const { salaryMasterDetails } = response.data.paramObjectsMap;
-
-  //         if (Array.isArray(salaryMasterDetails)) {
-  //           // Separate Earnings and Deductions
-  //           const earnings = salaryMasterDetails.filter(
-  //             (item) => item.type === "E"
-  //           );
-  //           const deductions = salaryMasterDetails.filter(
-  //             (item) => item.type === "D"
-  //           );
-
-  //           setListAllHeadingEarning(earnings);
-  //           setListAllHeadingDeduction(deductions);
-
-  //           // Dynamically update the table based on available data
-  //           setNewSalaryStructureTableEarnings(
-  //             earnings.map((item, index) => ({
-  //               id: index + 1,
-  //               heading: item.headings,
-  //               // amount: item.amount || '',
-  //             }))
-  //           );
-
-  //           setNewSalaryStructureTable(
-  //             deductions.map((item, index) => ({
-  //               id: index + 1,
-  //               heading: item.headings,
-  //               // amount: item.amount || '',
-  //             }))
-  //           );
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error on fetching data:", error);
-  //       });
-  //   }
-  // };
   const getAllHeadings = () => {
     const token = localStorage.getItem("token");
-  
+
     if (token) {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-  
+
       Axios.get(
         `${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`,
         { headers }
@@ -664,9 +445,9 @@ const NewSalaryStructure = ({ newSalary }) => {
             "getAllHeadings",
             response.data.paramObjectsMap.salaryMasterDetails
           );
-  
+
           const { salaryMasterDetails } = response.data.paramObjectsMap;
-  
+
           if (Array.isArray(salaryMasterDetails)) {
             const earnings = salaryMasterDetails.filter(
               (item) => item.type === "E"
@@ -674,29 +455,33 @@ const NewSalaryStructure = ({ newSalary }) => {
             const deductions = salaryMasterDetails.filter(
               (item) => item.type === "D"
             );
-  
+
             setListAllHeadingEarning(earnings);
             setListAllHeadingDeduction(deductions);
-  
+
             // Preserve existing amounts
             setNewSalaryStructureTableEarnings((prev) =>
               earnings.map((item, index) => {
-                const existingItem = prev.find((prevItem) => prevItem.heading === item.headings);
+                const existingItem = prev.find(
+                  (prevItem) => prevItem.heading === item.headings
+                );
                 return {
                   id: index + 1,
                   heading: item.headings,
-                  amount: existingItem ? existingItem.amount : "", // Keep old amount if available
+                  amount: existingItem ? existingItem.amount : "",
                 };
               })
             );
-  
+
             setNewSalaryStructureTable((prev) =>
               deductions.map((item, index) => {
-                const existingItem = prev.find((prevItem) => prevItem.heading === item.headings);
+                const existingItem = prev.find(
+                  (prevItem) => prevItem.heading === item.headings
+                );
                 return {
                   id: index + 1,
                   heading: item.headings,
-                  amount: existingItem ? existingItem.amount : "", // Keep old amount if available
+                  amount: existingItem ? existingItem.amount : "",
                 };
               })
             );
@@ -707,7 +492,58 @@ const NewSalaryStructure = ({ newSalary }) => {
         });
     }
   };
-  
+
+  const getAllAfterSaveHeadings = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/SalaryStructure/salaryMasterDetails?orgId=${orgId}`,
+        { headers }
+      )
+        .then((response) => {
+          console.log(
+            "getAllAfterSaveHeadings",
+            response.data.paramObjectsMap.salaryMasterDetails
+          );
+
+          const { salaryMasterDetails } = response.data.paramObjectsMap;
+
+          if (Array.isArray(salaryMasterDetails)) {
+            const earnings = salaryMasterDetails.filter(
+              (item) => item.type === "E"
+            );
+            const deductions = salaryMasterDetails.filter(
+              (item) => item.type === "D"
+            );
+
+            setListAllHeadingEarning(earnings);
+            setListAllHeadingDeduction(deductions);
+
+            setNewSalaryStructureTableEarnings(
+              earnings.map((item, index) => ({
+                id: index + 1,
+                heading: item.headings,
+              }))
+            );
+
+            setNewSalaryStructureTable(
+              deductions.map((item, index) => ({
+                id: index + 1,
+                heading: item.headings,
+              }))
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error on fetching data:", error);
+        });
+    }
+  };
 
   const handleClear = () => {
     setFormData({
@@ -804,12 +640,23 @@ const NewSalaryStructure = ({ newSalary }) => {
           { headers }
         )
           .then((response) => {
-            console.log("Data saved successfully:", response.data);
+            console.log(
+              "Data saved successfully from new salary structure",
+              response.data
+            );
             setSavedData(response.data);
             handleClear();
+            getAllAfterSaveHeadings();
             setErrorType("success");
             setMessage("Data saved successfully!");
             setNotification(true);
+            if (location.state?.from === "SalaryReport") {
+              navigate("/app/salaryReport");
+              console.log(
+                "Data saved successfully from salary report",
+                response.data
+              );
+            }
           })
           .catch((error) => {
             console.error("Error saving data:", error);

@@ -158,7 +158,10 @@ export const SalaryReport = () => {
 
                                 if (salaryData) {
                                   navigate("/app/salaryStructure", {
-                                    state: { reviseEmployee: salaryData }, // Pass fetched data
+                                    state: {
+                                      reviseEmployee: salaryData,
+                                      from: "SalaryReport",
+                                    }, // Pass fetched data
                                   });
                                 } else {
                                   console.error(
@@ -173,7 +176,10 @@ export const SalaryReport = () => {
                               }
                             } else {
                               navigate("/app/salaryStructure", {
-                                state: { employeeData: row  },
+                                state: {
+                                  employeeData: row,
+                                  from: "SalaryReport",
+                                },
                               });
                             }
                           }}
