@@ -224,7 +224,7 @@ export const HolidayReport = () => {
                 sx={{
                   display: "flex",
                   gap: "1rem",
-                  justifyContent: "flex-end",
+                  justifyContent: "center",
                 }}
               >
                 {/* <Tooltip arrow placement="left" title="Delete">
